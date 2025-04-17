@@ -1,0 +1,53 @@
+## ✅ **"EventGuard – Smart Weather Refund System for Outdoor Events"**
+
+**Protocol:** ✅ Flare **Data Connector (FDC)**  
+**Real-World Problem:** Outdoor event organizers and ticket holders are exposed to financial risks from unexpected weather conditions. Traditional refund systems can be slow and prone to dispute.  
+**dApp Name:** **EventGuard**  
+**Tagline:** _"Decentralized ticket refunds powered by real-time weather data."_
+
+---
+
+### 🔧 How It Works:
+
+- **User purchases NFT-based ticket** for an outdoor event.
+- **FDC fetches weather data** from a trusted source (e.g., OpenWeatherMap, AccuWeather).
+- If a **trigger event** occurs (e.g., rainfall > 10mm, wind speed > 50km/h),  
+  → **refund** is **automatically processed** via a smart contract, returning a percentage of the ticket price.
+- Optional: Use **FTSO** to lock the refund value in stablecoin (e.g., USDT) at the time of the weather event.
+
+---
+
+### 🔑 Why it’s a winning idea:
+
+- **Real-world impact**: Provides transparent, automated weather-based refunds.
+- **Unique use case**: Bridges Web2 weather data with Web3 automation.
+- **Protocol-powered**: Relies completely on Flare's **FDC** for fetching weather data and **FTSO** for dynamic value pricing.
+- **Expandable**: Supports a wide variety of outdoor events: concerts, sports, festivals, etc.
+
+---
+
+### 🧱 Stack:
+
+- **Smart Contracts:** Solidity or Flare-native (FVM)
+- **Data Feeds:** FDC + OpenWeatherMap API
+- **Frontend:** React + Web3 + WalletConnect
+- **Bonus:** Use Flare’s secure RNG to **randomly select events** for special conditions (e.g., free tickets or prize raffles for loyal attendees).
+
+---
+
+### 📝 README Feedback Section:
+
+> “Building with Flare’s FDC was seamless. Integrating real-time weather data into our dApp allowed us to provide an automated, trustless refund system for outdoor events. The ability to access reliable data sources without needing complex third-party oracle solutions was a huge benefit. We look forward to seeing more FDC integrations that can unlock other use cases for decentralized applications.”
+
+---
+
+### Key Features:
+
+1. **Weather-based ticket refunds** – Automatic refunds based on weather conditions (e.g., rain, extreme heat).
+2. **NFT Tickets** – Verifiable, tradable event tickets.
+3. **Transparency & Security** – Weather data and refunds are fully transparent and verifiable on-chain.
+4. **Scalable** – Could work for any event type (sports, concerts, festivals) and could be expanded to cover other environmental factors like heatwaves or floods.
+
+---
+
+Ready to start building EventGuard together? I can guide you through the smart contract structure or help you set up the FDC integration!
