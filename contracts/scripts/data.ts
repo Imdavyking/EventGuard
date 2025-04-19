@@ -253,8 +253,8 @@ const longitude = 15.587079308221126;
 
 const units = "metric";
 
-const apiUrl = `https://api.openweathermap.org/data/2.5/weather\?lat\=${latitude}\&lon\=${longitude}\&appid\=${OPEN_WEATHER_API_KEY}\&units\=${units}`;
-
+// const apiUrl = `https://api.openweathermap.org/data/2.5/weather\?lat\=${latitude}\&lon\=${longitude}\&appid\=${OPEN_WEATHER_API_KEY}\&units\=${units}`;
+const apiUrl = "https://eventguard.onrender.com/api/fdc/sample-open-weather";
 const postprocessJq = `{
   latitude: (.coord.lat | if . != null then .*pow(10;6) else null end),
   longitude: (.coord.lon | if . != null then .*pow(10;6) else null end),
