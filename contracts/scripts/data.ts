@@ -255,9 +255,58 @@ const units = "metric";
 
 const apiUrl = `https://api.openweathermap.org/data/2.5/weather\?lat\=${latitude}\&lon\=${longitude}\&appid\=${OPEN_WEATHER_API_KEY}\&units\=${units}`;
 
-const postprocessJq = `{name: .name, height: .height, mass: .mass, numberOfFilms: .films | length, uid: (.url | split("/") | .[-2] | tonumber)}`;
-const abiSignature = `{"components": [{"internalType": "string", "name": "name", "type": "string"},{"internalType": "uint256", "name": "height", "type": "uint256"},{"internalType": "uint256", "name": "mass", "type": "uint256"},{"internalType": "uint256", "name": "numberOfFilms", "type": "uint256"},{"internalType": "uint256", "name": "uid", "type": "uint256"}],"name": "task","type": "tuple"}`;
+const postprocessJq = `{
+  latitude: (.coord.lat | if . != null then .*pow(10;6) else null end),
+  longitude: (.coord.lon | if . != null then .*pow(10;6) else null end),
+  description: .weather[0].description,
+  temperature: (.main.temp | if . != null then .*pow(10;6) else null end),
+  minTemp: (.main.temp_min | if . != null then .*pow(10;6) else null end),
+  windSpeed: (.wind.speed | if . != null then . *pow(10;6) end),
+  windDeg: .wind.deg
+  }`;
 
+const abiSignature = `{
+    "components": [
+      {
+        "internalType": "int256",
+        "name": "latitude",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "longitude",
+        "type": "int256"
+      },
+      {
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      },
+      {
+        "internalType": "int256",
+        "name": "temperature",
+        "type": "int256"
+      },
+      {
+        "internalType": "int256",
+        "name": "minTemp",
+        "type": "int256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "windSpeed",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "windDeg",
+        "type": "uint256"
+      }
+    ],
+    "internalType": "struct DataTransportObject",
+    "name": "dto",
+    "type": "tuple"
+  }`;
 // Configuration constants
 const attestationTypeBase = "IJsonApi";
 const sourceIdBase = "WEB2";
@@ -279,11 +328,6 @@ async function main() {
     IJsonApiVerification__factory.abi[0].inputs[0].components[1];
 
   console.log("Response type:", responseType, "\n");
-
-  //   const decodedResponse = web3.eth.abi.decodeParameter(
-  //     responseType,
-  //     proof.response_hex
-  //   );
 
   const jsonInterface = new ethers.Interface(IJsonApiVerification__factory.abi);
 
@@ -308,6 +352,13 @@ async function main() {
   };
 }
 
-main().then(() => {
-  process.exit(0);
-});
+main()
+  .then(() => {
+    process.exit(0);
+  })
+  .catch((error) => {
+    if (error instanceof Error) {
+      console.log(error.message);
+    } else console.log(error);
+    process.exit(1);
+  });
