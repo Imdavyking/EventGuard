@@ -16,13 +16,23 @@ export const getJsonProof = async (req: Request, res: Response) => {
 export const getSample = async (req: Request, res: Response) => {
   try {
     const sample = {
-      latitude: 46419402,
-      longitude: 15587079,
-      description: "clear sky",
-      temperature: 16250000,
-      minTemp: 16000000,
-      windSpeed: 2060000,
-      windDeg: 340,
+      coord: {
+        lon: -122.419416,
+        lat: 37.774956,
+      },
+      weather: [
+        {
+          description: "clear sky",
+        },
+      ],
+      main: {
+        temp: 289.15,
+        temp_min: 286.48,
+      },
+      wind: {
+        speed: 5.3,
+        deg: 270,
+      },
     };
     res.json(sample);
     return;
