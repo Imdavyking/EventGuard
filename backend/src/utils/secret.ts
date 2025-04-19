@@ -20,18 +20,7 @@ export const secret: {
   },
 
   loadAll: () => {
-    const secrets = [
-      "NODE_ENV",
-      "JWT_SECRET",
-      "PORT",
-      "FRONTEND_URL",
-      "PINATA_JWT",
-      "DATASET_CONTRACT_ADDRESS",
-      "LIT_PROTOCOL_IDENTIFIER",
-      "PRIVATE_KEY",
-      "RPC_URL",
-      "BLOCKLOCK_SENDER_PROXY",
-    ];
+    const secrets = ["NODE_ENV", "JWT_SECRET", "PORT", "FRONTEND_URL"];
 
     const loadedSecrets: Record<string, string> = {};
 
