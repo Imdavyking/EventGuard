@@ -15,8 +15,8 @@ function Home() {
           Decentralized Ticket Refunds
         </h2>
         <p className="text-xl mb-8 max-w-2xl mx-auto">
-          Smart refunds for outdoor events, powered by real-time weather data
-          from Flare's Data Connector (FDC).
+          Flight Delay Refunds, powered by real-time weather data from Flare's
+          Data Connector (FDC).
         </p>
 
         <Link
