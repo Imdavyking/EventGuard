@@ -1,4 +1,4 @@
-# ✈️ SkyCover – Flight Delay Refunds Powered by Decentralized Weather Data
+# ✈️ EventGuard – Flight Delay Refunds Powered by Decentralized Weather Data
 
 > _"Automated travel protection using real-time weather data and smart contracts."_
 
@@ -6,9 +6,9 @@
 
 ## 🧩 Overview
 
-**SkyCover** is a decentralized application (dApp) built on the **Flare Network** that offers **automated refunds for flight delays or cancellations caused by adverse weather conditions**. It eliminates the need for travelers to file claims or deal with airline customer support.
+**EventGuard** is a decentralized application (dApp) built on the **Flare Network** that offers **automated refunds for flight delays or cancellations caused by adverse weather conditions**. It eliminates the need for travelers to file claims or deal with airline customer support.
 
-Powered by **Flare’s Data Connector (FDC)**, SkyCover fetches **real-time weather data** from trusted APIs and triggers a **smart contract payout** if the conditions meet the defined threshold — such as heavy rain, storms, or poor visibility.
+Powered by **Flare’s Data Connector (FDC)**, EventGuard fetches **real-time weather data** from trusted APIs and triggers a **smart contract payout** if the conditions meet the defined threshold — such as heavy rain, storms, or poor visibility.
 
 ---
 
@@ -24,7 +24,7 @@ Flight delays and cancellations are a common headache for travelers, often due t
 
 ## ✅ Our Solution
 
-SkyCover offers a **frictionless travel protection layer** that is:
+EventGuard offers a **frictionless travel protection layer** that is:
 
 - 🛰️ **Powered by real-time weather data**
 - 🤖 **Automated with smart contracts**
