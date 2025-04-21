@@ -9,6 +9,7 @@ type FlightCreated @entity {
 type FlightTicketPurchased @entity {
   id: ID!
   ticketId: BigInt!
+  flightId: BigInt!
   route: String!
   date: BigInt!
   weatherCondition: String!

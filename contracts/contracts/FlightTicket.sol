@@ -83,6 +83,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     // Event to emit flight ticket purchase
     event FlightTicketPurchased(
         uint256 ticketId,
+        uint256 flightId,
         string route,
         uint256 date,
         string weatherCondition,
@@ -240,6 +241,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         // Emit the FlightTicketPurchased event (you need to define this event)
         emit FlightTicketPurchased(
             ticketId,
+            flightId,
             flights[flightId].route,
             flights[flightId].date,
             "",

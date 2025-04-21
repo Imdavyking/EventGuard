@@ -1,3 +1,29 @@
+import { gql, useQuery } from "@apollo/client";
+import { useSearchParams } from "react-router-dom";
+
+
+// id: ID!
+// ticketId: BigInt!
+// route: String!
+// date: BigInt!
+// weatherCondition: String!
+// refundStatus: String!
+// amountPaid: BigInt!
+// payer: String!
+// GraphQL Query
+const GET_FLIGHTS = gql`
+  query MyQuery($first: Int!, $offset: Int!) {
+    flightTicketPurchaseds(orderBy: DATE_DESC, first: $first, offset: $offset) {
+      nodes {
+        flightId
+        route
+        date
+        amountPaid
+      }
+      totalCount
+    }
+  }
+`;
 const mockFlights = [
   {
     id: "1",

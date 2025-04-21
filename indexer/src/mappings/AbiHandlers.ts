@@ -34,11 +34,12 @@ export async function handleFlightTicketPurchasedLog(
 
   const flightTicketPurchased = FlightTicketPurchased.create({
     id: log.transactionHash,
+    ticketId: log.args.ticketId.toBigInt(),
+    flightId: log.args.flightId.toBigInt(),
     route: log.args.route,
     date: log.args.date.toBigInt(),
     refundStatus: log.args.refundStatus,
     weatherCondition: log.args.weatherCondition,
-    ticketId: log.args.ticketId.toBigInt(),
     amountPaid: log.args.amountPaid.toBigInt(),
     payer: log.args.payer,
   });

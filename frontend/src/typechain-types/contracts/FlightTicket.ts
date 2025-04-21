@@ -281,6 +281,7 @@ export namespace FlightCreatedEvent {
 export namespace FlightTicketPurchasedEvent {
   export type InputTuple = [
     ticketId: BigNumberish,
+    flightId: BigNumberish,
     route: string,
     date: BigNumberish,
     weatherCondition: string,
@@ -290,6 +291,7 @@ export namespace FlightTicketPurchasedEvent {
   ];
   export type OutputTuple = [
     ticketId: bigint,
+    flightId: bigint,
     route: string,
     date: bigint,
     weatherCondition: string,
@@ -299,6 +301,7 @@ export namespace FlightTicketPurchasedEvent {
   ];
   export interface OutputObject {
     ticketId: bigint;
+    flightId: bigint;
     route: string;
     date: bigint;
     weatherCondition: string;
@@ -679,7 +682,7 @@ export interface FlightTicket extends BaseContract {
       FlightCreatedEvent.OutputObject
     >;
 
-    "FlightTicketPurchased(uint256,string,uint256,string,string,uint256,address)": TypedContractEvent<
+    "FlightTicketPurchased(uint256,uint256,string,uint256,string,string,uint256,address)": TypedContractEvent<
       FlightTicketPurchasedEvent.InputTuple,
       FlightTicketPurchasedEvent.OutputTuple,
       FlightTicketPurchasedEvent.OutputObject

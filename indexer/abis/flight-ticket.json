@@ -106,6 +106,12 @@
       },
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "flightId",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "string",
         "name": "route",
         "type": "string"

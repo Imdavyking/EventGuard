@@ -71,7 +71,7 @@ const project: EthereumProject = {
             kind: EthereumHandlerKind.Event,
             filter: {
               topics: [
-                "FlightTicketPurchased(uint256,string,uint256,string,string,uint256,address)",
+                "FlightTicketPurchased(uint256,uint256,string,uint256,string,string,uint256,address)",
               ],
             },
           },
