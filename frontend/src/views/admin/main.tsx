@@ -5,6 +5,7 @@ import {
 } from "../../utils/blockchain.services";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
+import GetFlights from "./get-flights";
 
 // Define types for event form and event item
 type EventForm = {
@@ -14,13 +15,7 @@ type EventForm = {
   ticketPrice: string;
 };
 
-type EventItem = EventForm & {
-  id: number;
-  status: "Scheduled" | "Refund Triggered";
-};
-
 const AdminDashboard = () => {
-  const [events, setEvents] = useState<EventItem[]>([]);
   const [form, setForm] = useState<EventForm>({
     title: "",
     date: "",
@@ -40,12 +35,7 @@ const AdminDashboard = () => {
       });
       rethrowFailedResponse(response);
       toast.success("Event created successfully!");
-      const newEvent: EventItem = {
-        ...form,
-        id: events.length + 1,
-        status: "Scheduled",
-      };
-      setEvents([...events, newEvent]);
+
       setForm({ title: "", date: "", location: "", ticketPrice: "" });
     } catch (error) {
       if (error instanceof Error) {
@@ -63,13 +53,6 @@ const AdminDashboard = () => {
     field: keyof EventForm
   ) => {
     setForm({ ...form, [field]: e.target.value });
-  };
-
-  const simulateRefund = (id: number) => {
-    const updated = events.map((ev) =>
-      ev.id === id ? { ...ev, status: "Refund Triggered" } : ev
-    );
-    setEvents(updated as any);
   };
 
   return (
@@ -128,41 +111,7 @@ const AdminDashboard = () => {
           )}
         </button>
       </form>
-
-      {/* Event List */}
-      <div className="space-y-4">
-        {events.map((event) => (
-          <div
-            key={event.id}
-            className="border p-4 rounded-xl bg-white flex justify-between items-center"
-          >
-            <div>
-              <h4 className="font-semibold">{event.title}</h4>
-              <p className="text-sm text-gray-600">
-                {event.date} • {event.location}
-              </p>
-              <p className="text-sm text-gray-500">
-                Ticket Price: {event.ticketPrice} USDT
-              </p>
-              <span
-                className={`inline-block mt-1 px-2 py-1 text-xs rounded-full ${
-                  event.status === "Refund Triggered"
-                    ? "bg-red-100 text-red-600"
-                    : "bg-green-100 text-green-600"
-                }`}
-              >
-                {event.status}
-              </span>
-            </div>
-            <button
-              className="bg-red-100 text-red-600 px-3 py-1 rounded text-sm hover:bg-red-200"
-              onClick={() => simulateRefund(event.id)}
-            >
-              Simulate Refund
-            </button>
-          </div>
-        ))}
-      </div>
+      <GetFlights />
     </>
   );
 };

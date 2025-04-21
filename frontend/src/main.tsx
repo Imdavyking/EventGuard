@@ -12,6 +12,8 @@ import App from "./App.tsx";
 import { flareTestnet } from "viem/chains";
 import "@rainbow-me/rainbowkit/styles.css";
 import { WALLET_CONNECT_PROJECT_ID } from "./utils/constants.tsx";
+import { ApolloProvider } from "@apollo/client";
+import client from "./services/apollo.services.ts";
 
 const config = getDefaultConfig({
   appName: "EcoNova",
@@ -21,12 +23,14 @@ const config = getDefaultConfig({
 const queryClient = new QueryClient();
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <WagmiProvider config={config}>
-      <QueryClientProvider client={queryClient}>
-        <RainbowKitProvider theme={lightTheme()}>
-          <App />
-        </RainbowKitProvider>
-      </QueryClientProvider>
-    </WagmiProvider>
+    <ApolloProvider client={client}>
+      <WagmiProvider config={config}>
+        <QueryClientProvider client={queryClient}>
+          <RainbowKitProvider theme={lightTheme()}>
+            <App />
+          </RainbowKitProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </ApolloProvider>
   </StrictMode>
 );
