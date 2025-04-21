@@ -1,6 +1,8 @@
 {
   "name": "hardhat-project",
   "scripts": {
+    "test": "yarn hardhat test",
+    "deploy": "yarn hardhat clean && npx hardhat run scripts/deploy.verify.ts",
     "jsontest": "npx hardhat run scripts/data.ts"
   },
   "devDependencies": {

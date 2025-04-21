@@ -45,7 +45,7 @@ const config: HardhatUserConfig = {
     localhost: {
       chainId: 31337,
     },
-    mainNetwork: {
+    coston2: {
       url: process.env.RPC_URL,
       accounts: [wallet.privateKey],
       chainId: +CHAIN_ID!,
@@ -70,11 +70,11 @@ const config: HardhatUserConfig = {
   },
   etherscan: {
     apiKey: {
-      mainNetwork: API_SCAN_VERIFIER_KEY,
+      coston2: API_SCAN_VERIFIER_KEY,
     },
     customChains: [
       {
-        network: "mainNetwork",
+        network: "coston2",
         chainId: +CHAIN_ID!,
         urls: {
           apiURL: API_URL,
