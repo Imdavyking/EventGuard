@@ -13,7 +13,7 @@ async function codeTypeChainFolder(destinationFolder: string) {
       errorOnExist: false,
     });
 
-    console.log("✅ node_modules copied successfully!");
+    console.log("✅ typechain-types copied successfully!");
   } catch (err) {
     console.error("❌ Failed to copy node_modules:", err);
   }
