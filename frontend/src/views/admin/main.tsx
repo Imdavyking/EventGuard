@@ -1,4 +1,5 @@
 import { useState, ChangeEvent, FormEvent } from "react";
+import { createFlight } from "../../utils/blockchain.services";
 
 // Define types for event form and event item
 type EventForm = {
@@ -86,7 +87,7 @@ const AdminDashboard = () => {
           <input
             required
             type="number"
-            placeholder="Ticket Price (USDT)"
+            placeholder="Ticket Price (USD)"
             className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 transition"
             value={form.ticketPrice}
             onChange={(e) => handleInputChange(e, "ticketPrice")}
@@ -95,6 +96,14 @@ const AdminDashboard = () => {
         <button
           type="submit"
           className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          onClick={async (e) => {
+            e.preventDefault();
+            await createFlight({
+              route: form.location,
+              date: new Date(form.date).getTime(),
+              amountInUsd: +form.ticketPrice * 100,
+            });
+          }}
         >
           Create Event
         </button>

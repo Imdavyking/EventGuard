@@ -34,6 +34,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IFtsoRegistryGenesis__factory>;
     getContractFactory(
+      name: "IAddressBinder",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IAddressBinder__factory>;
+    getContractFactory(
       name: "IAddressValidityVerification",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IAddressValidityVerification__factory>;
@@ -53,6 +57,10 @@ declare module "hardhat/types/runtime" {
       name: "IDelegationAccount",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IDelegationAccount__factory>;
+    getContractFactory(
+      name: "IDistributionToDelegators",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IDistributionToDelegators__factory>;
     getContractFactory(
       name: "IEntityManager",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -146,6 +154,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IFtsoRewardOffersManager__factory>;
     getContractFactory(
+      name: "IGenericRewardManager",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IGenericRewardManager__factory>;
+    getContractFactory(
       name: "IGovernanceSettings",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IGovernanceSettings__factory>;
@@ -165,6 +177,18 @@ declare module "hardhat/types/runtime" {
       name: "IPaymentVerification",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IPaymentVerification__factory>;
+    getContractFactory(
+      name: "IPChainStakeMirror",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPChainStakeMirror__factory>;
+    getContractFactory(
+      name: "IPChainStakeMirrorMultiSigVoting",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPChainStakeMirrorMultiSigVoting__factory>;
+    getContractFactory(
+      name: "IPChainVotePower",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IPChainVotePower__factory>;
     getContractFactory(
       name: "IPriceSubmitter",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -186,9 +210,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IRewardManager__factory>;
     getContractFactory(
+      name: "IRNat",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IRNat__factory>;
+    getContractFactory(
+      name: "IRNatAccount",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IRNatAccount__factory>;
+    getContractFactory(
       name: "ISubmission",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.ISubmission__factory>;
+    getContractFactory(
+      name: "IValidatorRegistry",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IValidatorRegistry__factory>;
     getContractFactory(
       name: "IVoterRegistry",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -250,6 +286,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
     getContractFactory(
+      name: "IERC20Metadata",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20Metadata__factory>;
+    getContractFactory(
       name: "IERC20Permit",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20Permit__factory>;
@@ -292,6 +332,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IFtsoRegistryGenesis>;
     getContractAt(
+      name: "IAddressBinder",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IAddressBinder>;
+    getContractAt(
       name: "IAddressValidityVerification",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -316,6 +361,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IDelegationAccount>;
+    getContractAt(
+      name: "IDistributionToDelegators",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IDistributionToDelegators>;
     getContractAt(
       name: "IEntityManager",
       address: string | ethers.Addressable,
@@ -432,6 +482,11 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IFtsoRewardOffersManager>;
     getContractAt(
+      name: "IGenericRewardManager",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IGenericRewardManager>;
+    getContractAt(
       name: "IGovernanceSettings",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
@@ -456,6 +511,21 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.IPaymentVerification>;
+    getContractAt(
+      name: "IPChainStakeMirror",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPChainStakeMirror>;
+    getContractAt(
+      name: "IPChainStakeMirrorMultiSigVoting",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPChainStakeMirrorMultiSigVoting>;
+    getContractAt(
+      name: "IPChainVotePower",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IPChainVotePower>;
     getContractAt(
       name: "IPriceSubmitter",
       address: string | ethers.Addressable,
@@ -482,10 +552,25 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.IRewardManager>;
     getContractAt(
+      name: "IRNat",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IRNat>;
+    getContractAt(
+      name: "IRNatAccount",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IRNatAccount>;
+    getContractAt(
       name: "ISubmission",
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.ISubmission>;
+    getContractAt(
+      name: "IValidatorRegistry",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IValidatorRegistry>;
     getContractAt(
       name: "IVoterRegistry",
       address: string | ethers.Addressable,
@@ -561,6 +646,11 @@ declare module "hardhat/types/runtime" {
       address: string | ethers.Addressable,
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
+    getContractAt(
+      name: "IERC20Metadata",
+      address: string | ethers.Addressable,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20Metadata>;
     getContractAt(
       name: "IERC20Permit",
       address: string | ethers.Addressable,
@@ -603,6 +693,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IFtsoRegistryGenesis>;
     deployContract(
+      name: "IAddressBinder",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IAddressBinder>;
+    deployContract(
       name: "IAddressValidityVerification",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IAddressValidityVerification>;
@@ -622,6 +716,10 @@ declare module "hardhat/types/runtime" {
       name: "IDelegationAccount",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IDelegationAccount>;
+    deployContract(
+      name: "IDistributionToDelegators",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IDistributionToDelegators>;
     deployContract(
       name: "IEntityManager",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -715,6 +813,10 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IFtsoRewardOffersManager>;
     deployContract(
+      name: "IGenericRewardManager",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IGenericRewardManager>;
+    deployContract(
       name: "IGovernanceSettings",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IGovernanceSettings>;
@@ -734,6 +836,18 @@ declare module "hardhat/types/runtime" {
       name: "IPaymentVerification",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IPaymentVerification>;
+    deployContract(
+      name: "IPChainStakeMirror",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IPChainStakeMirror>;
+    deployContract(
+      name: "IPChainStakeMirrorMultiSigVoting",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IPChainStakeMirrorMultiSigVoting>;
+    deployContract(
+      name: "IPChainVotePower",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IPChainVotePower>;
     deployContract(
       name: "IPriceSubmitter",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -755,9 +869,21 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IRewardManager>;
     deployContract(
+      name: "IRNat",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRNat>;
+    deployContract(
+      name: "IRNatAccount",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRNatAccount>;
+    deployContract(
       name: "ISubmission",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ISubmission>;
+    deployContract(
+      name: "IValidatorRegistry",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IValidatorRegistry>;
     deployContract(
       name: "IVoterRegistry",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -818,6 +944,10 @@ declare module "hardhat/types/runtime" {
       name: "Ownable",
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Ownable>;
+    deployContract(
+      name: "IERC20Metadata",
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC20Metadata>;
     deployContract(
       name: "IERC20Permit",
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -861,6 +991,11 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IFtsoRegistryGenesis>;
     deployContract(
+      name: "IAddressBinder",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IAddressBinder>;
+    deployContract(
       name: "IAddressValidityVerification",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -885,6 +1020,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IDelegationAccount>;
+    deployContract(
+      name: "IDistributionToDelegators",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IDistributionToDelegators>;
     deployContract(
       name: "IEntityManager",
       args: any[],
@@ -1001,6 +1141,11 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IFtsoRewardOffersManager>;
     deployContract(
+      name: "IGenericRewardManager",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IGenericRewardManager>;
+    deployContract(
       name: "IGovernanceSettings",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
@@ -1025,6 +1170,21 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IPaymentVerification>;
+    deployContract(
+      name: "IPChainStakeMirror",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IPChainStakeMirror>;
+    deployContract(
+      name: "IPChainStakeMirrorMultiSigVoting",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IPChainStakeMirrorMultiSigVoting>;
+    deployContract(
+      name: "IPChainVotePower",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IPChainVotePower>;
     deployContract(
       name: "IPriceSubmitter",
       args: any[],
@@ -1051,10 +1211,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.IRewardManager>;
     deployContract(
+      name: "IRNat",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRNat>;
+    deployContract(
+      name: "IRNatAccount",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IRNatAccount>;
+    deployContract(
       name: "ISubmission",
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.ISubmission>;
+    deployContract(
+      name: "IValidatorRegistry",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IValidatorRegistry>;
     deployContract(
       name: "IVoterRegistry",
       args: any[],
@@ -1130,6 +1305,11 @@ declare module "hardhat/types/runtime" {
       args: any[],
       signerOrOptions?: ethers.Signer | DeployContractOptions
     ): Promise<Contracts.Ownable>;
+    deployContract(
+      name: "IERC20Metadata",
+      args: any[],
+      signerOrOptions?: ethers.Signer | DeployContractOptions
+    ): Promise<Contracts.IERC20Metadata>;
     deployContract(
       name: "IERC20Permit",
       args: any[],

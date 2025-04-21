@@ -443,7 +443,7 @@ export interface FlightTicket extends BaseContract {
     [_flightId: BigNumberish],
     [
       [bigint, string, bigint, bigint] & {
-        flightNumber: bigint;
+        flightId: bigint;
         route: string;
         date: bigint;
         amountPaid: bigint;
@@ -569,7 +569,7 @@ export interface FlightTicket extends BaseContract {
     [_flightId: BigNumberish],
     [
       [bigint, string, bigint, bigint] & {
-        flightNumber: bigint;
+        flightId: bigint;
         route: string;
         date: bigint;
         amountPaid: bigint;

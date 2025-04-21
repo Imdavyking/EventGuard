@@ -15,10 +15,6 @@ dotenv.config();
 async function main() {
   const chainId = network.config.chainId!;
 
-  codeTypeChainFolder("frontend/src/typechain-types");
-
-  return;
-
   cleanDeployments(chainId!);
 
   const { flightTicket } = await hre.ignition.deploy(FlightModule);

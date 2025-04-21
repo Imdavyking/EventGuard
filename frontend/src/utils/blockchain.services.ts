@@ -2,7 +2,7 @@ import { BrowserProvider, ethers } from "ethers";
 import { flareTestnet } from "viem/chains";
 import flightTicketAbi from "../assets/json/flightTicket.json";
 import { FLIGHT_TICKET_CONTRACT_ADDRESS } from "./constants";
-import type { FlightTicket } from "../typechain-types";
+import { FlightTicket__factory } from "../typechain-types";
 
 const failedKey = "FAILED-";
 
@@ -101,11 +101,7 @@ export const getFlightTicketContract = async () => {
 
   await switchOrAddChain(signer.provider, flareTestnet.id);
 
-  return new ethers.Contract(
-    FLIGHT_TICKET_CONTRACT_ADDRESS,
-    flightTicketAbiInterface,
-    signer
-  );
+  return FlightTicket__factory.connect(FLIGHT_TICKET_CONTRACT_ADDRESS, signer);
 };
 
 export const createFlight = async ({
@@ -118,9 +114,7 @@ export const createFlight = async ({
   amountInUsd: number;
 }) => {
   try {
-    const flightTicket =
-      (await getFlightTicketContract()) as unknown as FlightTicket;
-
+    const flightTicket = await getFlightTicketContract();
     const transaction = await flightTicket.createFlight(
       route,
       date,
@@ -130,6 +124,13 @@ export const createFlight = async ({
     const receipt = await transaction.wait(1);
     return `Uploaded dataset with tx hash: ${receipt!.hash}`;
   } catch (error: any) {
+    if (error.code === "CALL_EXCEPTION") {
+      console.log(error.errorName);
+      if (error.errorName === "FlightTicket__FlightNotFound") {
+        // Now handle that specific custom error cleanly
+        alert("Flight not found!");
+      }
+    }
     const parsedError = parseContractError(error, flightTicketAbiInterface);
     console.error("Error saving cid:", error);
     return `${failedKey}${parsedError?.name ?? error?.message}`;
