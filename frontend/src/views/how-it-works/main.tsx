@@ -10,12 +10,12 @@ const HowItWorks = () => {
 
         <ol className="list-decimal pl-6 space-y-6 text-lg leading-relaxed">
           <li>
-            <strong className="text-gray-900">Buy an NFT Ticket:</strong> Users
-            purchase event tickets stored as NFTs on-chain.
+            <strong className="text-gray-900">Buy a Ticket:</strong> Users
+            purchase event tickets stored on-chain.
           </li>
           <li>
             <strong className="text-gray-900">Monitor Weather via FDC:</strong>{" "}
-            EventGuard continuously fetches weather data using Flare’s Data
+            EventGuard continuously fetches weather data using Flare's Data
             Connector.
           </li>
           <li>

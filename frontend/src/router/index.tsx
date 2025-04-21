@@ -4,6 +4,7 @@ import HowItWorks from "../views/how-it-works/main";
 import NotFound from "../views/not-found/main";
 import FlightTickets from "../views/flight-tickets/main";
 import AdminDashboard from "../views/admin/main";
+import GetFlights from "../views/flight-tickets/get-flights";
 function Router() {
   const routes = [
     {
@@ -15,8 +16,12 @@ function Router() {
       element: <HowItWorks />,
     },
     {
-      path: "/flight-tickets",
+      path: "/tickets",
       element: <FlightTickets />,
+    },
+    {
+      path: "/flights",
+      element: <GetFlights />,
     },
 
     {

@@ -20,7 +20,7 @@ const mockFlights = [
 const FlightsTickets = () => {
   return (
     <>
-      <h2 className="text-3xl font-bold mb-6">Your Flights</h2>
+      <h2 className="text-3xl font-bold mb-6">Your Tickets</h2>
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         {mockFlights.map((flight) => (
           <div
