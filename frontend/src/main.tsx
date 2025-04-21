@@ -11,7 +11,7 @@ import "./index.css";
 import App from "./App.tsx";
 import { flareTestnet } from "viem/chains";
 import "@rainbow-me/rainbowkit/styles.css";
-import { WALLET_CONNECT_PROJECT_ID } from "./utils/constants.tsx";
+import { WALLET_CONNECT_PROJECT_ID } from "./utils/constants";
 import { ApolloProvider } from "@apollo/client";
 import client from "./services/apollo.services.ts";
 

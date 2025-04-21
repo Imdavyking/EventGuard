@@ -36,14 +36,6 @@ const GetFlights = () => {
     pollInterval: 5000,
   });
 
-  const [selectedFlight, setSelectedFlight] = useState<string | null>(null);
-  const [selectedCurrency, setSelectedCurrency] = useState<{
-    [key: string]: {
-      token: string;
-      name: string;
-    };
-  }>({});
-
   const totalPages = Math.ceil(
     (data?.flightCreateds?.totalCount || 0) / pageSize
   );
@@ -52,6 +44,14 @@ const GetFlights = () => {
   const goToPage = (newPage: number) => {
     setSearchParams({ page: newPage.toString() });
   };
+
+  const [selectedFlight, setSelectedFlight] = useState<string | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<{
+    [key: string]: {
+      token: string;
+      name: string;
+    };
+  }>({});
 
   const formatDate = (unixTimestamp: string) => {
     const date = new Date(parseInt(unixTimestamp) * 1000);
