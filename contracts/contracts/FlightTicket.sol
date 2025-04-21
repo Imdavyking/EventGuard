@@ -16,8 +16,6 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     TestFtsoV2Interface internal ftsoV2;
 
     bytes21 FLRUSD = bytes21(0x01464c522f55534400000000000000000000000000); // FLR/USD
-    bytes21 BTCUSD = bytes21(0x014254432f55534400000000000000000000000000); // BTC/USD
-    bytes21 ETHUSD = bytes21(0x014554482f55534400000000000000000000000000); // ETH/USD
 
     error FlightTicket__IncorrectETHAmount();
     error FlightTicket__SendingFailed();
