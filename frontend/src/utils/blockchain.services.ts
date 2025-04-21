@@ -1,12 +1,9 @@
 import { BrowserProvider, ethers } from "ethers";
 import { flareTestnet } from "viem/chains";
-import flightTicketAbi from "../assets/json/flightTicket.json";
 import { FLIGHT_TICKET_CONTRACT_ADDRESS } from "./constants";
 import { FlightTicket__factory } from "../typechain-types";
 
 const failedKey = "FAILED-";
-
-const flightTicketAbiInterface = new ethers.Interface(flightTicketAbi);
 
 export async function switchOrAddChain(
   ethProvider: ethers.JsonRpcApiProvider,
@@ -131,7 +128,10 @@ export const createFlight = async ({
         alert("Flight not found!");
       }
     }
-    const parsedError = parseContractError(error, flightTicketAbiInterface);
+    const parsedError = parseContractError(
+      error,
+      FlightTicket__factory.createInterface()
+    );
     console.error("Error saving cid:", error);
     return `${failedKey}${parsedError?.name ?? error?.message}`;
   }

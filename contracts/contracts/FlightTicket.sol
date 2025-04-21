@@ -28,6 +28,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__TicketNotExpired();
     error FlightTicket__CanOnlyRefundPayer();
     error FlightTicket__InvalidJsonProof();
+    error FlightTicket__DateisLessThanCurrentTime();
 
     uint256 public constant FIAT_priceDecimals = 10 ** 2;
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
@@ -338,6 +339,10 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         uint256 _amountInUsd
     ) external onlyOwner {
         uint256 flightId = generateUniqueId();
+
+        if (_date < block.timestamp) {
+            revert FlightTicket__DateisLessThanCurrentTime();
+        }
 
         Flight memory newFlight = Flight({
             id: flightId,

@@ -1,12 +1,9 @@
-import hre, { ethers } from "hardhat";
+import hre from "hardhat";
 import { verify } from "../utils/verify";
 import dotenv from "dotenv";
 import { network } from "hardhat";
-import { NamedArtifactContractDeploymentFuture } from "@nomicfoundation/ignition-core";
 import { cleanDeployments } from "../utils/clean";
 import { updateEnv } from "./update.env";
-import { copyABI } from "./copy.abi";
-import { localHardhat } from "../utils/localhardhat.chainid";
 import FlightModule from "../ignition/modules/FlightModule";
 import codeTypeChainFolder from "./copy.folder";
 
@@ -30,7 +27,6 @@ async function main() {
     "frontend",
     "VITE_FLIGHT_TICKET_CONTRACT_ADDRESS"
   );
-  copyABI("FlightTicket", "frontend/src/assets/json", "flightTicket");
   codeTypeChainFolder("frontend/src/typechain-types");
 }
 
