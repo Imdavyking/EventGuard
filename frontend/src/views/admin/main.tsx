@@ -102,7 +102,8 @@ const AdminDashboard = () => {
         </div>
         <button
           type="submit"
-          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
+          className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 cursor-pointer"
+          disabled={isLoading}
         >
           {isLoading ? (
             <FaSpinner className="w-5 h-5 animate-spin" />

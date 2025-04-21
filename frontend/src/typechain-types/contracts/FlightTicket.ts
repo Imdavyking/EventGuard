@@ -124,7 +124,7 @@ export interface FlightTicketInterface extends Interface {
       | "refundTicket"
       | "renounceOwnership"
       | "tickets"
-      | "tokenToPythPriceId"
+      | "tokenToFeedId"
       | "transferOwnership"
       | "withdraw"
   ): FunctionFragment;
@@ -172,7 +172,7 @@ export interface FlightTicketInterface extends Interface {
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "payForFlight",
-    values: [BigNumberish, AddressLike, BigNumberish]
+    values: [BigNumberish, AddressLike]
   ): string;
   encodeFunctionData(
     functionFragment: "refundTicket",
@@ -187,7 +187,7 @@ export interface FlightTicketInterface extends Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "tokenToPythPriceId",
+    functionFragment: "tokenToFeedId",
     values: [AddressLike]
   ): string;
   encodeFunctionData(
@@ -243,7 +243,7 @@ export interface FlightTicketInterface extends Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "tickets", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "tokenToPythPriceId",
+    functionFragment: "tokenToFeedId",
     data: BytesLike
   ): Result;
   decodeFunctionResult(
@@ -461,7 +461,7 @@ export interface FlightTicket extends BaseContract {
   owner: TypedContractMethod<[], [string], "view">;
 
   payForFlight: TypedContractMethod<
-    [flightId: BigNumberish, token: AddressLike, amountInUsd: BigNumberish],
+    [flightId: BigNumberish, token: AddressLike],
     [void],
     "payable"
   >;
@@ -504,11 +504,7 @@ export interface FlightTicket extends BaseContract {
     "view"
   >;
 
-  tokenToPythPriceId: TypedContractMethod<
-    [arg0: AddressLike],
-    [string],
-    "view"
-  >;
+  tokenToFeedId: TypedContractMethod<[arg0: AddressLike], [string], "view">;
 
   transferOwnership: TypedContractMethod<
     [newOwner: AddressLike],
@@ -590,7 +586,7 @@ export interface FlightTicket extends BaseContract {
   getFunction(
     nameOrSignature: "payForFlight"
   ): TypedContractMethod<
-    [flightId: BigNumberish, token: AddressLike, amountInUsd: BigNumberish],
+    [flightId: BigNumberish, token: AddressLike],
     [void],
     "payable"
   >;
@@ -636,7 +632,7 @@ export interface FlightTicket extends BaseContract {
     "view"
   >;
   getFunction(
-    nameOrSignature: "tokenToPythPriceId"
+    nameOrSignature: "tokenToFeedId"
   ): TypedContractMethod<[arg0: AddressLike], [string], "view">;
   getFunction(
     nameOrSignature: "transferOwnership"

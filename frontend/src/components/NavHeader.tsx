@@ -30,7 +30,7 @@ const NavHeader = () => {
           to="/flights"
           className="text-lg text-gray-700 hover:text-blue-600"
         >
-          Flight
+          Flights
         </Link>
         <Link to="/admin" className="text-lg text-gray-700 hover:text-blue-600">
           Admin

@@ -35,7 +35,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     address public constant NATIVE_TOKEN =
         address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
 
-    mapping(address => bytes21) public tokenToPythPriceId;
+    mapping(address => bytes21) public tokenToFeedId;
     mapping(uint256 => Ticket) public tickets;
     mapping(uint256 => Flight) public flights;
 
@@ -107,7 +107,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     constructor() {
         randomV2 = ContractRegistry.getRandomNumberV2();
         ftsoV2 = ContractRegistry.getTestFtsoV2();
-        tokenToPythPriceId[NATIVE_TOKEN] = FLRUSD;
+        tokenToFeedId[NATIVE_TOKEN] = FLRUSD;
     }
 
     function isJsonApiProofValid(
@@ -197,10 +197,13 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     function payForFlight(
         uint256 flightId,
-        address token,
-        uint256 amountInUsd
+        address token
     ) public payable nonReentrant {
-        uint256 amountToSend = getUsdToTokenPrice(token, amountInUsd);
+        Flight memory flight = flights[flightId];
+        if (flight.id == 0) {
+            revert FlightTicket__FlightNotFound();
+        }
+        uint256 amountToSend = getUsdToTokenPrice(token, flight.amountInUsd);
         uint256 minTokenAmount = (amountToSend *
             (10000 - SLIPPAGE_TOLERANCE_BPS)) / 10000;
         uint256 maxTokenAmount = (amountToSend *
@@ -226,7 +229,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             date: flights[flightId].date,
             weatherCondition: "",
             refundStatus: "",
-            amountInUsd: amountInUsd,
+            amountInUsd: flight.amountInUsd,
             token: token,
             payer: msg.sender,
             isWithdrawn: false
@@ -242,7 +245,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             flights[flightId].date,
             "",
             "",
-            amountInUsd,
+            flight.amountInUsd,
             msg.sender
         );
     }
@@ -304,7 +307,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         address token,
         uint256 amountInUsd
     ) public view returns (uint256) {
-        bytes21 priceId = tokenToPythPriceId[token];
+        bytes21 priceId = tokenToFeedId[token];
         if (priceId == bytes21(0)) {
             revert FlightTicket__TokenNotSupported();
         }

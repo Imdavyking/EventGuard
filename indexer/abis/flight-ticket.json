@@ -452,11 +452,6 @@
         "internalType": "address",
         "name": "token",
         "type": "address"
-      },
-      {
-        "internalType": "uint256",
-        "name": "amountInUsd",
-        "type": "uint256"
       }
     ],
     "name": "payForFlight",
@@ -629,7 +624,7 @@
         "type": "address"
       }
     ],
-    "name": "tokenToPythPriceId",
+    "name": "tokenToFeedId",
     "outputs": [
       {
         "internalType": "bytes21",
