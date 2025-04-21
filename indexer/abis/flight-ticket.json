@@ -90,12 +90,6 @@
         "internalType": "uint256",
         "name": "amountPaid",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "address",
-        "name": "payer",
-        "type": "address"
       }
     ],
     "name": "FlightCreated",

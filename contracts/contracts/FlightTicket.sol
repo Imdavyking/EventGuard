@@ -77,8 +77,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         uint256 id,
         string route,
         uint256 date,
-        uint256 amountPaid,
-        address payer
+        uint256 amountPaid
     );
 
     // Event to emit flight ticket purchase
@@ -358,7 +357,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         flights[flightId] = newFlight;
 
         // Emit event
-        emit FlightCreated(flightId, _route, _date, _amountInUsd, msg.sender);
+        emit FlightCreated(flightId, _route, _date, _amountInUsd);
     }
 
     /**

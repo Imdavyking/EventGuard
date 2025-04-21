@@ -4,7 +4,6 @@ type FlightCreated @entity {
   route: String!
   date: BigInt!
   amountPaid: BigInt!
-  payer: String!
 }
 
 type FlightTicketPurchased @entity {

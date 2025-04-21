@@ -21,7 +21,6 @@ export async function handleFlightCreatedLog(log: FlightCreatedLog) {
     route: log.args.route,
     date: log.args.date.toBigInt(),
     amountPaid: log.args.amountPaid.toBigInt(),
-    payer: log.args.payer,
   });
 
   await flightCreated.save();

@@ -258,22 +258,19 @@ export namespace FlightCreatedEvent {
     id: BigNumberish,
     route: string,
     date: BigNumberish,
-    amountPaid: BigNumberish,
-    payer: AddressLike
+    amountPaid: BigNumberish
   ];
   export type OutputTuple = [
     id: bigint,
     route: string,
     date: bigint,
-    amountPaid: bigint,
-    payer: string
+    amountPaid: bigint
   ];
   export interface OutputObject {
     id: bigint;
     route: string;
     date: bigint;
     amountPaid: bigint;
-    payer: string;
   }
   export type Event = TypedContractEvent<InputTuple, OutputTuple, OutputObject>;
   export type Filter = TypedDeferredTopicFilter<Event>;
@@ -671,7 +668,7 @@ export interface FlightTicket extends BaseContract {
   >;
 
   filters: {
-    "FlightCreated(uint256,string,uint256,uint256,address)": TypedContractEvent<
+    "FlightCreated(uint256,string,uint256,uint256)": TypedContractEvent<
       FlightCreatedEvent.InputTuple,
       FlightCreatedEvent.OutputTuple,
       FlightCreatedEvent.OutputObject
