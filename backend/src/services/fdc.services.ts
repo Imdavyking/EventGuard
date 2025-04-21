@@ -1,10 +1,12 @@
 import { BrowserProvider, ethers, ContractTransactionResponse } from "ethers";
 import {
   Helpers,
+  Helpers__factory,
   IFdcRequestFeeConfigurations,
   IFlareSystemsManager,
   IJsonApiVerification__factory,
   IRelay,
+  IRelay__factory,
 } from "../typechain-types";
 
 const {
@@ -42,7 +44,7 @@ class Base {
   async getRelay() {
     const helpers: Helpers = await this.getHelpers();
     const relayAddress: string = await helpers.getRelay();
-    return await ethers.getContractAt("IRelay", relayAddress);
+    return IRelay__factory.connect(relayAddress);
   }
   async retrieveDataAndProofBase(
     url: string,

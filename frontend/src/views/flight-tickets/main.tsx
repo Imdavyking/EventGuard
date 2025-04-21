@@ -1,12 +1,18 @@
-import { gql, useQuery } from "@apollo/client";
-import { useMemo } from "react";
+import { ApolloError, gql, useQuery } from "@apollo/client";
+import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ellipsify } from "../../utils/ellipsify";
 import { FaSpinner } from "react-icons/fa";
+import { getSigner } from "../../utils/blockchain.services";
 
 const GET_FLIGHTS = gql`
-  query MyQuery($first: Int!, $offset: Int!) {
-    flightTicketPurchaseds(orderBy: DATE_DESC, first: $first, offset: $offset) {
+  query MyQuery($first: Int!, $offset: Int!, $equalTo: String!) {
+    flightTicketPurchaseds(
+      orderBy: DATE_DESC
+      first: $first
+      offset: $offset
+      filter: { payer: { equalTo: $equalTo } }
+    ) {
       nodes {
         flightId
         ticketId
@@ -23,15 +29,29 @@ const GET_FLIGHTS = gql`
 
 const FlightsTickets = () => {
   const [searchParams, setSearchParams] = useSearchParams();
+  const [loading, setQueryLoading] = useState(false);
+  const [error, setQueryError] = useState<ApolloError | undefined>();
+  const [data, setQueryData] = useState<any>();
   const page = parseInt(searchParams.get("page") ?? "1");
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
 
-  const { loading, error, data } = useQuery(GET_FLIGHTS, {
-    fetchPolicy: "cache-and-network",
-    variables: { first: pageSize, offset },
-    pollInterval: 5000,
-  });
+  useEffect(() => {
+    const getAddress = async () => {
+      const signer = await getSigner();
+      const userAddress = await signer.getAddress();
+      const { loading, error, data } = useQuery(GET_FLIGHTS, {
+        fetchPolicy: "cache-and-network",
+        variables: { first: pageSize, offset, equalTo: userAddress },
+        pollInterval: 5000,
+      });
+      setQueryData(data);
+      setQueryError(error);
+      setQueryLoading(loading);
+    };
+
+    getAddress();
+  }, [loading, error, data]);
 
   const flights = useMemo(
     () => data?.flightTicketPurchaseds?.nodes || [],

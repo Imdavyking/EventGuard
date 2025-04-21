@@ -14,14 +14,14 @@ export async function switchOrAddChain(
     const targetChainId = Number(switchChainId);
     const chainIdHex = `0x${targetChainId.toString(16)}`;
 
-    console.log(
-      `Current chainId: ${currentChainId}, Switch chainId: ${targetChainId}`
-    );
-
     if (currentChainId === targetChainId) {
       console.log(`Already connected to ${targetChainId}`);
       return;
     }
+
+    console.log(
+      `Current chainId: ${currentChainId}, Switch chainId: ${targetChainId}`
+    );
 
     try {
       await ethProvider.provider.send("wallet_switchEthereumChain", [
@@ -59,33 +59,22 @@ export async function switchOrAddChain(
   }
 }
 
-function parseContractError(error: any, contractInterface: ethers.Interface) {
-  if (!error?.data || !contractInterface) return null;
-
-  try {
-    const errorFragment = contractInterface.fragments.find(
-      (fragment) =>
-        fragment.type === "error" &&
-        error.data.startsWith((fragment as any).selector)
-    );
-
-    if (errorFragment && "name" in errorFragment && errorFragment.name) {
-      return errorFragment.name;
-    }
-
-    return errorFragment
-      ? contractInterface.parseError(error.data)?.name
-      : null;
-  } catch (err) {
-    console.error("Error parsing contract error:", err);
-    return null;
-  }
-}
-
 export const getSigner = async () => {
   const provider = new BrowserProvider(window.ethereum);
   await provider.send("eth_requestAccounts", []);
   return provider.getSigner();
+};
+
+export const getBlockNumber = async () => {
+  try {
+    const signer = await getSigner();
+    await switchOrAddChain(signer.provider, flareTestnet.id);
+    const blockNumber = await signer.provider.getBlockNumber();
+    return blockNumber;
+  } catch (error) {
+    console.error("Error getting block number:", error);
+    throw error;
+  }
 };
 
 export const getFlightTicketContract = async () => {
@@ -125,11 +114,13 @@ export const createFlight = async ({
     const receipt = await transaction.wait(1);
     return `Created Flight with: ${receipt!.hash}`;
   } catch (error: any) {
-    const parsedError = parseContractError(
-      error,
-      FlightTicket__factory.createInterface()
-    );
-    return `${FAILED_KEY}${parsedError ?? error?.message}`;
+    if ("data" in error && error.data) {
+      const errorMsg = FlightTicket__factory.createInterface().parseError(
+        error.data
+      )?.name;
+      return `${FAILED_KEY}${errorMsg ?? error?.message}`;
+    }
+    return `${FAILED_KEY}${error?.message}`;
   }
 };
 export const payForFlight = async ({
@@ -152,11 +143,14 @@ export const payForFlight = async ({
     const receipt = await transaction.wait(1);
     return `Bought Ticket with: ${receipt!.hash}`;
   } catch (error: any) {
-    const parsedError = parseContractError(
-      error,
-      FlightTicket__factory.createInterface()
-    );
-    return `${FAILED_KEY}${parsedError ?? error?.message}`;
+    if ("data" in error && error.data) {
+      const errorMsg = FlightTicket__factory.createInterface().parseError(
+        error.data
+      )?.name;
+      return `${FAILED_KEY}${errorMsg ?? error?.message}`;
+    }
+
+    return `${FAILED_KEY}${error?.message}`;
   }
 };
 
