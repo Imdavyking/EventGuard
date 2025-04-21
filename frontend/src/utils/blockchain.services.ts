@@ -123,20 +123,39 @@ export const createFlight = async ({
     );
 
     const receipt = await transaction.wait(1);
-    return `Uploaded dataset with tx hash: ${receipt!.hash}`;
+    return `Created Flight with: ${receipt!.hash}`;
   } catch (error: any) {
-    if (error.code === "CALL_EXCEPTION") {
-      console.log(error.errorName);
-      if (error.errorName === "FlightTicket__FlightNotFound") {
-        // Now handle that specific custom error cleanly
-        alert("Flight not found!");
-      }
-    }
     const parsedError = parseContractError(
       error,
       FlightTicket__factory.createInterface()
     );
-    console.error("Error saving cid:", error);
+    return `${FAILED_KEY}${parsedError ?? error?.message}`;
+  }
+};
+export const payForFlight = async ({
+  flightId,
+  token,
+}: {
+  token: string;
+  flightId: string;
+}) => {
+  try {
+    const flightTicket = await getFlightTicketContract();
+    const flightDetails = await flightTicket.flights(flightId);
+    const usdPrice = flightDetails[3];
+    const tokenPrice = await flightTicket.getUsdToTokenPrice(token, usdPrice);
+
+    const transaction = await flightTicket.payForFlight(flightId, token, {
+      value: tokenPrice,
+    });
+
+    const receipt = await transaction.wait(1);
+    return `Bought Ticket with: ${receipt!.hash}`;
+  } catch (error: any) {
+    const parsedError = parseContractError(
+      error,
+      FlightTicket__factory.createInterface()
+    );
     return `${FAILED_KEY}${parsedError ?? error?.message}`;
   }
 };

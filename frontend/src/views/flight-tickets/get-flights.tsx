@@ -1,8 +1,14 @@
 import { gql, useQuery } from "@apollo/client";
 import { useSearchParams } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
+import {
+  payForFlight,
+  rethrowFailedResponse,
+} from "../../utils/blockchain.services";
+import { toast } from "react-toastify";
 
+// GraphQL Query
 const GET_FLIGHTS = gql`
   query MyQuery($first: Int!, $offset: Int!) {
     flightCreateds(orderBy: DATE_DESC, first: $first, offset: $offset) {
@@ -18,6 +24,7 @@ const GET_FLIGHTS = gql`
 `;
 
 const GetFlights = () => {
+  const [isPaying, setIsPaying] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") ?? "1");
   const pageSize = 10;
@@ -29,10 +36,13 @@ const GetFlights = () => {
     pollInterval: 5000,
   });
 
-  if (error) {
-    console.error("Error fetching flights:", error);
-    return <div>{error.message}</div>;
-  }
+  const [selectedFlight, setSelectedFlight] = useState<string | null>(null);
+  const [selectedCurrency, setSelectedCurrency] = useState<{
+    [key: string]: {
+      token: string;
+      name: string;
+    };
+  }>({});
 
   const totalPages = Math.ceil(
     (data?.flightCreateds?.totalCount || 0) / pageSize
@@ -57,6 +67,46 @@ const GetFlights = () => {
     return flightDate > Date.now();
   };
 
+  const currencies = [
+    {
+      name: "USDT",
+      token: "0x55d398326f99059ff775485246999027b3197955",
+    },
+    {
+      name: "FLR",
+      token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+    },
+  ];
+
+  const handleCurrencySelect = async (
+    flightId: string,
+    currency: {
+      token: string;
+      name: string;
+    }
+  ) => {
+    setSelectedCurrency((prev) => ({ ...prev, [flightId]: currency }));
+    try {
+      setIsPaying(true);
+      const response = await payForFlight({
+        flightId: flightId,
+        token: currency.token,
+      });
+      rethrowFailedResponse(response);
+      toast.success(
+        `Successfully purchased ticket for flight ${flightId} with ${currency.name}`
+      );
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An error occurred while processing your request.");
+      }
+    } finally {
+      setIsPaying(false);
+    }
+  };
+
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
       {loading ? (
@@ -70,41 +120,81 @@ const GetFlights = () => {
           </h2>
 
           <div className="space-y-5">
-            {flights.map((flight: any) => (
-              <div
-                key={flight.flightId}
-                className="border rounded-xl bg-white shadow-md p-6 space-y-2"
-              >
-                <h4 className="text-xl font-semibold text-blue-600 truncate">
-                  ✈️ {flight.route}
-                </h4>
+            {flights.map((flight: any) => {
+              const isSelected = selectedFlight === flight.flightId;
 
-                <p className="text-sm text-gray-600">
-                  🗓️ Date:{" "}
-                  <span className="font-medium">{formatDate(flight.date)}</span>
-                </p>
+              return (
+                <div
+                  key={flight.flightId}
+                  className="border rounded-xl bg-white shadow-md p-6 space-y-4 flex flex-col sm:flex-row sm:items-start sm:justify-between"
+                >
+                  <div className="space-y-2 flex-1">
+                    <h4 className="text-xl font-semibold text-blue-600 truncate">
+                      ✈️ {flight.route}
+                    </h4>
 
-                <p className="text-sm text-gray-600">
-                  💰 Price Paid:{" "}
-                  <span className="font-medium">
-                    {flight.amountPaid / 100} USDT
-                  </span>
-                </p>
+                    <p className="text-sm text-gray-600">
+                      🗓️ Date:{" "}
+                      <span className="font-medium">
+                        {formatDate(flight.date)}
+                      </span>
+                    </p>
 
-                <div className="text-xs text-gray-500 break-all">
-                  <span className="font-medium">Flight ID:</span>{" "}
-                  {flight.flightId}
-                </div>
+                    <p className="text-sm text-gray-600">
+                      💰 Price Paid:{" "}
+                      <span className="font-medium">
+                        {flight.amountPaid / 100} USDT
+                      </span>
+                    </p>
 
-                {isFutureFlight(flight.date) && (
-                  <div className="pt-4">
-                    <button className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition cursor-pointer">
-                      Purchase Ticket
-                    </button>
+                    <div className="text-xs text-gray-500 break-all">
+                      <span className="font-medium">Flight ID:</span>{" "}
+                      {flight.flightId}
+                    </div>
                   </div>
-                )}
-              </div>
-            ))}
+
+                  {isFutureFlight(flight.date) && (
+                    <div className="pt-4 sm:pt-0 sm:pl-6 flex-shrink-0 space-y-4">
+                      {!isSelected ? (
+                        <button
+                          onClick={() => setSelectedFlight(flight.flightId)}
+                          className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition cursor-pointer w-full sm:w-auto"
+                        >
+                          Purchase Ticket
+                        </button>
+                      ) : (
+                        <div className="space-y-3">
+                          <label className="block text-sm text-gray-700 font-medium">
+                            Select Currency:
+                          </label>
+                          <div className="flex gap-4">
+                            {currencies.map((cur) => (
+                              <button
+                                key={cur.token}
+                                onClick={() =>
+                                  handleCurrencySelect(flight.flightId, cur)
+                                }
+                                className={`cursor-pointer px-4 py-2 rounded-md text-sm font-medium border hover:bg-blue-100 transition ${
+                                  selectedCurrency[flight.flightId] === cur
+                                    ? "bg-blue-600 text-white"
+                                    : "bg-white text-gray-700"
+                                }`}
+                              >
+                                {isPaying ? (
+                                  <FaSpinner className="w-4 h-4 animate-spin" />
+                                ) : (
+                                  cur.name
+                                )}
+                              </button>
+                            ))}
+                          </div>
+                        </div>
+                      )}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
 
           <div className="flex justify-center space-x-4 mt-10">
