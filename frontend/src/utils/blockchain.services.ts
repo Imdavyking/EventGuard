@@ -109,31 +109,22 @@ export const getFlightTicketContract = async () => {
 };
 
 export const createFlight = async ({
-  flightNumber,
   route,
   date,
-  weatherCondition,
   amountInUsd,
-  refundStatus,
 }: {
-  flightNumber: string;
   route: string;
   date: number;
-  weatherCondition: string;
   amountInUsd: number;
-  refundStatus: string;
 }) => {
   try {
     const flightTicket =
       (await getFlightTicketContract()) as unknown as FlightTicket;
 
     const transaction = await flightTicket.createFlight(
-      flightNumber,
       route,
       date,
-      weatherCondition,
-      amountInUsd,
-      refundStatus
+      amountInUsd
     );
 
     const receipt = await transaction.wait(1);
