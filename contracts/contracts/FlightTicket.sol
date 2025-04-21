@@ -41,7 +41,6 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     // Struct to store flight details
     struct Flight {
         uint256 id;
-        string flightNumber;
         string route;
         uint256 date;
         uint256 amountInUsd;
@@ -51,7 +50,6 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     struct Ticket {
         uint256 ticketId;
         uint256 flightId;
-        string flightNumber;
         string route;
         uint256 date;
         string weatherCondition;
@@ -76,11 +74,8 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     // Event to emit flight creation
     event FlightCreated(
         uint256 id,
-        string flightNumber,
         string route,
         uint256 date,
-        string weatherCondition,
-        string refundStatus,
         uint256 amountPaid,
         address payer
     );
@@ -88,7 +83,6 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     // Event to emit flight ticket purchase
     event FlightTicketPurchased(
         uint256 ticketId,
-        string flightNumber,
         string route,
         uint256 date,
         string weatherCondition,
@@ -100,7 +94,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     // Event to emit flight ticket withdrawal
     event FlightTicketWithdrawn(
         uint256 ticketId,
-        string flightNumber,
+        uint256 flightId,
         string route,
         uint256 date,
         string weatherCondition,
@@ -178,7 +172,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         // Emit an event for the refund (you need to define this event)
         emit FlightTicketWithdrawn(
             ticketId,
-            ticket.flightNumber,
+            ticket.flightId,
             ticket.route,
             ticket.date,
             dto.description,
@@ -227,7 +221,6 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         Ticket memory newTicket = Ticket({
             ticketId: ticketId,
             flightId: flightId,
-            flightNumber: flights[flightId].flightNumber,
             route: flights[flightId].route,
             date: flights[flightId].date,
             weatherCondition: "",
@@ -244,7 +237,6 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         // Emit the FlightTicketPurchased event (you need to define this event)
         emit FlightTicketPurchased(
             ticketId,
-            flights[flightId].flightNumber,
             flights[flightId].route,
             flights[flightId].date,
             "",
@@ -282,7 +274,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         // Emit an event for the withdrawal (you need to define this event)
         emit FlightTicketWithdrawn(
             _ticketId,
-            ticket.flightNumber,
+            ticket.flightId,
             ticket.route,
             ticket.date,
             ticket.weatherCondition,
@@ -341,18 +333,14 @@ contract FlightTicket is Ownable, ReentrancyGuard {
      * Accepts payment in ETH, USDT, BTC (ERC20 tokens can be added for these currencies).
      */
     function createFlight(
-        string memory _flightNumber,
         string memory _route,
         uint256 _date,
-        string memory _weatherCondition,
-        uint256 _amountInUsd,
-        string memory _refundStatus
+        uint256 _amountInUsd
     ) external onlyOwner {
         uint256 flightId = generateUniqueId();
 
         Flight memory newFlight = Flight({
             id: flightId,
-            flightNumber: _flightNumber,
             route: _route,
             date: _date,
             amountInUsd: _amountInUsd
@@ -362,16 +350,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         flights[flightId] = newFlight;
 
         // Emit event
-        emit FlightCreated(
-            flightId,
-            _flightNumber,
-            _route,
-            _date,
-            _weatherCondition,
-            _refundStatus,
-            _amountInUsd,
-            msg.sender
-        );
+        emit FlightCreated(flightId, _route, _date, _amountInUsd, msg.sender);
     }
 
     /**
@@ -383,19 +362,14 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         external
         view
         returns (
-            string memory flightNumber,
+            uint256 flightNumber,
             string memory route,
             uint256 date,
             uint256 amountPaid
         )
     {
         Flight memory flight = flights[_flightId];
-        return (
-            flight.flightNumber,
-            flight.route,
-            flight.date,
-            flight.amountInUsd
-        );
+        return (flight.id, flight.route, flight.date, flight.amountInUsd);
     }
 
     function abiSignatureHack(DataTransportObject calldata dto) public pure {}

@@ -8,11 +8,16 @@ import { updateEnv } from "./update.env";
 import { copyABI } from "./copy.abi";
 import { localHardhat } from "../utils/localhardhat.chainid";
 import FlightModule from "../ignition/modules/FlightModule";
+import codeTypeChainFolder from "./copy.folder";
 
 dotenv.config();
 
 async function main() {
   const chainId = network.config.chainId!;
+
+  codeTypeChainFolder("frontend/src/typechain-types");
+
+  return;
 
   cleanDeployments(chainId!);
 
@@ -24,8 +29,13 @@ async function main() {
 
   await verify(flightTicketAddress, []);
 
-  updateEnv(flightTicketAddress, "frontend", "VITE_CONTRACT_ADDRESS");
+  updateEnv(
+    flightTicketAddress,
+    "frontend",
+    "VITE_FLIGHT_TICKET_CONTRACT_ADDRESS"
+  );
   copyABI("FlightTicket", "frontend/src/assets/json", "flightTicket");
+  codeTypeChainFolder("frontend/src/typechain-types");
 }
 
 main().catch(console.error);
