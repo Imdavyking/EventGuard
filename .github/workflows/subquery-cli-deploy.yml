@@ -1,0 +1,46 @@
+name: "Deploy indexer to Subquery"
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+defaults:
+  run:
+    working-directory: ./indexer
+
+jobs:
+  deploy:
+    name: Deploy indexer to Subquery
+    runs-on: ubuntu-latest
+    env:
+      SUBQL_ACCESS_TOKEN: ${{ secrets.SUBQL_ACCESS_TOKEN }}
+      CHAIN_ID: ${{ vars.CHAIN_ID }}
+      CONTRACT_ADDRESS: ${{ vars.FLIGHT_TICKET_CONTRACT_ADDRESS }}
+      BLOCK_NUMBER: ${{ vars.BLOCK_NUMBER }}
+      RPC_URL: ${{ vars.RPC_URL }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+      - run: yarn
+      - name: Codegen
+        run: yarn codegen
+      - name: Version
+        run: npx subql --version
+      - name: repo
+        run: echo ${{github.repository}}
+      - name: Debug RPC_URL
+        run: echo $RPC_URL
+      - name: Set environment variable
+        run: echo "MY_URL=http://example.com" >> $GITHUB_ENV
+      - name: Display URL
+        run: echo $MY_URL
+      - name: Publish and Deploy
+        run: |
+          sh ../.github/workflows/scripts/publish-deploy.sh -o ${{github.repository}} -p ${{vars.PROJECT_NAME}} -e ${{vars.RPC_URL}}

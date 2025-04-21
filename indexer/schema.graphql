@@ -1,0 +1,31 @@
+type FlightCreated @entity {
+  id: ID!
+  flightId: BigInt!
+  route: String!
+  date: BigInt!
+  amountPaid: BigInt!
+  payer: String!
+}
+
+type FlightTicketPurchased @entity {
+  id: ID!
+  ticketId: BigInt!
+  route: String!
+  date: BigInt!
+  weatherCondition: String!
+  refundStatus: String!
+  amountPaid: BigInt!
+  payer: String!
+}
+
+type FlightTicketWithdrawn @entity {
+  id: ID!
+  ticketId: BigInt!
+  flightId: BigInt!
+  route: String!
+  date: BigInt!
+  weatherCondition: String!
+  refundStatus: String!
+  amountPaid: BigInt!
+  recipient: String!
+}
