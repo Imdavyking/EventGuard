@@ -63,7 +63,7 @@ const project: EthereumProject = {
             handler: "handleFlightCreatedLog",
             kind: EthereumHandlerKind.Event,
             filter: {
-              topics: ["FlightCreated(uint256,string,uint256,uint256,address)"],
+              topics: ["FlightCreated(uint256,string,uint256,uint256)"],
             },
           },
           {
