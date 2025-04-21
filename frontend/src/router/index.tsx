@@ -2,9 +2,7 @@ import { useRoutes } from "react-router-dom";
 import Home from "../views/home/main";
 import HowItWorks from "../views/how-it-works/main";
 import NotFound from "../views/not-found/main";
-import Events from "../views/events/main";
-import MyTickets from "../views/tickets/main";
-import RefundStatus from "../views/refund-status/main";
+import FlightTickets from "../views/flight-tickets/main";
 import AdminDashboard from "../views/admin/main";
 function Router() {
   const routes = [
@@ -17,17 +15,10 @@ function Router() {
       element: <HowItWorks />,
     },
     {
-      path: "/events",
-      element: <Events />,
+      path: "/flight-tickets",
+      element: <FlightTickets />,
     },
-    {
-      path: "/my-tickets",
-      element: <MyTickets />,
-    },
-    {
-      path: "/refund-status",
-      element: <RefundStatus />,
-    },
+
     {
       path: "/admin",
       element: <AdminDashboard />,
