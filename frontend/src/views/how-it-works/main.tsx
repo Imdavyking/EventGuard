@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 
 const HowItWorks = () => {
   return (
-    <div className="min-h-screen bg-white text-gray-800 px-4 py-16">
+    <div className="min-h-screen bg-white text-gray-800 px-4 py-4">
       <main className="max-w-4xl mx-auto">
         <h2 className="text-4xl sm:text-5xl font-extrabold mb-10 text-blue-700">
           How EventGuard Works
