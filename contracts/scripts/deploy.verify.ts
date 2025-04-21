@@ -23,6 +23,9 @@ async function main() {
   console.log("FlightTicket deployed to:", flightTicketAddress);
 
   await verify(flightTicketAddress, []);
+
+  updateEnv(flightTicketAddress, "frontend", "VITE_CONTRACT_ADDRESS");
+  copyABI("FlightTicket", "frontend/src/assets/json", "flightTicket");
 }
 
 main().catch(console.error);
