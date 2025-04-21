@@ -2,3 +2,4 @@ export const WALLET_CONNECT_PROJECT_ID = import.meta.env
   .VITE_WALLET_CONNECT_PROJECT_ID;
 export const FLIGHT_TICKET_CONTRACT_ADDRESS = import.meta.env
   .VITE_FLIGHT_TICKET_CONTRACT_ADDRESS;
+export const FAILED_KEY = "FAILED:";

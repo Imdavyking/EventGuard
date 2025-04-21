@@ -1,9 +1,7 @@
 import { BrowserProvider, ethers } from "ethers";
 import { flareTestnet } from "viem/chains";
-import { FLIGHT_TICKET_CONTRACT_ADDRESS } from "./constants";
+import { FAILED_KEY, FLIGHT_TICKET_CONTRACT_ADDRESS } from "./constants";
 import { FlightTicket__factory } from "../typechain-types";
-
-const failedKey = "FAILED-";
 
 export async function switchOrAddChain(
   ethProvider: ethers.JsonRpcApiProvider,
@@ -71,7 +69,13 @@ function parseContractError(error: any, contractInterface: ethers.Interface) {
         error.data.startsWith((fragment as any).selector)
     );
 
-    return errorFragment ? contractInterface.parseError(error.data) : null;
+    if (errorFragment && "name" in errorFragment && errorFragment.name) {
+      return errorFragment.name;
+    }
+
+    return errorFragment
+      ? contractInterface.parseError(error.data)?.name
+      : null;
   } catch (err) {
     console.error("Error parsing contract error:", err);
     return null;
@@ -133,6 +137,13 @@ export const createFlight = async ({
       FlightTicket__factory.createInterface()
     );
     console.error("Error saving cid:", error);
-    return `${failedKey}${parsedError?.name ?? error?.message}`;
+    return `${FAILED_KEY}${parsedError ?? error?.message}`;
   }
+};
+
+export const rethrowFailedResponse = (response: string) => {
+  if (response.includes(FAILED_KEY)) {
+    throw new Error(response);
+  }
+  return response;
 };

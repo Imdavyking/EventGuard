@@ -1,5 +1,10 @@
 import { useState, ChangeEvent, FormEvent } from "react";
-import { createFlight } from "../../utils/blockchain.services";
+import {
+  createFlight,
+  rethrowFailedResponse,
+} from "../../utils/blockchain.services";
+import { toast } from "react-toastify";
+import { FaSpinner } from "react-icons/fa";
 
 // Define types for event form and event item
 type EventForm = {
@@ -22,16 +27,35 @@ const AdminDashboard = () => {
     location: "",
     ticketPrice: "",
   });
+  const [isLoading, setIsLoading] = useState(false);
 
-  const handleCreateEvent = (e: FormEvent<HTMLFormElement>) => {
+  const handleCreateEvent = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const newEvent: EventItem = {
-      ...form,
-      id: events.length + 1,
-      status: "Scheduled",
-    };
-    setEvents([...events, newEvent]);
-    setForm({ title: "", date: "", location: "", ticketPrice: "" });
+    setIsLoading(true);
+    try {
+      const response = await createFlight({
+        route: form.location,
+        date: new Date(form.date).getTime() / 1000,
+        amountInUsd: +form.ticketPrice * 100,
+      });
+      rethrowFailedResponse(response);
+      toast.success("Event created successfully!");
+      const newEvent: EventItem = {
+        ...form,
+        id: events.length + 1,
+        status: "Scheduled",
+      };
+      setEvents([...events, newEvent]);
+      setForm({ title: "", date: "", location: "", ticketPrice: "" });
+    } catch (error) {
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("Failed to create event");
+      }
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleInputChange = (
@@ -96,16 +120,12 @@ const AdminDashboard = () => {
         <button
           type="submit"
           className="mt-4 bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700"
-          onClick={async (e) => {
-            e.preventDefault();
-            await createFlight({
-              route: form.location,
-              date: new Date(form.date).getTime(),
-              amountInUsd: +form.ticketPrice * 100,
-            });
-          }}
         >
-          Create Event
+          {isLoading ? (
+            <FaSpinner className="w-5 h-5 animate-spin" />
+          ) : (
+            "Create Event"
+          )}
         </button>
       </form>
 
