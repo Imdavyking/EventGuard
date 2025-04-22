@@ -80,7 +80,7 @@ const project: EthereumProject = {
             kind: EthereumHandlerKind.Event,
             filter: {
               topics: [
-                "FlightTicketWithdrawn(uint256,uint256,string,uint256,string,string,uint256,address)",
+                "FlightTicketWithdrawn(uint256,uint256,string,uint256,uint256,string,string,uint256,address,address)",
               ],
             },
           },
