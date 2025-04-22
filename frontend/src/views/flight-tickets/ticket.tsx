@@ -101,9 +101,15 @@ const Ticket = ({ ticket }: any) => {
                 : "bg-yellow-500 cursor-pointer"
             }`}
           >
-            {status.status === "On Time"
-              ? "Flight On Time"
-              : "Flight Canceled (Refund)"}
+            {isGettingProof ? (
+              <div className="flex justify-center">
+                <FaSpinner className="w-6 h-6 text-blue-500 animate-spin self-center" />
+              </div>
+            ) : status.status === "On Time" ? (
+              "Flight On Time"
+            ) : (
+              "Flight Canceled (Refund)"
+            )}
           </button>
         </>
       )}
