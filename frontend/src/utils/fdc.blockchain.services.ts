@@ -1,4 +1,4 @@
-// import { ethers, ContractTransactionResponse } from "ethers";
+import { ethers, ContractTransactionResponse } from "ethers";
 // import {
 //   Helpers,
 //   Helpers__factory,
@@ -10,10 +10,10 @@
 //   IRelay,
 //   IRelay__factory,
 // } from "../typechain-types";
-// import { getSigner } from "./blockchain.services";
+import { getSigner } from "./blockchain.services";
 // import { IFlareSystemsManager__factory } from "../typechain-types/factories/@flarenetwork/flare-periphery-contracts/coston";
-// import { flareTestnet } from "wagmi/chains";
-// import { COSTON2_DA_LAYER_URL, FDC_HELPER_ADDRESS } from "./constants";
+import { flareTestnet } from "wagmi/chains";
+import { COSTON2_DA_LAYER_URL, FDC_HELPER_ADDRESS } from "./constants";
 
 // export class FDCService {
 //   sleep(ms: number) {

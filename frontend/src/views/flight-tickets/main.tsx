@@ -112,7 +112,7 @@ const FlightsTickets = () => {
                     : "text-yellow-500"
                 }`}
               >
-                Status: {flight.refundStatus || "Awaiting Weather Check"}
+                Status: {flight.refundStatus || "Awaiting Flight Check"}
               </p>
               <button
                 disabled
@@ -124,7 +124,7 @@ const FlightsTickets = () => {
               >
                 {flight.refundStatus === "Refunded"
                   ? "Refund Sent"
-                  : "Pending Weather Check"}
+                  : "Pending Flight Check"}
               </button>
             </div>
           ))}
