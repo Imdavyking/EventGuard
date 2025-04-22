@@ -54,6 +54,8 @@ const Ticket = ({ ticket }: any) => {
       });
 
       rethrowFailedResponse(refundResponse);
+
+      toast.success("Refund successful!");
     } catch (error) {
       if (error instanceof Error) {
         toast.error(error.message);
