@@ -5,7 +5,6 @@ import {
 } from "../../utils/blockchain.services";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
-import GetFlights from "../flight-tickets/get-flights";
 
 // Define types for event form and event item
 type EventForm = {

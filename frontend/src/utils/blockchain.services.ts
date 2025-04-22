@@ -1,7 +1,9 @@
 import { BrowserProvider, ethers } from "ethers";
 import { flareTestnet } from "viem/chains";
 import { FAILED_KEY, FLIGHT_TICKET_CONTRACT_ADDRESS } from "./constants";
-import { FlightTicket__factory } from "../typechain-types";
+import flightTicketAbi from "../assets/json/flight-ticket.json";
+
+const flightAbiInterFace = new ethers.Interface(flightTicketAbi);
 
 export async function switchOrAddChain(
   ethProvider: ethers.JsonRpcApiProvider,
@@ -77,6 +79,23 @@ export const getBlockNumber = async () => {
   }
 };
 
+function parseContractError(error: any, contractInterface: ethers.Interface) {
+  if (!error?.data || !contractInterface) return null;
+
+  try {
+    const errorFragment = contractInterface.fragments.find(
+      (fragment) =>
+        fragment.type === "error" &&
+        error.data.startsWith((fragment as any).selector)
+    );
+
+    return errorFragment ? contractInterface.parseError(error.data) : null;
+  } catch (err) {
+    console.error("Error parsing contract error:", err);
+    return null;
+  }
+}
+
 export const getFlightTicketContract = async () => {
   if (!window.ethereum) {
     console.log(
@@ -91,7 +110,11 @@ export const getFlightTicketContract = async () => {
 
   await switchOrAddChain(signer.provider, flareTestnet.id);
 
-  return FlightTicket__factory.connect(FLIGHT_TICKET_CONTRACT_ADDRESS, signer);
+  return new ethers.Contract(
+    FLIGHT_TICKET_CONTRACT_ADDRESS,
+    flightAbiInterFace,
+    signer
+  );
 };
 
 export const createFlight = async ({
@@ -114,13 +137,9 @@ export const createFlight = async ({
     const receipt = await transaction.wait(1);
     return `Created Flight with: ${receipt!.hash}`;
   } catch (error: any) {
-    if ("data" in error && error.data) {
-      const errorMsg = FlightTicket__factory.createInterface().parseError(
-        error.data
-      )?.name;
-      return `${FAILED_KEY}${errorMsg ?? error?.message}`;
-    }
-    return `${FAILED_KEY}${error?.message}`;
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error("Error saving cid:", error);
+    return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
   }
 };
 export const payForFlight = async ({
@@ -143,14 +162,9 @@ export const payForFlight = async ({
     const receipt = await transaction.wait(1);
     return `Bought Ticket with: ${receipt!.hash}`;
   } catch (error: any) {
-    if ("data" in error && error.data) {
-      const errorMsg = FlightTicket__factory.createInterface().parseError(
-        error.data
-      )?.name;
-      return `${FAILED_KEY}${errorMsg ?? error?.message}`;
-    }
-
-    return `${FAILED_KEY}${error?.message}`;
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error("Error saving cid:", error);
+    return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
   }
 };
 
