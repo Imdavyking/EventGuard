@@ -5,7 +5,7 @@ import { network } from "hardhat";
 import { cleanDeployments } from "../utils/clean";
 import { updateEnv } from "./update.env";
 import FlightModule from "../ignition/modules/FlightModule";
-import codeTypeChainFolder from "./copy.folder";
+
 import { copyABI } from "./copy.abi";
 import HelpersModule from "../ignition/modules/Helpers";
 
