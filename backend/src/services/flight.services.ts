@@ -5,17 +5,21 @@ export async function getFlightStatus(flightId: string) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
-    const flightModel = FlightStatusModel.findById(flightId);
+    const flightStatusModel = await FlightStatusModel.findOne({
+      flight_id: flightId,
+    }).session(session);
     let flightStatus;
-    if (!flightModel) {
+
+    if (flightStatusModel) {
+      return flightStatusModel;
+    }
+
+    if (!flightStatusModel) {
       flightStatus = generateFlightStatus(flightId);
       const newFlightStatus = new FlightStatusModel(flightStatus);
       await newFlightStatus.save({ session });
       await session.commitTransaction();
-    } else {
-      flightStatus = await FlightStatusModel.findById(flightId).session(
-        session
-      );
+      return flightStatus;
     }
   } catch (error) {
     await session.abortTransaction();

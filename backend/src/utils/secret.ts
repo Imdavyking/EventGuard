@@ -20,7 +20,13 @@ export const secret: {
   },
 
   loadAll: () => {
-    const secrets = ["NODE_ENV", "JWT_SECRET", "PORT", "FRONTEND_URL"];
+    const secrets = [
+      "NODE_ENV",
+      "JWT_SECRET",
+      "PORT",
+      "FRONTEND_URL",
+      "MONGO_URI",
+    ];
 
     const loadedSecrets: Record<string, string> = {};
 
