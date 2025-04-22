@@ -2,9 +2,13 @@ import { toast } from "react-toastify";
 import { BACKEND_URL } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import { ellipsify } from "../../utils/ellipsify";
+import { FaSpinner } from "react-icons/fa";
 
 const Ticket = ({ ticket }: any) => {
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
+  const [isGettingProof, setIsGettingProof] = useState(false);
+  const [status, setStatus] = useState<any>(null);
+  const [proof, setProof] = useState<any>(null);
   const getFlightStatus = async (flightId: string) => {
     try {
       setIsCheckingStatus(true);
@@ -15,7 +19,8 @@ const Ticket = ({ ticket }: any) => {
         throw new Error(`Network response was not ok ${response.statusText}`);
       }
       const data = await response.json();
-      console.log({ data });
+      console.log("Flight status data:", data);
+      setStatus(data.data);
     } catch (error) {
       toast.error(`Error fetching flight status: ${error}`);
     } finally {
@@ -23,6 +28,23 @@ const Ticket = ({ ticket }: any) => {
     }
   };
 
+  const getFlightProof = async (flightId: string) => {
+    try {
+      setIsGettingProof(true);
+      const response = await fetch(
+        `${BACKEND_URL}/api/fdc/json-proof/${flightId}`
+      );
+      if (!response.ok) {
+        throw new Error(`Network response was not ok ${response.statusText}`);
+      }
+      const data = await response.json();
+      console.log("Flight proof data:", data);
+    } catch (error) {
+      toast.error(`Error fetching flight proof status: ${error}`);
+    } finally {
+      setIsGettingProof(false);
+    }
+  };
   useEffect(() => {
     if (!ticket) return;
     if (!ticket.flightId) return;
@@ -52,25 +74,39 @@ const Ticket = ({ ticket }: any) => {
       <p className="mt-1 text-xs text-gray-500">
         Payer: {ellipsify(ticket.payer, 12)}
       </p>
-      <p
-        className={`mt-2 font-medium ${
-          ticket.refundStatus === "Refunded"
-            ? "text-green-600"
-            : "text-yellow-500"
-        }`}
-      >
-        Status: {ticket.refundStatus || "Awaiting Flight Check"}
-      </p>
-      <button
-        disabled
-        className={`mt-4 px-4 py-2 rounded-xl text-white w-full ${
-          ticket.refundStatus === "Refunded" ? "bg-green-600" : "bg-yellow-500"
-        }`}
-      >
-        {ticket.refundStatus === "Refunded"
-          ? "Refund Sent"
-          : "Pending Flight Check"}
-      </button>
+      {!status ? (
+        <div className="flex justify-center mt-8">
+          <FaSpinner className="w-6 h-6 text-blue-500 animate-spin" />
+        </div>
+      ) : (
+        <>
+          <p
+            className={`mt-2 font-medium ${
+              ticket.refundStatus === "Refunded"
+                ? "text-green-600"
+                : "text-yellow-500"
+            }`}
+          >
+            Status:{" "}
+            {status.reason_for_delay.description || "Awaiting Flight Check"}
+          </p>
+          <button
+            disabled={isCheckingStatus}
+            onClick={async () => {
+              const flightDetails = await getFlightProof(ticket.flightId);
+            }}
+            className={`mt-4 px-4 py-2 rounded-xl text-white w-full ${
+              status.status === "On Time"
+                ? "bg-green-600"
+                : "bg-yellow-500 cursor-pointer"
+            }`}
+          >
+            {status.status === "On Time"
+              ? "Flight On Time"
+              : "Flight Canceled (Refund)"}
+          </button>
+        </>
+      )}
     </div>
   );
 };
