@@ -11,20 +11,22 @@ const HowItWorks = () => {
         <ol className="list-decimal pl-6 space-y-6 text-lg leading-relaxed">
           <li>
             <strong className="text-gray-900">Buy a Ticket:</strong> Users
-            purchase event tickets stored on-chain.
+            purchase flight tickets stored on-chain.
           </li>
           <li>
-            <strong className="text-gray-900">Monitor Weather via FDC:</strong>{" "}
-            EventGuard continuously fetches weather data using Flare's Data
+            <strong className="text-gray-900">
+              Monitor Flight Status via FDC:
+            </strong>{" "}
+            EventGuard continuously fetches flight data using Flare's Data
             Connector.
           </li>
           <li>
             <strong className="text-gray-900">Trigger Conditions:</strong> If
-            extreme weather conditions are detected (e.g., heavy rain, strong
-            wind), a refund is triggered.
+            bad flight are detected (e.g., Cancelled, Delayed), a refund is
+            triggered.
           </li>
           <li>
-            <strong className="text-gray-900">Refund in Stablecoin:</strong> The
+            <strong className="text-gray-900">Refund in Crypto:</strong> The
             refund value is calculated and returned automatically, optionally
             stabilized using FTSO rates.
           </li>
