@@ -173,7 +173,7 @@ export class FDCService {
     console.log("Submitted request:", transaction.hash, "\n");
     const roundId = await this.calculateRoundId(transaction);
     console.log(
-      `Check round progress at: https://${flareTestnet.name}-systems-explorer.flare.rocks/voting-epoch/${roundId}?tab=fdc\n`
+      `Check round progress at: https://coston2-systems-explorer.flare.rocks/voting-epoch/${roundId}?tab=fdc\n`
     );
     return roundId;
   }
