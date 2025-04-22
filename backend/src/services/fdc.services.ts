@@ -84,14 +84,19 @@ async function prepareAttestationRequest(
 }
 
 const postprocessJq = `{
-  flightId: (.flight_id // null),
-  status: .status,
-  reasonType: (.reason_for_delay.type // null),
-  reasonDescription: (.reason_for_delay.description // null)
+  flightId: .data.flight_id,
+  status: .data.status,
+  reasonType: (.data.reason_for_delay.type // null),
+  description: (.data.reason_for_delay.description // null)
 }`;
 
 const abiSignature = ` {
     "components": [
+      {
+        "internalType": "uint256",
+        "name": "flightId",
+        "type": "uint256"
+      },
       {
         "internalType": "string",
         "name": "status",
@@ -124,5 +129,6 @@ export async function getJsonAttestation(flightId: string) {
     postprocessJq,
     abiSignature
   );
+  console.log("Data from prepareAttestationRequest:\n", data, "\n");
   return data;
 }
