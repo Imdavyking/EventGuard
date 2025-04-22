@@ -107,15 +107,7 @@ const GetFlights = () => {
     }
   };
 
-  if (error) {
-    return (
-      <div className="max-w-4xl mx-auto px-4 py-10">
-        <h2 className="text-3xl font-bold mb-6 text-red-600">
-          Error fetching flights: {error.message}
-        </h2>
-      </div>
-    );
-  }
+  if (error) return <p>Error loading tickets: {error.message}</p>;
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-10">
