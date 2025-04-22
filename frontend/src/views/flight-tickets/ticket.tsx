@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { ellipsify } from "../../utils/ellipsify";
 import { FaSpinner } from "react-icons/fa";
 import { FDCService } from "../../utils/fdc.blockchain.services";
+import { refundTicket } from "../../utils/blockchain.services";
 
 const Ticket = ({ ticket }: any) => {
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
@@ -42,7 +43,12 @@ const Ticket = ({ ticket }: any) => {
       console.log("Flight proof data:", data);
 
       const fdcService = new FDCService();
-      await fdcService.getDataAndStoreProof(data.data);
+      const proof = await fdcService.getDataAndStoreProof(data.data);
+
+      await refundTicket({
+        flightId: ticket.flightId,
+        proof,
+      });
     } catch (error) {
       toast.error(`Error fetching flight proof status: ${error}`);
     } finally {

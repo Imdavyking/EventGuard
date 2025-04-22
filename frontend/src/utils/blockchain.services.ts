@@ -138,7 +138,7 @@ export const createFlight = async ({
     return `Created Flight with: ${receipt!.hash}`;
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
-    console.error("Error saving cid:", error);
+    console.error(error);
     return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
   }
 };
@@ -163,7 +163,27 @@ export const payForFlight = async ({
     return `Bought Ticket with: ${receipt!.hash}`;
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
-    console.error("Error saving cid:", error);
+    console.error(error);
+    return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
+  }
+};
+
+export const refundTicket = async ({
+  flightId,
+  proof,
+}: {
+  flightId: string;
+  proof: any;
+}) => {
+  try {
+    const flightTicket = await getFlightTicketContract();
+    const transaction = await flightTicket.refundTicket(flightId, proof);
+
+    const receipt = await transaction.wait(1);
+    return `Created Flight with: ${receipt!.hash}`;
+  } catch (error: any) {
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error(error);
     return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
   }
 };

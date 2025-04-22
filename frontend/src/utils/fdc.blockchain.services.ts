@@ -203,5 +203,25 @@ export class FDCService {
         "0x2e3e9cf6d28879bbb8dcc44667dd714b2c56d17fd5f5a659f83583efe46462a2",
       ],
     };
+
+    const component =
+      IJsonApiVerificationAbiInterface.fragments[0].inputs[0].components![1];
+
+    console.log({ component });
+
+    const decodedResponse = JSON.stringify(
+      [
+        ...ethers.AbiCoder.defaultAbiCoder().decode(
+          [component],
+          proof.response_hex
+        )[0],
+      ],
+      (_, v) => (typeof v === "bigint" ? v.toString() : v)
+    );
+
+    return {
+      merkleProof: proof.proof,
+      data: decodedResponse,
+    };
   }
 }
