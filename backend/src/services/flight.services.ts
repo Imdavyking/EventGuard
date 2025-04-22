@@ -61,7 +61,7 @@ const generateFlightStatus = (flightId: string) => {
   };
 };
 
-const getFlight = async (ticketId: string) => {
+const getFlight = async (flightId: string) => {
   const provider = new ethers.JsonRpcProvider(environment.RPC_URL);
   const flightInterface = new ethers.Interface(flightAbi);
   const flightContract = new ethers.Contract(
@@ -69,6 +69,8 @@ const getFlight = async (ticketId: string) => {
     flightInterface,
     provider
   );
-  const flight = await flightContract.flights(ticketId);
+
+  console.log({ flightId });
+  const flight = await flightContract.flights(flightId);
   return flight;
 };

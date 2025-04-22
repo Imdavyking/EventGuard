@@ -29,6 +29,7 @@ export const secret: {
       "JQ_VERIFIER_URL_TESTNET",
       "JQ_VERIFIER_API_KEY_TESTNET",
       "FLIGHT_TICKET_CONTRACT_ADDRESS",
+      "RPC_URL",
     ];
 
     const loadedSecrets: Record<string, string> = {};
