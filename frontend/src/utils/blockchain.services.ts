@@ -89,7 +89,13 @@ function parseContractError(error: any, contractInterface: ethers.Interface) {
         error.data.startsWith((fragment as any).selector)
     );
 
-    return errorFragment ? contractInterface.parseError(error.data) : null;
+    if (errorFragment && "name" in errorFragment && errorFragment.name) {
+      return errorFragment.name;
+    }
+
+    return errorFragment
+      ? contractInterface.parseError(error.data)?.name
+      : null;
   } catch (err) {
     console.error("Error parsing contract error:", err);
     return null;
@@ -139,7 +145,7 @@ export const createFlight = async ({
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
     console.error(error);
-    return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
 };
 export const payForFlight = async ({
@@ -164,7 +170,7 @@ export const payForFlight = async ({
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
     console.error(error);
-    return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
 };
 
@@ -185,7 +191,7 @@ export const refundTicket = async ({
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
     console.error(error);
-    return `${FAILED_KEY}${parsedError?.name ?? error.message}`;
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
 };
 
