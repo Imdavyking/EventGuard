@@ -30,6 +30,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__InvalidJsonProof();
     error FlightTicket__DateisLessThanCurrentTime();
     error FlightTicket__FlightWentSuccessfully();
+    error FlightTicket__TicketNotSameAsData();
 
     uint256 public constant FIAT_priceDecimals = 10 ** 2;
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
@@ -63,6 +64,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     }
 
     struct DataTransportObject {
+        uint256 flightId;
         string status;
         string reasonType;
         string description;
@@ -137,6 +139,10 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             _proof.data.responseBody.abi_encoded_data,
             (DataTransportObject)
         );
+
+        if (dto.flightId != ticket.flightId) {
+            revert FlightTicket__TicketNotSameAsData();
+        }
 
         if (keccak256(bytes(dto.status)) == keccak256(bytes("On Time"))) {
             revert FlightTicket__FlightWentSuccessfully();

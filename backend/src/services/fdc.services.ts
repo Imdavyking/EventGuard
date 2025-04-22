@@ -90,45 +90,25 @@ const postprocessJq = `{
   reasonDescription: (.reason_for_delay.description // null)
 }`;
 
-const abiSignature = `{
+const abiSignature = ` {
     "components": [
       {
-        "internalType": "int256",
-        "name": "latitude",
-        "type": "int256"
+        "internalType": "string",
+        "name": "status",
+        "type": "string"
       },
       {
-        "internalType": "int256",
-        "name": "longitude",
-        "type": "int256"
+        "internalType": "string",
+        "name": "reasonType",
+        "type": "string"
       },
       {
         "internalType": "string",
         "name": "description",
         "type": "string"
-      },
-      {
-        "internalType": "int256",
-        "name": "temperature",
-        "type": "int256"
-      },
-      {
-        "internalType": "int256",
-        "name": "minTemp",
-        "type": "int256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "windSpeed",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "windDeg",
-        "type": "uint256"
       }
     ],
-    "internalType": "struct DataTransportObject",
+    "internalType": "struct FlightTicket.DataTransportObject",
     "name": "dto",
     "type": "tuple"
   }`;
