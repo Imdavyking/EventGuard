@@ -1,10 +1,15 @@
 import mongoose from "mongoose";
 import { FlightStatusModel } from "../models/flight.status.model";
+import { ethers } from "ethers";
+import { environment } from "../utils/config";
+import flightAbi from "../abis/flight-abi";
 
 export async function getFlightStatus(flightId: string) {
   const session = await mongoose.startSession();
   session.startTransaction();
   try {
+    const flight = await getFlight(flightId);
+    console.log({ flight });
     const flightStatusModel = await FlightStatusModel.findOne({
       flight_id: flightId,
     }).session(session);
@@ -54,4 +59,16 @@ const generateFlightStatus = (flightId: string) => {
         }
       : null,
   };
+};
+
+const getFlight = async (ticketId: string) => {
+  const provider = new ethers.JsonRpcProvider(environment.RPC_URL);
+  const flightInterface = new ethers.Interface(flightAbi);
+  const flightContract = new ethers.Contract(
+    environment.FLIGHT_TICKET_CONTRACT_ADDRESS!,
+    flightInterface,
+    provider
+  );
+  const flight = await flightContract.flights(ticketId);
+  return flight;
 };

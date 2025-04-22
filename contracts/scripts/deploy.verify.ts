@@ -34,11 +34,13 @@ async function main() {
     "frontend",
     "VITE_FLIGHT_TICKET_CONTRACT_ADDRESS"
   );
+  updateEnv(flightTicketAddress, "backend", "FLIGHT_TICKET_CONTRACT_ADDRESS");
   updateEnv(helpersAddress, "frontend", "VITE_FDC_HELPER_ADDRESS");
   updateEnv(flightTicketAddress, "indexer", "FLIGHT_TICKET_CONTRACT_ADDRESS");
   updateEnv(blockNumber.toString(), "indexer", "BLOCK_NUMBER");
   updateEnv(chainId!.toString()!, "indexer", "CHAIN_ID");
   updateEnv(rpcUrl, "indexer", "RPC_URL");
+  updateEnv(rpcUrl, "backend", "RPC_URL");
   copyABI("FlightTicket", "indexer/abis", "flight-ticket");
   copyABI("FlightTicket", "frontend/src/assets/json", "flight-ticket");
   copyABI("Helpers", "frontend/src/assets/json", "helpers-fdc");

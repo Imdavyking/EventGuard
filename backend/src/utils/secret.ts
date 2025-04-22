@@ -28,6 +28,7 @@ export const secret: {
       "MONGO_URI",
       "JQ_VERIFIER_URL_TESTNET",
       "JQ_VERIFIER_API_KEY_TESTNET",
+      "FLIGHT_TICKET_CONTRACT_ADDRESS",
     ];
 
     const loadedSecrets: Record<string, string> = {};
