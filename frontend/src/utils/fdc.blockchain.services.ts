@@ -207,8 +207,6 @@ export class FDCService {
     const component =
       IJsonApiVerificationAbiInterface.fragments[0].inputs[0].components![1];
 
-    console.log({ component });
-
     const decodedResponse = JSON.stringify(
       [
         ...ethers.AbiCoder.defaultAbiCoder().decode(
@@ -221,7 +219,7 @@ export class FDCService {
 
     return {
       merkleProof: proof.proof,
-      data: decodedResponse,
+      data: JSON.parse(decodedResponse),
     };
   }
 }

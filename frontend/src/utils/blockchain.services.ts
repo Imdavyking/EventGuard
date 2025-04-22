@@ -176,6 +176,7 @@ export const refundTicket = async ({
   proof: any;
 }) => {
   try {
+    console.log({ flightId, proof });
     const flightTicket = await getFlightTicketContract();
     const transaction = await flightTicket.refundTicket(flightId, proof);
 
