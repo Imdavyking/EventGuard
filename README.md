@@ -6,9 +6,9 @@
 
 ## 🧩 What is EventGuard?
 
-**EventGuard** is a decentralized application (dApp) built on the **Flare Network** that provides **automated refunds** for **flight delays or cancellations** — no paperwork, no waiting, and no airline customer support needed.
+**EventGuard** is a decentralized application (dApp) built on the **Flare Network** that enables **on-chain refunds** for **flight delays or cancellations** — no paperwork, no waiting, and no airline customer support needed.
 
-By leveraging real-time **Flight API data**, EventGuard triggers **smart contract-based payouts** whenever your flight is officially reported as **delayed** or **cancelled**.
+By leveraging real-time **Flight API data**, EventGuard allows users to **initiate smart contract-based claims** when a flight is officially reported as **delayed** or **cancelled**.
 
 ---
 
@@ -24,60 +24,70 @@ Flight disruptions are a major pain point for travelers. Traditional compensatio
 
 ## ✅ Our Solution
 
-**EventGuard** offers a **frictionless, automated flight protection layer**:
+**EventGuard** offers a **frictionless, automated verification layer for flight protection**:
 
 - ✈️ Flight status fetched in real-time via trusted APIs
-- 🤖 Smart contracts verify disruption conditions automatically
+- 🤖 Smart contracts verify disruption conditions on-chain
 - 🔐 Trustless and tamper-proof logic
-- 💸 Cryptocurrency refunds, instantly and transparently
+- 💸 Cryptocurrency refunds, processed on-demand
 
 ---
 
 ## 🔧 How It Works
 
 1. **🎫 Buy Coverage**  
-   Purchase a Flight Protection Ticket that is stored directly on-chain and linked to your wallet.
+   Purchase a Flight Protection Ticket that is stored on-chain and linked to your wallet.
 
 2. **📡 Monitor Status**  
    Our backend checks real-time flight data using a reliable **Flight Status API**.
 
 3. **⚠️ Detect Trigger**  
-   If your flight is marked `'Cancelled'` or `'Delayed'`, the system triggers the refund logic on-chain.
+   If your flight is marked `'Cancelled'` or `'Delayed'`, the system allows you to **initiate a claim**.
 
-4. **💰 Auto Payout**  
-   Smart contract sends stablecoin compensation (e.g., USDT) directly to your wallet.
+4. **💰 On-Demand Payout**  
+   You trigger the refund via the smart contract UI, which checks the flight status again and sends stablecoin compensation (e.g., USDT) to your wallet if eligible.
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer           | Tools & Technologies                       |
-| --------------- | ------------------------------------------ |
-| **Blockchain**  | Flare Network (EVM-compatible)             |
-| **Data Feeds**  | Flight Status API via Flare Data Connector |
-| **Smart Logic** | Solidity smart contracts                   |
-| **Frontend**    | React, Web3, WalletConnect                 |
-| **Pricing**     | Flare Time Series Oracle (FTSO)            |
-| **Extras**      | Optional Flare RNG for gamified airdrops   |
+| Layer           | Tools & Technologies                             |
+| --------------- | ------------------------------------------------ |
+| **Blockchain**  | Flare Network (EVM-compatible)                   |
+| **Data Feeds**  | Flight Status API via Flare Data Connector (FDC) |
+| **Smart Logic** | Solidity smart contracts                         |
+| **Frontend**    | React, Web3, WalletConnect                       |
+| **Pricing**     | Flare Time Series Oracle (FTSO)                  |
+| **Randomness**  | RandomNumberV2Interface (random flight IDs)      |
+| **Extras**      | Flare RNG for gamified airdrops                  |
 
 ---
 
 ## 🌟 Features
 
-- **✈️ Flight-Based Refunds**  
-  Automatic smart contract payouts based on verified flight status.
+- **✈️ Verified Flight-Based Refunds**  
+  Smart contracts check real-time flight status for eligibility.
 
 - **🎟️ Protection Passes**  
-  Travelers buys a unique pass linked to their flight for simple coverage verification.
+  Travelers mint a unique coverage NFT linked to their flight.
 
 - **🔐 On-Chain Logic**  
-  Transparent and secure — no need to trust airlines or insurers.
+  Transparent and secure — no trust needed in airlines or insurers.
 
 - **💵 Stablecoin Refunds**  
-  Instant, value-locked compensation using real-time FTSO pricing.
+  On-demand compensation using live pricing from FTSO.
 
-- **🎁 Optional Gamification**  
-  Surprise perks and rewards using Flare’s RNG module.
+- **🌐 Multi-Crypto Support**  
+  Pay for protection using various tokens, thanks to FTSO oracles.
+
+- **🎲 Random Flight IDs**  
+  Uses `RandomNumberV2Interface` to generate unique flight IDs.
+
+- **📡 Real-Time Validation**  
+  FDC (Flare Data Connector) ensures refund claims are based on official flight status.
+
+- **🎁 Gamified Airdrops**  
+  Surprise rewards via Flare RNG for participating users.
 
 ---
 
@@ -85,9 +95,9 @@ Flight disruptions are a major pain point for travelers. Traditional compensatio
 
 1. 🔗 Connect wallet
 2. 🛫 Enter flight details & mint a Protection NFT
-3. 🛰️ API monitors status in real-time
-4. 🤖 Smart contract validates if delayed/cancelled
-5. 💸 Refund is auto-sent to user wallet
+3. 🛰️ System monitors flight via FDC
+4. ⚠️ If status = delayed or cancelled → UI prompts "claim refund"
+5. 👆 User clicks "Claim" → Smart contract validates & sends refund
 
 ---
 
@@ -96,7 +106,7 @@ Flight disruptions are a major pain point for travelers. Traditional compensatio
 - 🌍 Expand support to international and connecting flights
 - 🚄 Add protection for other travel types: trains, ferries, buses
 - 🤝 Partner with travel booking platforms and aggregators
-- 🧾 Provide user-friendly insurance history dashboards
+- 🧾 Offer user-friendly dashboards with travel claim history
 
 ---
 
@@ -108,7 +118,7 @@ MIT License — open-source and community-friendly.
 
 ## 💬 Feedback
 
-> _“Integrating live flight data with smart contracts allowed us to build a seamless, transparent protection service that travelers can trust — all without centralized middlemen.”_
+> _“Real-time data and smart contracts enabled us to create a seamless, self-service protection tool — no call centers or paperwork, just peace of mind.”_
 
 ---
 
@@ -117,5 +127,3 @@ MIT License — open-source and community-friendly.
 With 💙 and obsession for frictionless UX.
 
 - **DavyKing** — Blockchain Developer & Smart Contract Engineer
-
----
