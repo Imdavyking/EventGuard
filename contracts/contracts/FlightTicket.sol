@@ -130,7 +130,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
         Ticket memory ticket = tickets[ticketId];
 
-        if (ticket.date < block.timestamp) {
+        if (ticket.date > block.timestamp) {
             revert FlightTicket__TicketNotExpired();
         }
 
@@ -261,8 +261,8 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             revert FlightTicket__TicketAlreadyRefunded();
         }
 
-        // check if the ticket have been used
-        if (ticket.date < block.timestamp) {
+        // check if the ticket have been expired
+        if (ticket.date > block.timestamp) {
             revert FlightTicket__TicketNotExpired();
         }
 
