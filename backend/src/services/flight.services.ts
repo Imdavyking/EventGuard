@@ -12,11 +12,6 @@ export async function getFlightStatus(flightId: string) {
     const currentTime = await currentBlockchainTime();
     const flightTime = Number(flight[2]);
 
-    console.log({
-      currentTime,
-      flightTime,
-    });
-
     if (currentTime! < flightTime) {
       return {
         status: "On Time",
@@ -42,7 +37,7 @@ export async function getFlightStatus(flightId: string) {
       const newFlightStatus = new FlightStatusModel(flightStatus);
       await newFlightStatus.save({ session });
       await session.commitTransaction();
-      return { ...flightStatus, currentTime, flightTime };
+      return flightStatus;
     }
   } catch (error) {
     await session.abortTransaction();
