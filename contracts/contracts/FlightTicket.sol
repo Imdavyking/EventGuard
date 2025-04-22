@@ -58,6 +58,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         string weatherCondition;
         string refundStatus;
         uint256 amountInUsd;
+        uint256 amountSent;
         address payer;
         address token;
         bool isWithdrawn;
@@ -96,9 +97,11 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         uint256 flightId,
         string route,
         uint256 date,
+        uint256 timestamp,
         string weatherCondition,
         string refundStatus,
         uint256 amountPaid,
+        address token,
         address recipient
     );
 
@@ -158,12 +161,12 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
         // Refund the ticket amount
         if (ticket.token == NATIVE_TOKEN) {
-            (bool success, ) = msg.sender.call{value: ticket.amountInUsd}("");
+            (bool success, ) = msg.sender.call{value: ticket.amountSent}("");
             if (!success) {
                 revert FlightTicket__SendingFailed();
             }
         } else {
-            IERC20(ticket.token).safeTransfer(msg.sender, ticket.amountInUsd);
+            IERC20(ticket.token).safeTransfer(msg.sender, ticket.amountSent);
         }
 
         // Emit an event for the refund (you need to define this event)
@@ -172,9 +175,11 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             ticket.flightId,
             ticket.route,
             ticket.date,
+            block.timestamp,
             dto.description,
             "Refunded",
-            ticket.amountInUsd,
+            ticket.amountSent,
+            ticket.token,
             msg.sender
         );
     }
@@ -199,10 +204,10 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         if (flight.id == 0) {
             revert FlightTicket__FlightNotFound();
         }
-        uint256 amountToSend = getUsdToTokenPrice(token, flight.amountInUsd);
-        uint256 minTokenAmount = (amountToSend *
+        uint256 amountSent = getUsdToTokenPrice(token, flight.amountInUsd);
+        uint256 minTokenAmount = (amountSent *
             (10000 - SLIPPAGE_TOLERANCE_BPS)) / 10000;
-        uint256 maxTokenAmount = (amountToSend *
+        uint256 maxTokenAmount = (amountSent *
             (10000 + SLIPPAGE_TOLERANCE_BPS)) / 10000;
         if (token == NATIVE_TOKEN) {
             if (msg.value < minTokenAmount || msg.value > maxTokenAmount) {
@@ -212,7 +217,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             IERC20(token).safeTransferFrom(
                 msg.sender,
                 address(this),
-                amountToSend
+                amountSent
             );
         }
 
@@ -226,6 +231,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             weatherCondition: "",
             refundStatus: "",
             amountInUsd: flight.amountInUsd,
+            amountSent: amountSent,
             token: token,
             payer: msg.sender,
             isWithdrawn: false
@@ -264,12 +270,12 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         tickets[_ticketId].isWithdrawn = true;
 
         if (ticket.token == NATIVE_TOKEN) {
-            (bool success, ) = msg.sender.call{value: ticket.amountInUsd}("");
+            (bool success, ) = msg.sender.call{value: ticket.amountSent}("");
             if (!success) {
                 revert FlightTicket__SendingFailed();
             }
         } else {
-            IERC20(ticket.token).safeTransfer(msg.sender, ticket.amountInUsd);
+            IERC20(ticket.token).safeTransfer(msg.sender, ticket.amountSent);
         }
 
         // Emit an event for the withdrawal (you need to define this event)
@@ -278,9 +284,11 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             ticket.flightId,
             ticket.route,
             ticket.date,
+            block.timestamp,
             ticket.weatherCondition,
             ticket.refundStatus,
-            ticket.amountInUsd,
+            ticket.amountSent,
+            ticket.token,
             msg.sender
         );
     }
