@@ -1,6 +1,5 @@
 import { ethers, ContractTransactionResponse } from "ethers";
 import { getSigner } from "./blockchain.services";
-import { flareTestnet } from "wagmi/chains";
 import { COSTON2_DA_LAYER_URL, FDC_HELPER_ADDRESS } from "./constants";
 import helpersFDCAbi from "../assets/json/helpers-fdc.json";
 import irelayAbi from "../assets/json/irelay-fdc.json";
