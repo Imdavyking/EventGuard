@@ -13,7 +13,6 @@ const Ticket = ({ ticket }: any) => {
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
   const [isGettingProof, setIsGettingProof] = useState(false);
   const [status, setStatus] = useState<any>(null);
-  const [proof, setProof] = useState<any>(null);
   const getFlightStatus = async (flightId: string) => {
     try {
       setIsCheckingStatus(true);
@@ -114,7 +113,7 @@ const Ticket = ({ ticket }: any) => {
           <button
             disabled={isCheckingStatus}
             onClick={async () => {
-              const flightDetails = await getFlightProof(ticket.flightId);
+              await getFlightProof(ticket.flightId);
             }}
             className={`mt-4 px-4 py-2 rounded-xl text-white w-full ${
               status.status === "On Time"
