@@ -111,7 +111,7 @@ const Ticket = ({ ticket }: any) => {
             {status.reason_for_delay.description || "Awaiting Flight Check"}
           </p>
           <button
-            disabled={isCheckingStatus}
+            disabled={isCheckingStatus || status.status === "On Time"}
             onClick={async () => {
               await getFlightProof(ticket.flightId);
             }}

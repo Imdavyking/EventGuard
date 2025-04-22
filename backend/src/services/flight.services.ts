@@ -9,7 +9,20 @@ export async function getFlightStatus(flightId: string) {
   session.startTransaction();
   try {
     const flight = await getFlight(flightId);
-    console.log({ flight });
+    const currentTime = await currentBlockchainTime();
+    const flightTime = Number(flight[2]);
+
+    if (currentTime! < flightTime) {
+      return {
+        status: "On Time",
+        reason_for_delay: {
+          type: "",
+          description: "",
+        },
+        flight_id: flightId,
+      };
+    }
+
     const flightStatusModel = await FlightStatusModel.findOne({
       flight_id: flightId,
     }).session(session);
@@ -59,6 +72,12 @@ const generateFlightStatus = (flightId: string) => {
         }
       : null,
   };
+};
+
+const currentBlockchainTime = async () => {
+  const provider = new ethers.JsonRpcProvider(environment.RPC_URL);
+  const block = await provider.getBlock("latest");
+  return block?.timestamp;
 };
 
 const getFlight = async (flightId: string) => {
