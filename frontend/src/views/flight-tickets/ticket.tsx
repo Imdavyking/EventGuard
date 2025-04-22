@@ -107,8 +107,7 @@ const Ticket = ({ ticket }: any) => {
                 : "text-yellow-500"
             }`}
           >
-            Status:{" "}
-            {status.reason_for_delay.description || "Awaiting Flight Check"}
+            Status: {status.reason_for_delay.description || "Processing..."}
           </p>
           <button
             disabled={isCheckingStatus || status.status === "On Time"}
