@@ -66,6 +66,11 @@
   },
   {
     "inputs": [],
+    "name": "FlightTicket__TicketNotSameAsData",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "FlightTicket__TokenNotSupported",
     "type": "error"
   },
@@ -272,6 +277,11 @@
     "inputs": [
       {
         "components": [
+          {
+            "internalType": "uint256",
+            "name": "flightId",
+            "type": "uint256"
+          },
           {
             "internalType": "string",
             "name": "status",
