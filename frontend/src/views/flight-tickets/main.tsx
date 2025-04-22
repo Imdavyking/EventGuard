@@ -1,4 +1,4 @@
-import { ApolloError, gql, useQuery } from "@apollo/client";
+import { gql, useQuery } from "@apollo/client";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { ellipsify } from "../../utils/ellipsify";
@@ -29,29 +29,29 @@ const GET_FLIGHTS = gql`
 
 const FlightsTickets = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const [loading, setQueryLoading] = useState(false);
-  const [error, setQueryError] = useState<ApolloError | undefined>();
-  const [data, setQueryData] = useState<any>();
   const page = parseInt(searchParams.get("page") ?? "1");
   const pageSize = 10;
   const offset = (page - 1) * pageSize;
 
+  const [userAddress, setUserAddress] = useState<string | null>(null);
+
   useEffect(() => {
     const getAddress = async () => {
       const signer = await getSigner();
-      const userAddress = await signer.getAddress();
-      const { loading, error, data } = useQuery(GET_FLIGHTS, {
-        fetchPolicy: "cache-and-network",
-        variables: { first: pageSize, offset, equalTo: userAddress },
-        pollInterval: 5000,
-      });
-      setQueryData(data);
-      setQueryError(error);
-      setQueryLoading(loading);
+      const address = await signer.getAddress();
+      setUserAddress(address);
     };
 
     getAddress();
-  }, [loading, error, data]);
+  }, []);
+
+  // Only run the query once the userAddress is available
+  const { loading, error, data } = useQuery(GET_FLIGHTS, {
+    skip: !userAddress, // Skip query until userAddress is available
+    fetchPolicy: "cache-and-network",
+    variables: { first: pageSize, offset, equalTo: userAddress || "" },
+    pollInterval: 5000,
+  });
 
   const flights = useMemo(
     () => data?.flightTicketPurchaseds?.nodes || [],
