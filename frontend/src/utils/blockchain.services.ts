@@ -144,7 +144,7 @@ export const createFlight = async ({
     return `Created Flight with: ${receipt!.hash}`;
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
-    console.error(error);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
     return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
 };
@@ -169,7 +169,7 @@ export const payForFlight = async ({
     return `Bought Ticket with: ${receipt!.hash}`;
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
-    console.error(error);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
     return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
 };
@@ -190,7 +190,7 @@ export const refundTicket = async ({
     return `Created Flight with: ${receipt!.hash}`;
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
-    console.error(error);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
     return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
 };
