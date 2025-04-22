@@ -29,7 +29,7 @@ Flight disruptions are a major pain point for travelers. Traditional compensatio
 - ✈️ Flight status fetched in real-time via trusted APIs
 - 🤖 Smart contracts verify disruption conditions automatically
 - 🔐 Trustless and tamper-proof logic
-- 💸 Stablecoin refunds, instantly and transparently
+- 💸 Cryptocurrency refunds, instantly and transparently
 
 ---
 
