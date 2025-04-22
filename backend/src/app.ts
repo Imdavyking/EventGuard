@@ -15,10 +15,6 @@ dotenv.config();
 // Database connection
 connectDB();
 
-getJsonAttestation(
-  "30781437108067454011254090985990501508650751100070793840913752776042900174893"
-);
-
 // Start the server
 const PORT = environment.PORT || 3000;
 
