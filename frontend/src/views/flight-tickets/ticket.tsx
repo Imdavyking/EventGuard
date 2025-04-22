@@ -107,17 +107,16 @@ const Ticket = ({ ticket }: any) => {
                 : "text-yellow-500"
             }`}
           >
-            Status: {status.reason_for_delay.description || "Processing..."}
+            Status: {status.reason_for_delay.description || "Processed"}
           </p>
           <button
-            disabled={isCheckingStatus || status.status === "On Time"}
+            disabled={isCheckingStatus}
+            // disabled={isCheckingStatus || status.status === "On Time"}
             onClick={async () => {
               await getFlightProof(ticket.flightId);
             }}
-            className={`mt-4 px-4 py-2 rounded-xl text-white w-full ${
-              status.status === "On Time"
-                ? "bg-green-600"
-                : "bg-yellow-500 cursor-pointer"
+            className={`cursor-pointer mt-4 px-4 py-2 rounded-xl text-white w-full ${
+              status.status === "On Time" ? "bg-green-600" : "bg-yellow-500"
             }`}
           >
             {isGettingProof ? (
