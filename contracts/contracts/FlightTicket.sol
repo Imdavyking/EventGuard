@@ -29,6 +29,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__CanOnlyRefundPayer();
     error FlightTicket__InvalidJsonProof();
     error FlightTicket__DateisLessThanCurrentTime();
+    error FlightTicket__FlightWentSuccessfully();
 
     uint256 public constant FIAT_priceDecimals = 10 ** 2;
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
@@ -61,15 +62,10 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         bool isWithdrawn;
     }
 
-    // All floats come multiplied by 10^6
     struct DataTransportObject {
-        int256 latitude;
-        int256 longitude;
+        string status;
+        string reasonType;
         string description;
-        int256 temperature;
-        int256 minTemp;
-        uint256 windSpeed;
-        uint256 windDeg;
     }
 
     // Event to emit flight creation
@@ -142,14 +138,8 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             (DataTransportObject)
         );
 
-        // Check if the weather condition is bad
-        if (
-            dto.temperature > 0 &&
-            dto.minTemp < 0 &&
-            dto.windSpeed > 0 &&
-            dto.windDeg > 0
-        ) {
-            revert FlightTicket__RandomNumberNotSecure();
+        if (keccak256(bytes(dto.status)) == keccak256(bytes("On Time"))) {
+            revert FlightTicket__FlightWentSuccessfully();
         }
 
         // Check if the ticket has already been refunded

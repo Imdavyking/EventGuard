@@ -3,7 +3,8 @@
   "scripts": {
     "test": "yarn hardhat test",
     "deploy": "yarn hardhat clean && npx hardhat run scripts/deploy.verify.ts",
-    "jsontest": "npx hardhat run scripts/data.ts"
+    "jsontest": "npx hardhat run scripts/data.ts",
+    "deploy:coston2": "yarn deploy --network coston2"
   },
   "devDependencies": {
     "@nomicfoundation/hardhat-chai-matchers": "^2.0.0",

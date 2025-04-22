@@ -26,6 +26,8 @@ export const secret: {
       "PORT",
       "FRONTEND_URL",
       "MONGO_URI",
+      "JQ_VERIFIER_URL_TESTNET",
+      "JQ_VERIFIER_API_KEY_TESTNET",
     ];
 
     const loadedSecrets: Record<string, string> = {};

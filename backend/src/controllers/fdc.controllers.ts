@@ -5,7 +5,8 @@ dotenv.config();
 
 export const getJsonProof = async (req: Request, res: Response) => {
   try {
-    const data = await getJsonAttestation();
+    const { flightId } = req.params;
+    const data = await getJsonAttestation(flightId);
     res.json({ data });
     return;
   } catch (error) {

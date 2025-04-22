@@ -1,8 +1,6 @@
-const {
-  JQ_VERIFIER_URL_TESTNET,
-  JQ_VERIFIER_API_KEY_TESTNET,
-} = process.env;
+import { environment } from "../utils/config";
 
+const { JQ_VERIFIER_URL_TESTNET, JQ_VERIFIER_API_KEY_TESTNET } = environment;
 class Base {
   toHex(data: string) {
     var result = "";
@@ -85,18 +83,12 @@ async function prepareAttestationRequest(
   );
 }
 
-
-
-const apiUrl = "https://eventguard.onrender.com/api/fdc/sample-open-weather";
 const postprocessJq = `{
-  latitude: (.coord.lat | if . != null then .*pow(10;6) else null end),
-  longitude: (.coord.lon | if . != null then .*pow(10;6) else null end),
-  description: .weather[0].description,
-  temperature: (.main.temp | if . != null then .*pow(10;6) else null end),
-  minTemp: (.main.temp_min | if . != null then .*pow(10;6) else null end),
-  windSpeed: (.wind.speed | if . != null then . *pow(10;6) end),
-  windDeg: .wind.deg
-  }`;
+  flightId: (.flight_id // null),
+  status: .status,
+  reasonType: (.reason_for_delay.type // null),
+  reasonDescription: (.reason_for_delay.description // null)
+}`;
 
 const abiSignature = `{
     "components": [
@@ -145,7 +137,8 @@ const attestationTypeBase = "IJsonApi";
 const sourceIdBase = "WEB2";
 const verifierUrlBase = JQ_VERIFIER_URL_TESTNET;
 
-export async function getJsonAttestation() {
+export async function getJsonAttestation(flightId: string) {
+  const apiUrl = `https://eventguard.onrender.com/api/flight/status/${flightId}`;
   const data = await prepareAttestationRequest(
     apiUrl,
     postprocessJq,
