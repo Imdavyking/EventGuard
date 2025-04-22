@@ -1,10 +1,12 @@
 import { Request, Response } from "express";
 import dotenv from "dotenv";
+import { getJsonAttestation } from "../services/fdc.services";
 dotenv.config();
 
 export const getJsonProof = async (req: Request, res: Response) => {
   try {
-    res.json({});
+    const data = await getJsonAttestation();
+    res.json({ data });
     return;
   } catch (error) {
     console.error("Error generating JSON proof:", error);

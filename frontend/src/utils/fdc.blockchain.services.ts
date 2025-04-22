@@ -6,36 +6,23 @@ import {
   IFdcRequestFeeConfigurations,
   IFdcRequestFeeConfigurations__factory,
   IFlareSystemsManager,
+  IJsonApiVerification__factory,
   IRelay,
   IRelay__factory,
 } from "../typechain-types";
 import { getSigner } from "./blockchain.services";
 import { IFlareSystemsManager__factory } from "../typechain-types/factories/@flarenetwork/flare-periphery-contracts/coston";
 import { flareTestnet } from "wagmi/chains";
+import { COSTON2_DA_LAYER_URL, FDC_HELPER_ADDRESS } from "./constants";
 
-const HelpersAddress = "";
-
-class FDCService {
-  toHex(data: string) {
-    var result = "";
-    for (var i = 0; i < data.length; i++) {
-      result += data.charCodeAt(i).toString(16);
-    }
-
-    return result.padEnd(64, "0");
-  }
-
-  toUtf8HexString(data: string) {
-    return "0x" + this.toHex(data);
-  }
-
+export class FDCService {
   sleep(ms: number) {
     return new Promise((resolve) => setTimeout(resolve, ms));
   }
 
   async getHelpers() {
     const signer = await getSigner();
-    return Helpers__factory.connect(HelpersAddress, signer);
+    return Helpers__factory.connect(FDC_HELPER_ADDRESS, signer);
   }
 
   async getRelay() {
@@ -134,9 +121,9 @@ class FDCService {
 
   async calculateRoundId(transaction: ContractTransactionResponse) {
     const blockNumber = transaction.blockNumber;
-    const block = await ethers.provider.getBlock(blockNumber!);
+    const signer = await getSigner();
+    const block = await signer.provider.getBlock(blockNumber!);
     const blockTimestamp = BigInt(block!.timestamp);
-
     const flareSystemsManager: IFlareSystemsManager =
       await this.getFlareSystemsManager();
     const firsVotingRoundStartTs = BigInt(
@@ -178,5 +165,50 @@ class FDCService {
       `Check round progress at: https://${flareTestnet.name}-systems-explorer.flare.rocks/voting-epoch/${roundId}?tab=fdc\n`
     );
     return roundId;
+  }
+
+  async retrieveDataAndProof(abiEncodedRequest: string, roundId: number) {
+    const url = `${COSTON2_DA_LAYER_URL}api/v1/fdc/proof-by-request-round-raw`;
+    console.log("Url:", url, "n");
+    return await this.retrieveDataAndProofBase(url, abiEncodedRequest, roundId);
+  }
+
+  async getDataAndStoreProof(data: any) {
+    console.log("Data:", data, "\n");
+    const abiEncodedRequest = data.abiEncodedRequest;
+    const roundId = await this.submitAttestationRequest(abiEncodedRequest);
+    const proof = await this.retrieveDataAndProof(abiEncodedRequest, roundId);
+    console.log({ proof });
+
+    const responseType =
+      IJsonApiVerification__factory.abi[0].inputs[0].components[1];
+
+    console.log("Response type:", responseType, "\n");
+
+    const jsonInterface = new ethers.Interface(
+      IJsonApiVerification__factory.abi
+    );
+
+    const decodingFrag = jsonInterface.fragments.find(
+      (fragment) =>
+        fragment.type === "function" &&
+        (fragment as any).selector === proof.response_hex
+    );
+
+    if (!decodingFrag) {
+      throw new Error("Can not decode hex");
+    }
+
+    const decodedResponse = ethers.AbiCoder.defaultAbiCoder().decode(
+      decodingFrag.inputs,
+      proof.response_hex
+    );
+
+    const jsonProof = {
+      merkleProof: proof.proof,
+      data: decodedResponse,
+    };
+
+    return jsonProof;
   }
 }

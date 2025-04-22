@@ -5,3 +5,5 @@ export const FLIGHT_TICKET_CONTRACT_ADDRESS = import.meta.env
 export const FAILED_KEY = "FAILED:";
 export const FLIGHT_TICKET_SUBQUERY_ENDPOINT = import.meta.env
   .VITE_FLIGHT_TICKET_SUBQUERY_ENDPOINT;
+export const COSTON2_DA_LAYER_URL = import.meta.env.VITE_COSTON2_DA_LAYER_URL;
+export const FDC_HELPER_ADDRESS = import.meta.env.VITE_FDC_HELPER_ADDRESS;
