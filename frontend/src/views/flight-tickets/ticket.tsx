@@ -3,6 +3,7 @@ import { BACKEND_URL } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import { ellipsify } from "../../utils/ellipsify";
 import { FaSpinner } from "react-icons/fa";
+import { FDCService } from "../../utils/fdc.blockchain.services";
 
 const Ticket = ({ ticket }: any) => {
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
@@ -39,6 +40,9 @@ const Ticket = ({ ticket }: any) => {
       }
       const data = await response.json();
       console.log("Flight proof data:", data);
+
+      const fdcService = new FDCService();
+      await fdcService.getDataAndStoreProof(data.data);
     } catch (error) {
       toast.error(`Error fetching flight proof status: ${error}`);
     } finally {
