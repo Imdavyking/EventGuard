@@ -33,6 +33,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__TicketNotSameAsData();
     error FlightTicket__UrlNotSupported();
     error FlightTicket__FlightExpired();
+    error FlightTicket__AlreadyPayingWithToken(address token);
 
     bytes21 public constant FLRUSD =
         bytes21(0x01464c522f55534400000000000000000000000000); // FLR/USD
@@ -246,6 +247,9 @@ contract FlightTicket is Ownable, ReentrancyGuard {
                 revert FlightTicket__IncorrectETHAmount();
             }
         } else {
+            if (msg.value > 0) {
+                revert FlightTicket__AlreadyPayingWithToken(token);
+            }
             IERC20(token).safeTransferFrom(
                 msg.sender,
                 address(this),
