@@ -5,7 +5,7 @@ ARG NODE_ENV=development
 
 FROM node:${NODE_VERSION}-alpine
 
-ENV NODE_ENV=${NODE_ENV}
+ENV NODE_ENV=development
 
 
 WORKDIR /usr/src/app
@@ -30,7 +30,7 @@ COPY . .
 EXPOSE 3000
 
 # Run the application.
-CMD yarn dev --host
+CMD ["yarn", "dev","--host"]
 
 
 
