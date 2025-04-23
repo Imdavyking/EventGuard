@@ -258,7 +258,7 @@ const getFlightPriceUSD = async (flightId: string) => {
   return flightDetails[3];
 };
 
-const useSepoliaUSCPay = async (flightId: string) => {
+export const useSepoliaUSCPay = async (flightId: string) => {
   try {
     const usdPrice = await getFlightPriceUSD(flightId);
     const tokenContract = await getERC20Contract(USDC_SEPOLIA, sepolia.id);
