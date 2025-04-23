@@ -9,6 +9,8 @@ import {
 } from "../../services/blockchain.services";
 import { toast } from "react-toastify";
 import { flareTestnet, sepolia } from "wagmi/chains";
+import USDC_LOGO from "../../assets/images/usdc.webp";
+import FLARE_LOGO from "../../assets/images/flare.webp";
 
 // GraphQL Query
 const GET_FLIGHTS = gql`
@@ -72,21 +74,21 @@ const GetFlights = () => {
   const currencies = [
     {
       name: "USDC",
-      blockchain: "FLR",
       token: "0x55d398326f99059ff775485246999027b3197955",
       chainId: flareTestnet.id,
+      logo: USDC_LOGO,
     },
     {
       name: "FLR",
-      blockchain: "FLR",
       token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       chainId: flareTestnet.id,
+      logo: FLARE_LOGO,
     },
     {
       name: "USDC",
-      blockchain: "ETH",
       token: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
       chainId: sepolia.id,
+      logo: USDC_LOGO,
     },
   ];
 
@@ -206,6 +208,11 @@ const GetFlights = () => {
                                 ) : (
                                   cur.name
                                 )}
+                                <img
+                                  src={cur.logo}
+                                  alt={cur.name}
+                                  className="w-4 h-4 ml-2"
+                                />
                               </button>
                             ))}
                           </div>
