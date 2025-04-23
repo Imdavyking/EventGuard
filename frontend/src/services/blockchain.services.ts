@@ -60,6 +60,21 @@ export async function switchOrAddChain(
             },
           ]);
           console.log(`${flareTestnet.name} added and switched`);
+        } else if (targetChainId === Number(sepolia.id)) {
+          await ethProvider.provider.send("wallet_addEthereumChain", [
+            {
+              chainId: chainIdHex,
+              chainName: sepolia.name,
+              nativeCurrency: {
+                name: sepolia.nativeCurrency.name,
+                symbol: sepolia.nativeCurrency.symbol,
+                decimals: sepolia.nativeCurrency.decimals,
+              },
+              rpcUrls: [sepolia.rpcUrls.default.http[0]],
+              blockExplorerUrls: [sepolia.blockExplorers.default.url],
+            },
+          ]);
+          console.log(`${sepolia.name} added and switched`);
         }
       } else {
         console.error(`Failed to switch to ${targetChainId}:`, error);
@@ -258,71 +273,94 @@ const getFlightPriceUSD = async (flightId: string) => {
   return flightDetails[3];
 };
 
-export const useSepoliaUSCPay = async (flightId: string) => {
+// --- Constants ---
+const USDC_TX_KEY_PREFIX = "tx-hash-usdc-sepolia";
+
+const getUSDCKey = (flightId: string) => `${USDC_TX_KEY_PREFIX}-${flightId}`;
+
+// --- Local Storage Utils ---
+const saveUSDCTransaction = (hash: string, flightId: string) => {
+  const data = {
+    hash,
+    flightId,
+    time: new Date().toISOString(),
+  };
+  localStorage.setItem(getUSDCKey(flightId), JSON.stringify(data));
+};
+
+const getUSDCTransaction = (
+  flightId: string
+): { hash: string; flightId: string } | null => {
+  const raw = localStorage.getItem(getUSDCKey(flightId));
+  return raw ? JSON.parse(raw) : null;
+};
+
+const deleteUSDCTransaction = (flightId: string) => {
+  localStorage.removeItem(getUSDCKey(flightId));
+};
+
+// --- Payment & Proof Logic ---
+const useSepoliaUSCPay = async (flightId: string): Promise<string> => {
   try {
     const usdPrice = await getFlightPriceUSD(flightId);
     const tokenContract = await getERC20Contract(USDC_SEPOLIA, sepolia.id);
+
     const transferTx = await tokenContract.transfer(
       FLIGHT_TICKET_CONTRACT_ADDRESS,
       usdPrice
     );
+
     const receipt = await transferTx.wait(1);
-    saveTXUSDCSepolia(receipt!.hash, flightId);
-    return `Created USDC Sepolia payment with: ${receipt!.hash}`;
+    saveUSDCTransaction(receipt.hash, flightId);
+
+    return `✅ USDC Sepolia payment created with hash: ${receipt.hash}`;
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
-    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
-    return `${FAILED_KEY}${parsedError ?? error.message}`;
+    const message = parsedError || error.message;
+    console.error(`${FAILED_KEY}${message}`);
+    return `${FAILED_KEY}${message}`;
   }
 };
 
-const USDC_SEPOLIA_KEY = "tx-hash-usdc-sepolia";
-const saveTXUSDCSepolia = (transactionHash: string, flightId: string) => {
-  localStorage.setItem(
-    USDC_SEPOLIA_KEY,
-    JSON.stringify({
-      hash: transactionHash,
-      flightId: flightId,
-      time: new Date().toISOString(),
-    })
-  );
-};
-
-const getTXUSDCSepolia = (): {
-  hash: string;
-  flightId: string;
-} => {
-  const value = localStorage.get(USDC_SEPOLIA_KEY);
-  if (!value) {
-    return {
-      hash: "",
-      flightId: "",
-    };
-  }
-  return JSON.parse(value);
-};
-
-const getTXUSDCSepoliaAndUseProof = async () => {
+export const sepoliaUSDCPayAndProof = async (flightId: string) => {
   try {
-    const getTX = getTXUSDCSepolia();
-    const response = await fetch(
-      `${BACKEND_URL}/api/fdc/evm-transaction-proof/${getTX.hash}`
+    const response = await useSepoliaUSCPay(flightId);
+    rethrowFailedResponse(response);
+    const proofDetails = await submitSepoliaProofForFlight(flightId);
+    rethrowFailedResponse(proofDetails);
+  } catch (error: any) {
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    const message = parsedError || error.message;
+    console.error(`${FAILED_KEY}${message}`);
+    return `${FAILED_KEY}${message}`;
+  }
+};
+
+const submitSepoliaProofForFlight = async (flightId: string): Promise<any> => {
+  try {
+    const tx = getUSDCTransaction(flightId);
+    if (!tx || !tx.hash)
+      throw new Error("No USDC transaction found for this flight");
+
+    const res = await fetch(
+      `${BACKEND_URL}/api/fdc/evm-transaction-proof/${tx.hash}`
     );
-    if (!response.ok) {
-      throw new Error(`Network response was not ok ${response.statusText}`);
-    }
-    const data = await response.json();
-    console.log("Flight proof data:", data);
+    if (!res.ok) throw new Error(`Failed to fetch proof: ${res.statusText}`);
+
+    const { data } = await res.json();
+    console.log("Fetched proof data:", data);
 
     const fdcService = new FDCServiceEVMTransaction();
-    const proof = await fdcService.getDataAndStoreProof(data.data);
+    const proof = await fdcService.getDataAndStoreProof(data);
 
-    const paymentInfo = await payUSDCSepoliaForFlight({
-      flightId: getTX.flightId,
-      proof,
-    });
+    const paymentInfo = await payUSDCSepoliaForFlight({ flightId, proof });
+
+    deleteUSDCTransaction(flightId);
     return paymentInfo;
-  } catch (e) {}
+  } catch (error: any) {
+    console.error(`❌ Error in submitting proof: ${error.message}`);
+    throw error;
+  }
 };
 
 export const rethrowFailedResponse = (response: string) => {

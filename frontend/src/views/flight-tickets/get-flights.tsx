@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 import {
   payForFlight,
   rethrowFailedResponse,
+  sepoliaUSDCPayAndProof,
 } from "../../services/blockchain.services";
 import { toast } from "react-toastify";
 import { flareTestnet, sepolia } from "wagmi/chains";
@@ -108,7 +109,8 @@ const GetFlights = () => {
         });
         rethrowFailedResponse(response);
       } else {
-        // handle for cross chain payment
+        const response = await sepoliaUSDCPayAndProof(flightId);
+        console.log({ response });
       }
       toast.success(
         `Successfully purchased ticket for flight ${flightId} with ${currency.name}`
