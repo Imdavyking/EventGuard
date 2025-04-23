@@ -114,8 +114,10 @@ const Ticket = ({ ticket }: any) => {
             onClick={async () => {
               await getFlightProof(ticket.flightId);
             }}
-            className={`cursor-pointer mt-4 px-4 py-2 rounded-xl text-white w-full ${
-              status.status === "On Time" ? "bg-green-600" : "bg-yellow-500"
+            className={`mt-4 px-4 py-2 rounded-xl text-white w-full ${
+              status.status === "On Time"
+                ? "bg-green-600"
+                : "bg-yellow-500 cursor-pointer"
             }`}
           >
             {isGettingProof ? (
