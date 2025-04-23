@@ -16,6 +16,6 @@ dotenv.config();
 connectDB();
 
 // Start the server
-const PORT = environment.PORT || 3000;
+const PORT = environment.PORT!;
 
 server.listen(PORT, () => logger.info(`Server running on port ${PORT}`));
