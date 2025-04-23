@@ -111,8 +111,9 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         address token,
         address recipient
     );
-
+    // Event to emit token added
     event TokenAdded(address token, bytes21 feedId);
+    // Event to emit token removed
     event TokenRemoved(address token);
 
     constructor() {
