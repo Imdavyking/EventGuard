@@ -9,3 +9,4 @@ export const COSTON2_DA_LAYER_URL = import.meta.env.VITE_COSTON2_DA_LAYER_URL;
 export const FDC_HELPER_ADDRESS = import.meta.env.VITE_FDC_HELPER_ADDRESS;
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";
+export const USDC_SEPOLIA = "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238";

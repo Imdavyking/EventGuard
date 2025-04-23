@@ -7,6 +7,7 @@ import {
   rethrowFailedResponse,
 } from "../../services/blockchain.services";
 import { toast } from "react-toastify";
+import { flareTestnet, sepolia } from "wagmi/chains";
 
 // GraphQL Query
 const GET_FLIGHTS = gql`
@@ -69,12 +70,22 @@ const GetFlights = () => {
 
   const currencies = [
     {
-      name: "USDT",
+      name: "USDC",
+      blockchain: "FLR",
       token: "0x55d398326f99059ff775485246999027b3197955",
+      chainId: flareTestnet.id,
     },
     {
       name: "FLR",
+      blockchain: "FLR",
       token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+      chainId: flareTestnet.id,
+    },
+    {
+      name: "USDC",
+      blockchain: "ETH",
+      token: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
+      chainId: sepolia.id,
     },
   ];
 
@@ -83,16 +94,22 @@ const GetFlights = () => {
     currency: {
       token: string;
       name: string;
+      chainId: number;
     }
   ) => {
     setSelectedCurrency((prev) => ({ ...prev, [flightId]: currency }));
     try {
       setIsPaying(true);
-      const response = await payForFlight({
-        flightId: flightId,
-        token: currency.token,
-      });
-      rethrowFailedResponse(response);
+
+      if (currency.chainId === flareTestnet.id) {
+        const response = await payForFlight({
+          flightId: flightId,
+          token: currency.token,
+        });
+        rethrowFailedResponse(response);
+      } else {
+        // handle for cross chain payment
+      }
       toast.success(
         `Successfully purchased ticket for flight ${flightId} with ${currency.name}`
       );

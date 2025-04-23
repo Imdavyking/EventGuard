@@ -1,12 +1,15 @@
 import { BrowserProvider, ethers } from "ethers";
-import { flareTestnet } from "viem/chains";
+import { flareTestnet, sepolia } from "viem/chains";
 import {
+  BACKEND_URL,
   FAILED_KEY,
   FLIGHT_TICKET_CONTRACT_ADDRESS,
   NATIVE_TOKEN,
+  USDC_SEPOLIA,
 } from "../utils/constants";
 import flightTicketAbi from "../assets/json/flight-ticket.json";
 import erc20Abi from "../assets/json/erc20.json";
+import { FDCServiceEVMTransaction } from "./fdc.crosschain.services";
 
 const flightAbiInterFace = new ethers.Interface(flightTicketAbi);
 const erc20AbiInterface = new ethers.Interface(erc20Abi);
@@ -125,10 +128,13 @@ export const getFlightTicketContract = async () => {
   );
 };
 
-export const getERC20Contract = async (tokenAddress: string) => {
+export const getERC20Contract = async (
+  tokenAddress: string,
+  chainId: number = flareTestnet.id
+) => {
   const signer = await getSigner();
 
-  await switchOrAddChain(signer.provider, flareTestnet.id);
+  await switchOrAddChain(signer.provider, chainId);
   return new ethers.Contract(tokenAddress, erc20AbiInterface, signer);
 };
 
@@ -202,6 +208,29 @@ export const payForFlight = async ({
   }
 };
 
+export const payUSDCSepoliaForFlight = async ({
+  flightId,
+  proof,
+}: {
+  flightId: string;
+  proof: any;
+}) => {
+  try {
+    const flightTicket = await getFlightTicketContract();
+    const transaction = await flightTicket.payUSDCSepoliaForFlight(
+      flightId,
+      proof
+    );
+
+    const receipt = await transaction.wait(1);
+    return `Bought Ticket with: ${receipt!.hash}`;
+  } catch (error: any) {
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
+  }
+};
+
 export const refundTicket = async ({
   flightId,
   proof,
@@ -210,7 +239,6 @@ export const refundTicket = async ({
   proof: any;
 }) => {
   try {
-    console.log({ flightId, proof });
     const flightTicket = await getFlightTicketContract();
     const transaction = await flightTicket.refundTicket(flightId, proof);
 
@@ -221,6 +249,80 @@ export const refundTicket = async ({
     console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
     return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
+};
+
+const getFlightPriceUSD = async (flightId: string) => {
+  const flightTicket = await getFlightTicketContract();
+
+  const flightDetails = await flightTicket.flights(flightId);
+  return flightDetails[3];
+};
+
+const useSepoliaUSCPay = async (flightId: string) => {
+  try {
+    const usdPrice = await getFlightPriceUSD(flightId);
+    const tokenContract = await getERC20Contract(USDC_SEPOLIA, sepolia.id);
+    const transferTx = await tokenContract.transfer(
+      FLIGHT_TICKET_CONTRACT_ADDRESS,
+      usdPrice
+    );
+    const receipt = await transferTx.wait(1);
+    saveTXUSDCSepolia(receipt!.hash);
+    return `Created USDC Sepolia payment with: ${receipt!.hash}`;
+  } catch (error: any) {
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
+  }
+};
+
+const USDC_SEPOLIA_KEY = "tx-hash-usdc-sepolia";
+const saveTXUSDCSepolia = (transactionHash: string, flightId: string) => {
+  localStorage.setItem(
+    USDC_SEPOLIA_KEY,
+    JSON.stringify({
+      hash: transactionHash,
+      flightId: flightId,
+      time: new Date().toISOString(),
+    })
+  );
+};
+
+const getTXUSDCSepolia = (): {
+  hash: string;
+  flightId: string;
+} => {
+  const value = localStorage.get(USDC_SEPOLIA_KEY);
+  if (!value) {
+    return {
+      hash: "",
+      flightId: "",
+    };
+  }
+  return JSON.parse(value);
+};
+
+const getTXUSDCSepoliaAndUseProof = async () => {
+  try {
+    const getTX = getTXUSDCSepolia();
+    const response = await fetch(
+      `${BACKEND_URL}/api/fdc/evm-transaction-proof/${getTX.hash}`
+    );
+    if (!response.ok) {
+      throw new Error(`Network response was not ok ${response.statusText}`);
+    }
+    const data = await response.json();
+    console.log("Flight proof data:", data);
+
+    const fdcService = new FDCServiceEVMTransaction();
+    const proof = await fdcService.getDataAndStoreProof(data.data);
+
+    const paymentInfo = await payUSDCSepoliaForFlight({
+      flightId: getTX.flightId,
+      proof,
+    });
+    return paymentInfo;
+  } catch (e) {}
 };
 
 export const rethrowFailedResponse = (response: string) => {

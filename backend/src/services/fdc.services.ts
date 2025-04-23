@@ -1,6 +1,7 @@
 import { environment } from "../utils/config";
 
 const { JQ_VERIFIER_URL_TESTNET, JQ_VERIFIER_API_KEY_TESTNET } = environment;
+const verifierUrlBase = JQ_VERIFIER_URL_TESTNET;
 class Base {
   toHex(data: string) {
     var result = "";
@@ -58,13 +59,47 @@ class Base {
 
 const base = new Base();
 
-async function prepareAttestationRequest(
+async function prepareAttestationRequestEVMTransaction(
+  transactionHash: string
+) {
+  const requiredConfirmations = "1";
+  const provideInput = true;
+  const listEvents = true;
+  const logIndices: string[] = [];
+  const attestationTypeBase = "EVMTransaction";
+  const sourceIdBase = "testETH";
+  const urlTypeBase = "eth";
+
+  const requestBody = {
+    transactionHash: transactionHash,
+    requiredConfirmations: requiredConfirmations,
+    provideInput: provideInput,
+    listEvents: listEvents,
+    logIndices: logIndices,
+  };
+
+  const url = `${verifierUrlBase}verifier/${urlTypeBase}/EVMTransaction/prepareRequest`;
+  const apiKey = JQ_VERIFIER_API_KEY_TESTNET!;
+
+  return await base.prepareAttestationRequestBase(
+    url,
+    apiKey,
+    attestationTypeBase,
+    sourceIdBase,
+    requestBody
+  );
+}
+
+async function prepareAttestationRequestJson(
   apiUrl: string,
   postprocessJq: string,
   abiSignature: string
 ): Promise<{
   abiEncodedRequest: string;
 }> {
+  // Configuration constants
+  const attestationTypeBase = "IJsonApi";
+  const sourceIdBase = "WEB2";
   const requestBody = {
     url: apiUrl,
     postprocessJq: postprocessJq,
@@ -83,14 +118,23 @@ async function prepareAttestationRequest(
   );
 }
 
-const postprocessJq = `{
+export async function getEVMTransactionAttestation(transactionHash: string) {
+  const data = await prepareAttestationRequestEVMTransaction(transactionHash);
+  console.log("Data from prepareAttestationEVMRequest:\n", data, "\n");
+  return data;
+}
+
+export async function getJsonAttestation(flightId: string) {
+  const apiUrl = `https://eventguard.onrender.com/api/flight/status/${flightId}`;
+
+  const postprocessJq = `{
   flightId: .data.flight_id,
   status: .data.status,
   reasonType: (.data.reason_for_delay.type // null),
   description: (.data.reason_for_delay.description // null)
 }`;
 
-const abiSignature = ` {
+  const abiSignature = ` {
     "components": [
       {
         "internalType": "uint256",
@@ -117,18 +161,11 @@ const abiSignature = ` {
     "name": "dto",
     "type": "tuple"
   }`;
-// Configuration constants
-const attestationTypeBase = "IJsonApi";
-const sourceIdBase = "WEB2";
-const verifierUrlBase = JQ_VERIFIER_URL_TESTNET;
-
-export async function getJsonAttestation(flightId: string) {
-  const apiUrl = `https://eventguard.onrender.com/api/flight/status/${flightId}`;
-  const data = await prepareAttestationRequest(
+  const data = await prepareAttestationRequestJson(
     apiUrl,
     postprocessJq,
     abiSignature
   );
-  console.log("Data from prepareAttestationRequest:\n", data, "\n");
+  console.log("Data from prepareAttestationJSONRequest:\n", data, "\n");
   return data;
 }
