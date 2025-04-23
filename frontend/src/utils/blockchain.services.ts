@@ -166,6 +166,7 @@ export const payForFlight = async ({
 }) => {
   try {
     const flightTicket = await getFlightTicketContract();
+
     const flightDetails = await flightTicket.flights(flightId);
     const usdPrice = flightDetails[3];
     const tokenPrice = await flightTicket.getUsdToTokenPrice(token, usdPrice);
@@ -173,7 +174,10 @@ export const payForFlight = async ({
     const isERC20Token = token.toLowerCase() !== NATIVE_TOKEN.toLowerCase();
     if (isERC20Token) {
       const tokenContract = await getERC20Contract(token);
+      const signer = await getSigner();
+      const owner = await signer.getAddress();
       const allowance = await tokenContract.allowance(
+        owner,
         FLIGHT_TICKET_CONTRACT_ADDRESS
       );
       if (allowance < tokenPrice) {
