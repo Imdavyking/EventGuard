@@ -60,11 +60,18 @@ const NavHeader = () => {
             How It Works
           </Link>
           <Link
-            to="/flight-tickets"
+            to="/tickets"
             onClick={() => setMenuOpen(false)}
             className="text-gray-700 hover:text-blue-600"
           >
-            Flight Tickets
+            Tickets
+          </Link>
+          <Link
+            to="/flights"
+            onClick={() => setMenuOpen(false)}
+            className="text-gray-700 hover:text-blue-600"
+          >
+            Flights
           </Link>
           <Link
             to="/admin"
