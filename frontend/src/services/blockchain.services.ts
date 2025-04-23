@@ -306,6 +306,13 @@ const deleteUSDCTransaction = (flightId: string) => {
 // --- Payment & Proof Logic ---
 const useSepoliaUSCPay = async (flightId: string): Promise<string> => {
   try {
+    const savedUSDCTransaction = getUSDCTransaction(flightId);
+    if (savedUSDCTransaction) {
+      console.log(
+        `Transaction already exists for flightId ${flightId}: ${savedUSDCTransaction.hash}`
+      );
+      return `Transaction already exists for flightId ${flightId}: ${savedUSDCTransaction.hash}`;
+    }
     const usdPrice = await getFlightPriceUSD(flightId);
     const tokenContract = await getERC20Contract(USDC_SEPOLIA, sepolia.id);
 

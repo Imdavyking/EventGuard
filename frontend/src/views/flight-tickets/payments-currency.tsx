@@ -37,7 +37,6 @@ const PaymentCurrency = ({
         const response = await sepoliaUSDCPayAndProof(flightId);
         if (response) {
           rethrowFailedResponse(response);
-          console.log({ response });
         }
       }
 
