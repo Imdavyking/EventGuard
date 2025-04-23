@@ -107,7 +107,7 @@ const Ticket = ({ ticket }: any) => {
                 : "text-yellow-500"
             }`}
           >
-            Status: {status.reason_for_delay.description || "Processed"}
+            Status: {status?.reason_for_delay?.description || "Processed"}
           </p>
           <button
             disabled={isCheckingStatus || status.status === "On Time"}

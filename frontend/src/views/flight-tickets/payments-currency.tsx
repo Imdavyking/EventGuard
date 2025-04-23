@@ -32,6 +32,7 @@ const PaymentCurrency = ({
           flightId,
           token: cur.token,
         });
+        console.log("Response from payForFlight:", response);
         rethrowFailedResponse(response);
       } else {
         const response = await sepoliaUSDCPayAndProof(flightId);
