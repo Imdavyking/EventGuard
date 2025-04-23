@@ -57,7 +57,7 @@ const PaymentCurrency = ({
     <button
       onClick={handleCurrencySelect}
       disabled={isPaying}
-      className={`flex items-center gap-2 px-4 py-2 rounded-lg border shadow-sm transition duration-200
+      className={`flex items-center cursor-pointer gap-2 px-4 py-2 rounded-lg border shadow-sm transition duration-200
         ${
           isPaying
             ? "bg-gray-100 text-gray-400 cursor-not-allowed"
