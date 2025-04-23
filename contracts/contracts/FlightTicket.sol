@@ -92,17 +92,17 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     // Event to emit flight creation
     event FlightCreated(
-        uint256 indexed id,
-        string indexed route,
-        uint256 indexed date,
+        uint256 id,
+        string route,
+        uint256 date,
         uint256 amountPaid
     );
 
     // Event to emit flight ticket purchase
     event FlightTicketPurchased(
-        uint256 indexed ticketId,
-        uint256 indexed flightId,
-        string indexed route,
+        uint256 ticketId,
+        uint256 flightId,
+        string route,
         uint256 date,
         string weatherCondition,
         string refundStatus,
@@ -112,9 +112,9 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     // Event to emit flight ticket withdrawal
     event FlightTicketWithdrawn(
-        uint256 indexed ticketId,
-        uint256 indexed flightId,
-        string indexed route,
+        uint256 ticketId,
+        uint256 flightId,
+        string route,
         uint256 date,
         uint256 timestamp,
         string weatherCondition,
@@ -124,9 +124,9 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         address recipient
     );
     // Event to emit token added
-    event TokenAdded(address indexed token, bytes21 indexed feedId);
+    event TokenAdded(address token, bytes21 feedId);
     // Event to emit token removed
-    event TokenRemoved(address indexed token);
+    event TokenRemoved(address token);
 
     constructor() {
         randomV2 = ContractRegistry.getRandomNumberV2();
