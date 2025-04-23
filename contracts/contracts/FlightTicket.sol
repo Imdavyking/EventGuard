@@ -20,6 +20,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__IncorrectETHAmount();
     error FlightTicket__SendingFailed();
     error FlightTicket__TokenNotSupported();
+    error FlightTicket__TokenAlreadySupported();
     error FlightTicket__PriceNotAvailable();
     error FlightTicket__RandomNumberNotSecure();
     error FlightTicket__FlightAlreadyExists();
@@ -111,6 +112,9 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         address recipient
     );
 
+    event TokenAdded(address token, bytes21 feedId);
+    event TokenRemoved(address token);
+
     constructor() {
         randomV2 = ContractRegistry.getRandomNumberV2();
         ftsoV2 = ContractRegistry.getTestFtsoV2();
@@ -128,6 +132,22 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     function setHostName(string memory _hostname) public onlyOwner {
         hostName = _hostname;
+    }
+
+    function addToken(address token, bytes21 feedId) external onlyOwner {
+        if (tokenToFeedId[token] != bytes21(0)) {
+            revert FlightTicket__TokenAlreadySupported();
+        }
+        tokenToFeedId[token] = feedId;
+        emit TokenAdded(token, feedId);
+    }
+
+    function removeToken(address token) external onlyOwner {
+        if (tokenToFeedId[token] == bytes21(0)) {
+            revert FlightTicket__TokenNotSupported();
+        }
+        delete tokenToFeedId[token];
+        emit TokenRemoved(token);
     }
 
     function getUrlFromFlightId(
