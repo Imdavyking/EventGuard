@@ -111,6 +111,10 @@ export const getBlockNumber = async () => {
 function parseContractError(error: any, contractInterface: ethers.Interface) {
   if (!error?.data || !contractInterface) return null;
 
+  if (error.reason && typeof error.reason === "string") {
+    return error.reason;
+  }
+
   try {
     const errorFragment = contractInterface.fragments.find(
       (fragment) =>

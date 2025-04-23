@@ -11,6 +11,7 @@ import { toast } from "react-toastify";
 import { flareTestnet, sepolia } from "wagmi/chains";
 import USDC_LOGO from "../../assets/images/usdc.webp";
 import FLARE_LOGO from "../../assets/images/flare.webp";
+import PaymentCurrency from "./payments-currency";
 
 // GraphQL Query
 const GET_FLIGHTS = gql`
@@ -28,7 +29,6 @@ const GET_FLIGHTS = gql`
 `;
 
 const GetFlights = () => {
-  const [isPaying, setIsPaying] = useState(false);
   const [searchParams, setSearchParams] = useSearchParams();
   const page = parseInt(searchParams.get("page") ?? "1");
   const pageSize = 10;
@@ -76,57 +76,24 @@ const GetFlights = () => {
       name: "USDC",
       token: "0x55d398326f99059ff775485246999027b3197955",
       chainId: flareTestnet.id,
+      blockchain: "FLR",
       logo: USDC_LOGO,
     },
     {
       name: "FLR",
       token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
       chainId: flareTestnet.id,
+      blockchain: "",
       logo: FLARE_LOGO,
     },
     {
       name: "USDC",
       token: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
       chainId: sepolia.id,
+      blockchain: "ETH",
       logo: USDC_LOGO,
     },
   ];
-
-  const handleCurrencySelect = async (
-    flightId: string,
-    currency: {
-      token: string;
-      name: string;
-      chainId: number;
-    }
-  ) => {
-    setSelectedCurrency((prev) => ({ ...prev, [flightId]: currency }));
-    try {
-      setIsPaying(true);
-
-      if (currency.chainId === flareTestnet.id) {
-        const response = await payForFlight({
-          flightId: flightId,
-          token: currency.token,
-        });
-        rethrowFailedResponse(response);
-      } else {
-        const response = await sepoliaUSDCPayAndProof(flightId);
-        console.log({ response });
-      }
-      toast.success(
-        `Successfully purchased ticket for flight ${flightId} with ${currency.name}`
-      );
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.error(error.message);
-      } else {
-        toast.error("An error occurred while processing your request.");
-      }
-    } finally {
-      setIsPaying(false);
-    }
-  };
 
   if (error) return <p>Error loading tickets: {error.message}</p>;
 
@@ -141,30 +108,29 @@ const GetFlights = () => {
           <h2 className="text-3xl font-bold mb-6 text-blue-700">
             🛫 Available Flights
           </h2>
-
-          <div className="space-y-5">
+          <div className="space-y-6">
             {flights.map((flight: any) => {
               const isSelected = selectedFlight === flight.flightId;
 
               return (
                 <div
                   key={flight.flightId}
-                  className="border rounded-xl bg-white shadow-md p-6 space-y-4 flex flex-col sm:flex-row sm:items-start sm:justify-between"
+                  className="rounded-2xl bg-white shadow-md p-6 space-y-4"
                 >
-                  <div className="space-y-2 flex-1">
-                    <h4 className="text-xl font-semibold text-blue-600 truncate">
-                      ✈️ {flight.route}
+                  <div className="space-y-2">
+                    <h4 className="text-xl font-semibold text-blue-600 truncate flex items-center gap-2">
+                      ✈️ <span>{flight.route}</span>
                     </h4>
 
-                    <p className="text-sm text-gray-600">
-                      🗓️ Date:{" "}
+                    <p className="text-sm text-gray-700 flex items-center gap-1">
+                      🗓️{" "}
                       <span className="font-medium">
                         {formatDate(flight.date)}
                       </span>
                     </p>
 
-                    <p className="text-sm text-gray-600">
-                      💰 Price Paid:{" "}
+                    <p className="text-sm text-gray-700 flex items-center gap-1">
+                      💰{" "}
                       <span className="font-medium">
                         {flight.amountPaid / 100} USDT
                       </span>
@@ -177,43 +143,26 @@ const GetFlights = () => {
                   </div>
 
                   {isFutureFlight(flight.date) && (
-                    <div className="pt-4 sm:pt-0 sm:pl-6 flex-shrink-0 space-y-4">
+                    <div className="pt-4 border-t border-gray-100 mt-2">
                       {!isSelected ? (
                         <button
                           onClick={() => setSelectedFlight(flight.flightId)}
-                          className="bg-blue-600 text-white px-5 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition cursor-pointer w-full sm:w-auto"
+                          className="bg-blue-600 text-white px-5 py-2 rounded-xl text-sm font-medium hover:bg-blue-700 transition w-full sm:w-auto"
                         >
                           Purchase Ticket
                         </button>
                       ) : (
-                        <div className="space-y-3">
+                        <div className="space-y-2">
                           <label className="block text-sm text-gray-700 font-medium">
                             Select Currency:
                           </label>
-                          <div className="flex gap-4">
-                            {currencies.map((cur) => (
-                              <button
-                                key={cur.token}
-                                onClick={() =>
-                                  handleCurrencySelect(flight.flightId, cur)
-                                }
-                                className={`cursor-pointer px-4 py-2 rounded-md text-sm font-medium border hover:bg-blue-100 transition ${
-                                  selectedCurrency[flight.flightId] === cur
-                                    ? "bg-blue-600 text-white"
-                                    : "bg-white text-gray-700"
-                                }`}
-                              >
-                                {isPaying ? (
-                                  <FaSpinner className="w-4 h-4 animate-spin" />
-                                ) : (
-                                  cur.name
-                                )}
-                                <img
-                                  src={cur.logo}
-                                  alt={cur.name}
-                                  className="w-4 h-4 ml-2"
-                                />
-                              </button>
+                          <div className="flex flex-wrap gap-3">
+                            {currencies.map((cur, idx) => (
+                              <PaymentCurrency
+                                cur={cur}
+                                key={idx}
+                                flightId={flight.flightId}
+                              />
                             ))}
                           </div>
                         </div>
