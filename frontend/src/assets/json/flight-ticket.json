@@ -5,6 +5,17 @@
     "type": "constructor"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "FlightTicket__AlreadyPayingWithToken",
+    "type": "error"
+  },
+  {
     "inputs": [],
     "name": "FlightTicket__CanOnlyRefundPayer",
     "type": "error"
@@ -17,6 +28,11 @@
   {
     "inputs": [],
     "name": "FlightTicket__FlightAlreadyExists",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FlightTicket__FlightExpired",
     "type": "error"
   },
   {
@@ -36,7 +52,44 @@
   },
   {
     "inputs": [],
+    "name": "FlightTicket__InvalidEVMProof",
+    "type": "error"
+  },
+  {
+    "inputs": [],
     "name": "FlightTicket__InvalidJsonProof",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FlightTicket__NotCorrectAmount",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "receiver",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "contractReceiver",
+        "type": "address"
+      }
+    ],
+    "name": "FlightTicket__NotCorrectReceiver",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "FlightTicket__NotSender",
     "type": "error"
   },
   {
@@ -70,27 +123,54 @@
     "type": "error"
   },
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "FlightTicket__TokenAlreadySupported",
+    "type": "error"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
     "name": "FlightTicket__TokenNotSupported",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FlightTicket__TransactionAlreadyProcessed",
+    "type": "error"
+  },
+  {
+    "inputs": [],
+    "name": "FlightTicket__UrlNotSupported",
     "type": "error"
   },
   {
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "id",
         "type": "uint256"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "string",
         "name": "route",
         "type": "string"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "date",
         "type": "uint256"
@@ -109,19 +189,19 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "ticketId",
         "type": "uint256"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "flightId",
         "type": "uint256"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "string",
         "name": "route",
         "type": "string"
@@ -164,19 +244,19 @@
     "anonymous": false,
     "inputs": [
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "ticketId",
         "type": "uint256"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "uint256",
         "name": "flightId",
         "type": "uint256"
       },
       {
-        "indexed": false,
+        "indexed": true,
         "internalType": "string",
         "name": "route",
         "type": "string"
@@ -247,6 +327,38 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "bytes21",
+        "name": "feedId",
+        "type": "bytes21"
+      }
+    ],
+    "name": "TokenAdded",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "TokenRemoved",
+    "type": "event"
+  },
+  {
     "inputs": [],
     "name": "FIAT_priceDecimals",
     "outputs": [
@@ -254,6 +366,19 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "FLRUSD",
+    "outputs": [
+      {
+        "internalType": "bytes21",
+        "name": "",
+        "type": "bytes21"
       }
     ],
     "stateMutability": "view",
@@ -286,38 +411,34 @@
     "type": "function"
   },
   {
-    "inputs": [
+    "inputs": [],
+    "name": "USDC_CONTRACT",
+    "outputs": [
       {
-        "components": [
-          {
-            "internalType": "uint256",
-            "name": "flightId",
-            "type": "uint256"
-          },
-          {
-            "internalType": "string",
-            "name": "status",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "reasonType",
-            "type": "string"
-          },
-          {
-            "internalType": "string",
-            "name": "description",
-            "type": "string"
-          }
-        ],
-        "internalType": "struct FlightTicket.DataTransportObject",
-        "name": "dto",
-        "type": "tuple"
+        "internalType": "address",
+        "name": "",
+        "type": "address"
       }
     ],
-    "name": "abiSignatureHack",
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes21",
+        "name": "feedId",
+        "type": "bytes21"
+      }
+    ],
+    "name": "addToken",
     "outputs": [],
-    "stateMutability": "pure",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -414,6 +535,25 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "flightId",
+        "type": "uint256"
+      }
+    ],
+    "name": "getUrlFromFlightId",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "expectedUrl",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "address",
         "name": "token",
         "type": "address"
@@ -430,6 +570,183 @@
         "internalType": "uint256",
         "name": "",
         "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "hostName",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "components": [
+          {
+            "internalType": "bytes32[]",
+            "name": "merkleProof",
+            "type": "bytes32[]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes32",
+                "name": "attestationType",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "sourceId",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "uint64",
+                "name": "votingRound",
+                "type": "uint64"
+              },
+              {
+                "internalType": "uint64",
+                "name": "lowestUsedTimestamp",
+                "type": "uint64"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bytes32",
+                    "name": "transactionHash",
+                    "type": "bytes32"
+                  },
+                  {
+                    "internalType": "uint16",
+                    "name": "requiredConfirmations",
+                    "type": "uint16"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "provideInput",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "listEvents",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "uint32[]",
+                    "name": "logIndices",
+                    "type": "uint32[]"
+                  }
+                ],
+                "internalType": "struct IEVMTransaction.RequestBody",
+                "name": "requestBody",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "uint64",
+                    "name": "blockNumber",
+                    "type": "uint64"
+                  },
+                  {
+                    "internalType": "uint64",
+                    "name": "timestamp",
+                    "type": "uint64"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "sourceAddress",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isDeployment",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "receivingAddress",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "value",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "bytes",
+                    "name": "input",
+                    "type": "bytes"
+                  },
+                  {
+                    "internalType": "uint8",
+                    "name": "status",
+                    "type": "uint8"
+                  },
+                  {
+                    "components": [
+                      {
+                        "internalType": "uint32",
+                        "name": "logIndex",
+                        "type": "uint32"
+                      },
+                      {
+                        "internalType": "address",
+                        "name": "emitterAddress",
+                        "type": "address"
+                      },
+                      {
+                        "internalType": "bytes32[]",
+                        "name": "topics",
+                        "type": "bytes32[]"
+                      },
+                      {
+                        "internalType": "bytes",
+                        "name": "data",
+                        "type": "bytes"
+                      },
+                      {
+                        "internalType": "bool",
+                        "name": "removed",
+                        "type": "bool"
+                      }
+                    ],
+                    "internalType": "struct IEVMTransaction.Event[]",
+                    "name": "events",
+                    "type": "tuple[]"
+                  }
+                ],
+                "internalType": "struct IEVMTransaction.ResponseBody",
+                "name": "responseBody",
+                "type": "tuple"
+              }
+            ],
+            "internalType": "struct IEVMTransaction.Response",
+            "name": "data",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct IEVMTransaction.Proof",
+        "name": "transaction",
+        "type": "tuple"
+      }
+    ],
+    "name": "isEVMTransactionProofValid",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -464,6 +781,169 @@
     "name": "payForFlight",
     "outputs": [],
     "stateMutability": "payable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "flightId",
+        "type": "uint256"
+      },
+      {
+        "components": [
+          {
+            "internalType": "bytes32[]",
+            "name": "merkleProof",
+            "type": "bytes32[]"
+          },
+          {
+            "components": [
+              {
+                "internalType": "bytes32",
+                "name": "attestationType",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "bytes32",
+                "name": "sourceId",
+                "type": "bytes32"
+              },
+              {
+                "internalType": "uint64",
+                "name": "votingRound",
+                "type": "uint64"
+              },
+              {
+                "internalType": "uint64",
+                "name": "lowestUsedTimestamp",
+                "type": "uint64"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "bytes32",
+                    "name": "transactionHash",
+                    "type": "bytes32"
+                  },
+                  {
+                    "internalType": "uint16",
+                    "name": "requiredConfirmations",
+                    "type": "uint16"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "provideInput",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "listEvents",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "uint32[]",
+                    "name": "logIndices",
+                    "type": "uint32[]"
+                  }
+                ],
+                "internalType": "struct IEVMTransaction.RequestBody",
+                "name": "requestBody",
+                "type": "tuple"
+              },
+              {
+                "components": [
+                  {
+                    "internalType": "uint64",
+                    "name": "blockNumber",
+                    "type": "uint64"
+                  },
+                  {
+                    "internalType": "uint64",
+                    "name": "timestamp",
+                    "type": "uint64"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "sourceAddress",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "bool",
+                    "name": "isDeployment",
+                    "type": "bool"
+                  },
+                  {
+                    "internalType": "address",
+                    "name": "receivingAddress",
+                    "type": "address"
+                  },
+                  {
+                    "internalType": "uint256",
+                    "name": "value",
+                    "type": "uint256"
+                  },
+                  {
+                    "internalType": "bytes",
+                    "name": "input",
+                    "type": "bytes"
+                  },
+                  {
+                    "internalType": "uint8",
+                    "name": "status",
+                    "type": "uint8"
+                  },
+                  {
+                    "components": [
+                      {
+                        "internalType": "uint32",
+                        "name": "logIndex",
+                        "type": "uint32"
+                      },
+                      {
+                        "internalType": "address",
+                        "name": "emitterAddress",
+                        "type": "address"
+                      },
+                      {
+                        "internalType": "bytes32[]",
+                        "name": "topics",
+                        "type": "bytes32[]"
+                      },
+                      {
+                        "internalType": "bytes",
+                        "name": "data",
+                        "type": "bytes"
+                      },
+                      {
+                        "internalType": "bool",
+                        "name": "removed",
+                        "type": "bool"
+                      }
+                    ],
+                    "internalType": "struct IEVMTransaction.Event[]",
+                    "name": "events",
+                    "type": "tuple[]"
+                  }
+                ],
+                "internalType": "struct IEVMTransaction.ResponseBody",
+                "name": "responseBody",
+                "type": "tuple"
+              }
+            ],
+            "internalType": "struct IEVMTransaction.Response",
+            "name": "data",
+            "type": "tuple"
+          }
+        ],
+        "internalType": "struct IEVMTransaction.Proof",
+        "name": "_transaction",
+        "type": "tuple"
+      }
+    ],
+    "name": "payUSDCSepoliaForFlight",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -553,8 +1033,34 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "token",
+        "type": "address"
+      }
+    ],
+    "name": "removeToken",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "renounceOwnership",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "_hostname",
+        "type": "string"
+      }
+    ],
+    "name": "setHostName",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
