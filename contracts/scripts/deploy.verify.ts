@@ -44,8 +44,8 @@ async function main() {
     "VITE_FLIGHT_TICKET_CONTRACT_ADDRESS"
   );
   updateEnv(flightTicketAddress, "backend", "FLIGHT_TICKET_CONTRACT_ADDRESS");
-  updateEnv(helpersAddress, "frontend", "VITE_FDC_HELPER_ADDRESS");
   updateEnv(flightTicketAddress, "indexer", "FLIGHT_TICKET_CONTRACT_ADDRESS");
+  updateEnv(helpersAddress, "frontend", "VITE_FDC_HELPER_ADDRESS");
   updateEnv(blockNumber.toString(), "indexer", "BLOCK_NUMBER");
   updateEnv(chainId!.toString()!, "indexer", "CHAIN_ID");
   updateEnv(rpcUrl, "indexer", "RPC_URL");
