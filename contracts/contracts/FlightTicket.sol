@@ -17,8 +17,6 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     RandomNumberV2Interface internal randomV2;
     TestFtsoV2Interface internal ftsoV2;
 
-    bytes21 FLRUSD = bytes21(0x01464c522f55534400000000000000000000000000); // FLR/USD
-
     error FlightTicket__IncorrectETHAmount();
     error FlightTicket__SendingFailed();
     error FlightTicket__TokenNotSupported();
@@ -36,11 +34,13 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__UrlNotSupported();
     error FlightTicket__FlightExpired();
 
+    bytes21 public constant FLRUSD =
+        bytes21(0x01464c522f55534400000000000000000000000000); // FLR/USD
     uint256 public constant FIAT_priceDecimals = 10 ** 2;
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
     address public constant NATIVE_TOKEN =
         address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
-    string hostName;
+    string public hostName;
 
     mapping(address => bytes21) public tokenToFeedId;
     mapping(uint256 => Ticket) public tickets;
