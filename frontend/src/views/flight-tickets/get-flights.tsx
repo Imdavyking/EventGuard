@@ -2,12 +2,6 @@ import { gql, useQuery } from "@apollo/client";
 import { useSearchParams } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
 import { useMemo, useState } from "react";
-import {
-  payForFlight,
-  rethrowFailedResponse,
-  sepoliaUSDCPayAndProof,
-} from "../../services/blockchain.services";
-import { toast } from "react-toastify";
 import { flareTestnet, sepolia } from "wagmi/chains";
 import USDC_LOGO from "../../assets/images/usdc.webp";
 import FLARE_LOGO from "../../assets/images/flare.webp";
@@ -50,12 +44,6 @@ const GetFlights = () => {
   };
 
   const [selectedFlight, setSelectedFlight] = useState<string | null>(null);
-  const [selectedCurrency, setSelectedCurrency] = useState<{
-    [key: string]: {
-      token: string;
-      name: string;
-    };
-  }>({});
 
   const formatDate = (unixTimestamp: string) => {
     const date = new Date(parseInt(unixTimestamp) * 1000);
