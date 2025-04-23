@@ -12,7 +12,7 @@ import {
 } from "../types";
 
 export async function handleFlightCreatedLog(log: FlightCreatedLog) {
-  logger.info(`New VoteCast transaction log at block ${log.blockNumber}`);
+  logger.info(`New FlightCreated transaction log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
   const flightCreated = FlightCreated.create({
@@ -29,7 +29,7 @@ export async function handleFlightCreatedLog(log: FlightCreatedLog) {
 export async function handleFlightTicketPurchasedLog(
   log: FlightTicketPurchasedLog
 ) {
-  logger.info(`New VoteCast transaction log at block ${log.blockNumber}`);
+  logger.info(`New FlightTicketPurchased transaction log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
   const flightTicketPurchased = FlightTicketPurchased.create({
@@ -50,7 +50,7 @@ export async function handleFlightTicketPurchasedLog(
 export async function handleFlightTicketWithdrawnLog(
   log: FlightTicketWithdrawnLog
 ) {
-  logger.info(`New VoteCast transaction log at block ${log.blockNumber}`);
+  logger.info(`New FlightTicketWithdrawn transaction log at block ${log.blockNumber}`);
   assert(log.args, "No log.args");
 
   const flightTicketWithdrawn = FlightTicketWithdrawn.create({
