@@ -59,7 +59,6 @@ Flight disruptions are a major pain point for travelers. Traditional compensatio
 | **Frontend**    | React, Web3, WalletConnect                       |
 | **Pricing**     | Flare Time Series Oracle (FTSO)                  |
 | **Randomness**  | RandomNumberV2Interface (random flight IDs)      |
-| **Extras**      | Flare RNG for gamified airdrops                  |
 
 ---
 
@@ -88,6 +87,29 @@ Flight disruptions are a major pain point for travelers. Traditional compensatio
 
 - **🎁 Gamified Airdrops**  
   Surprise rewards via Flare RNG for participating users.
+
+---
+
+## 🚀 **Start the Application**
+
+### 1️⃣ **Start with Docker**
+
+- **Ensure Docker is installed and running.**
+- **Set up secrets from `.env`**
+
+  ```sh
+  sh create-secrets.sh
+  ```
+
+📌 _Ensure the `.env` file exists and is configured in both the backend and frontend directories before running this script!_
+
+- **To start the backend and related services (MongoDB), run:**
+
+  ```bash
+  docker compose up
+  ```
+
+- The application will be accessible at **`localhost:3000`**.
 
 ---
 
