@@ -8,9 +8,11 @@ const NavHeader = () => {
 
   return (
     <header className="p-6 border-b shadow-sm bg-white flex justify-between items-center mb-6 relative">
-      <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
-        🎟️ EventGuard
-      </h1>
+      <Link to="/">
+        <h1 className="text-2xl md:text-3xl font-bold text-blue-600">
+          🎟️ EventGuard
+        </h1>
+      </Link>
 
       {/* Desktop Nav */}
       <nav className="hidden md:flex space-x-6">
