@@ -13,6 +13,7 @@ const CHAIN_ID = process.env.CHAIN_ID;
 const API_URL = process.env.API_URL;
 const BROWSER_URL = process.env.BROWSER_URL;
 const API_SCAN_VERIFIER_KEY = process.env.API_SCAN_VERIFIER_KEY;
+const BACKEND_URL = process.env.BACKEND_URL;
 
 if (!RPC_URL) {
   throw new Error("RPC_URL is not set");
@@ -34,6 +35,10 @@ if (!API_SCAN_VERIFIER_KEY) {
   throw new Error(
     "API_SCAN_VERIFIER_KEY is not set, used to verify contracts on explorer"
   );
+}
+
+if (!BACKEND_URL) {
+  throw new Error("BACKEND_URL is not set, used to verify url for flare FDC");
 }
 
 const config: HardhatUserConfig = {
