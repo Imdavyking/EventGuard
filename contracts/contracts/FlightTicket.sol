@@ -19,8 +19,8 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     error FlightTicket__IncorrectETHAmount();
     error FlightTicket__SendingFailed();
-    error FlightTicket__TokenNotSupported();
-    error FlightTicket__TokenAlreadySupported();
+    error FlightTicket__TokenNotSupported(address token);
+    error FlightTicket__TokenAlreadySupported(address token);
     error FlightTicket__PriceNotAvailable();
     error FlightTicket__RandomNumberNotSecure();
     error FlightTicket__FlightAlreadyExists();
@@ -137,7 +137,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     function addToken(address token, bytes21 feedId) external onlyOwner {
         if (tokenToFeedId[token] != bytes21(0)) {
-            revert FlightTicket__TokenAlreadySupported();
+            revert FlightTicket__TokenAlreadySupported(token);
         }
         tokenToFeedId[token] = feedId;
         emit TokenAdded(token, feedId);
@@ -145,7 +145,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     function removeToken(address token) external onlyOwner {
         if (tokenToFeedId[token] == bytes21(0)) {
-            revert FlightTicket__TokenNotSupported();
+            revert FlightTicket__TokenNotSupported(token);
         }
         delete tokenToFeedId[token];
         emit TokenRemoved(token);
@@ -258,6 +258,11 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         if (flight.date < block.timestamp) {
             revert FlightTicket__FlightExpired();
         }
+
+        if (tokenToFeedId[token] == bytes21(0)) {
+            revert FlightTicket__TokenNotSupported(token);
+        }
+
         uint256 amountSent = getUsdToTokenPrice(token, flight.amountInUsd);
         uint256 minTokenAmount = (amountSent *
             (10000 - SLIPPAGE_TOLERANCE_BPS)) / 10000;
@@ -371,7 +376,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     ) public view returns (uint256) {
         bytes21 priceId = tokenToFeedId[token];
         if (priceId == bytes21(0)) {
-            revert FlightTicket__TokenNotSupported();
+            revert FlightTicket__TokenNotSupported(token);
         }
         (uint256 priceOfTokenInUsd, int8 _priceDecimals, ) = ftsoV2.getFeedById(
             priceId
