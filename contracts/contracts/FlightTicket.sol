@@ -6,7 +6,7 @@ import {RandomNumberV2Interface} from "@flarenetwork/flare-periphery-contracts/c
 import {TestFtsoV2Interface} from "@flarenetwork/flare-periphery-contracts/coston2/TestFtsoV2Interface.sol";
 import {IFdcVerification} from "@flarenetwork/flare-periphery-contracts/coston2/IFdcVerification.sol";
 import {IJsonApi} from "@flarenetwork/flare-periphery-contracts/coston2/IJsonApi.sol";
-import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
@@ -31,11 +31,13 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__DateisLessThanCurrentTime();
     error FlightTicket__FlightWentSuccessfully();
     error FlightTicket__TicketNotSameAsData();
+    error FlightTicket__UrlNotSupported();
 
     uint256 public constant FIAT_priceDecimals = 10 ** 2;
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
     address public constant NATIVE_TOKEN =
         address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
+    string hostName;
 
     mapping(address => bytes21) public tokenToFeedId;
     mapping(uint256 => Ticket) public tickets;
@@ -120,6 +122,18 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             );
     }
 
+    function setHostName(string memory _hostname) public onlyOwner {
+        hostName = _hostname;
+    }
+
+    function getUrlFromFlightId(
+        uint256 flightId
+    ) public view returns (string memory expectedUrl) {
+        expectedUrl = string(
+            abi.encodePacked(hostName, "/api/flight/status/", flightId)
+        );
+    }
+
     function refundTicket(
         uint256 ticketId,
         IJsonApi.Proof calldata _proof
@@ -142,6 +156,13 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             _proof.data.responseBody.abi_encoded_data,
             (DataTransportObject)
         );
+
+        if (
+            keccak256(bytes(getUrlFromFlightId(ticket.flightId))) ==
+            keccak256(bytes(_proof.data.requestBody.url))
+        ) {
+            revert FlightTicket__UrlNotSupported();
+        }
 
         if (dto.flightId != ticket.flightId) {
             revert FlightTicket__TicketNotSameAsData();

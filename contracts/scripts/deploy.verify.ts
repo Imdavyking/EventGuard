@@ -26,6 +26,15 @@ async function main() {
   console.log("FlightTicket deployed to:", flightTicketAddress);
   console.log("Helpers deployed to:", helpersAddress);
 
+  // set url
+  const flightContract = await hre.ethers.getContractAt(
+    "FlightTicket",
+    flightTicketAddress
+  );
+
+  const tx = await flightContract.setHostName(process.env.BACKEND_URL!);
+  await tx.wait(1);
+
   await verify(flightTicketAddress, []);
   await verify(helpersAddress, []);
 
