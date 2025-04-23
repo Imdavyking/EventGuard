@@ -12,18 +12,15 @@ services:
     networks:
       - app-network
     secrets:
-      - NODE_ENV
-      - PORT
-      - FRONTEND_URL
       - JWT_SECRET
-      - PINATA_JWT
-      - DATASET_CONTRACT_ADDRESS
-      - LIT_PROTOCOL_IDENTIFIER
-      - PRIVATE_KEY
+      - MONGO_URI
+      - JQ_VERIFIER_URL_TESTNET
+      - JQ_VERIFIER_API_KEY_TESTNET
       - RPC_URL
-      - BLOCKLOCK_SENDER_PROXY
+      - FLIGHT_TICKET_CONTRACT_ADDRESS
     environment:
       - FRONTEND_URL=http://localhost:3000
+      - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/flight}
     healthcheck:
       test: ["CMD", "wget", "--spider", "-q", "http://localhost:3100"]
       interval: 10s
@@ -79,26 +76,18 @@ networks:
     driver: bridge
 
 secrets:
-  NODE_ENV:
-    file: ./backend/secrets/NODE_ENV
-  PORT:
-    file: ./backend/secrets/PORT
-  FRONTEND_URL:
-    file: ./backend/secrets/FRONTEND_URL
+  MONGO_URI:
+    file: ./backend/secrets/MONGO_URI
   JWT_SECRET:
     file: ./backend/secrets/JWT_SECRET
-  PINATA_JWT:
-    file: ./backend/secrets/PINATA_JWT
-  DATASET_CONTRACT_ADDRESS:
-    file: ./backend/secrets/DATASET_CONTRACT_ADDRESS
-  LIT_PROTOCOL_IDENTIFIER:
-    file: ./backend/secrets/LIT_PROTOCOL_IDENTIFIER
-  PRIVATE_KEY:
-    file: ./backend/secrets/PRIVATE_KEY
+  JQ_VERIFIER_API_KEY_TESTNET:
+    file: ./backend/secrets/JQ_VERIFIER_API_KEY_TESTNET
+  JQ_VERIFIER_URL_TESTNET:
+    file: ./backend/secrets/JQ_VERIFIER_URL_TESTNET
   RPC_URL:
     file: ./backend/secrets/RPC_URL
-  BLOCKLOCK_SENDER_PROXY:
-    file: ./backend/secrets/BLOCKLOCK_SENDER_PROXY
+  FLIGHT_TICKET_CONTRACT_ADDRESS:
+    file: ./backend/secrets/FLIGHT_TICKET_CONTRACT_ADDRESS
 
 volumes:
   mongodb-data:
