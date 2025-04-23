@@ -109,7 +109,7 @@ Flight disruptions are a major pain point for travelers. Traditional compensatio
   docker compose up
   ```
 
-- The application will be accessible at **`localhost:3000`**.
+- The application will be accessible at **`localhost:5173`**.
 
 ---
 
