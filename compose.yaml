@@ -18,6 +18,7 @@ services:
       - JQ_VERIFIER_API_KEY_TESTNET
       - RPC_URL
       - FLIGHT_TICKET_CONTRACT_ADDRESS
+      - MONGO_URI
     environment:
       - FRONTEND_URL=http://localhost:3000
       - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/flight}
