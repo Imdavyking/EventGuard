@@ -8,3 +8,4 @@ export const FLIGHT_TICKET_SUBQUERY_ENDPOINT = import.meta.env
 export const COSTON2_DA_LAYER_URL = import.meta.env.VITE_COSTON2_DA_LAYER_URL;
 export const FDC_HELPER_ADDRESS = import.meta.env.VITE_FDC_HELPER_ADDRESS;
 export const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
+export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";

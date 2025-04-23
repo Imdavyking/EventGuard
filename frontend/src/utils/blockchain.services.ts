@@ -1,9 +1,15 @@
 import { BrowserProvider, ethers } from "ethers";
 import { flareTestnet } from "viem/chains";
-import { FAILED_KEY, FLIGHT_TICKET_CONTRACT_ADDRESS } from "./constants";
+import {
+  FAILED_KEY,
+  FLIGHT_TICKET_CONTRACT_ADDRESS,
+  NATIVE_TOKEN,
+} from "./constants";
 import flightTicketAbi from "../assets/json/flight-ticket.json";
+import erc20Abi from "../assets/json/erc20.json";
 
 const flightAbiInterFace = new ethers.Interface(flightTicketAbi);
+const erc20AbiInterface = new ethers.Interface(erc20Abi);
 
 export async function switchOrAddChain(
   ethProvider: ethers.JsonRpcApiProvider,
@@ -62,6 +68,11 @@ export async function switchOrAddChain(
 }
 
 export const getSigner = async () => {
+  if (!window.ethereum) {
+    throw new Error(
+      "MetaMask is not installed. Please install it to use this feature."
+    );
+  }
   const provider = new BrowserProvider(window.ethereum);
   await provider.send("eth_requestAccounts", []);
   return provider.getSigner();
@@ -103,15 +114,6 @@ function parseContractError(error: any, contractInterface: ethers.Interface) {
 }
 
 export const getFlightTicketContract = async () => {
-  if (!window.ethereum) {
-    console.log(
-      "MetaMask is not installed. Please install it to use this feature."
-    );
-    throw new Error(
-      "MetaMask is not installed. Please install it to use this feature."
-    );
-  }
-
   const signer = await getSigner();
 
   await switchOrAddChain(signer.provider, flareTestnet.id);
@@ -121,6 +123,13 @@ export const getFlightTicketContract = async () => {
     flightAbiInterFace,
     signer
   );
+};
+
+export const getERC20Contract = async (tokenAddress: string) => {
+  const signer = await getSigner();
+
+  await switchOrAddChain(signer.provider, flareTestnet.id);
+  return new ethers.Contract(tokenAddress, erc20AbiInterface, signer);
 };
 
 export const createFlight = async ({
@@ -161,8 +170,23 @@ export const payForFlight = async ({
     const usdPrice = flightDetails[3];
     const tokenPrice = await flightTicket.getUsdToTokenPrice(token, usdPrice);
 
+    const isERC20Token = token.toLowerCase() !== NATIVE_TOKEN.toLowerCase();
+    if (isERC20Token) {
+      const tokenContract = await getERC20Contract(token);
+      const allowance = await tokenContract.allowance(
+        FLIGHT_TICKET_CONTRACT_ADDRESS
+      );
+      if (allowance < tokenPrice) {
+        const approveTx = await tokenContract.approve(
+          FLIGHT_TICKET_CONTRACT_ADDRESS,
+          tokenPrice
+        );
+        await approveTx.wait(1);
+      }
+    }
+
     const transaction = await flightTicket.payForFlight(flightId, token, {
-      value: tokenPrice,
+      value: isERC20Token ? 0 : tokenPrice,
     });
 
     const receipt = await transaction.wait(1);
