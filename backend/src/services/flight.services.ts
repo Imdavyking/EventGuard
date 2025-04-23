@@ -70,7 +70,10 @@ const generateFlightStatus = (flightId: string) => {
           type: reasonType,
           description: reasons[reasonType as keyof typeof reasons],
         }
-      : null,
+      : {
+          type: "",
+          description: "",
+        },
   };
 };
 
