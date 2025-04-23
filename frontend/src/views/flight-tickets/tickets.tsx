@@ -2,7 +2,7 @@ import { gql, useQuery } from "@apollo/client";
 import { useEffect, useMemo, useState } from "react";
 import { useSearchParams } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
-import { getSigner } from "../../utils/blockchain.services";
+import { getSigner } from "../../services/blockchain.services";
 import Ticket from "./ticket";
 
 const GET_TICKETS = gql`

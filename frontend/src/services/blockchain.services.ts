@@ -4,7 +4,7 @@ import {
   FAILED_KEY,
   FLIGHT_TICKET_CONTRACT_ADDRESS,
   NATIVE_TOKEN,
-} from "./constants";
+} from "../utils/constants";
 import flightTicketAbi from "../assets/json/flight-ticket.json";
 import erc20Abi from "../assets/json/erc20.json";
 

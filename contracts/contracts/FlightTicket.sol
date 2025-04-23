@@ -9,6 +9,8 @@ import {SafeERC20, IERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeE
 import {Ownable} from "@openzeppelin/contracts/access/Ownable.sol";
 import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
+import {IEVMTransaction} from "@flarenetwork/flare-periphery-contracts/coston2/IEVMTransaction.sol";
+import {IFdcVerification} from "@flarenetwork/flare-periphery-contracts/coston2/IFdcVerification.sol";
 
 contract FlightTicket is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -24,16 +26,24 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__RandomNumberNotSecure();
     error FlightTicket__FlightAlreadyExists();
     error FlightTicket__FlightNotFound();
+    error FlightTicket__TransactionAlreadyProcessed();
     error FlightTicket__TicketAlreadyRefunded();
     error FlightTicket__TicketNotExpired();
     error FlightTicket__CanOnlyRefundPayer();
     error FlightTicket__InvalidJsonProof();
+    error FlightTicket__InvalidEVMProof();
     error FlightTicket__DateisLessThanCurrentTime();
     error FlightTicket__FlightWentSuccessfully();
     error FlightTicket__TicketNotSameAsData();
     error FlightTicket__UrlNotSupported();
     error FlightTicket__FlightExpired();
     error FlightTicket__AlreadyPayingWithToken(address token);
+    error FlightTicket__NotSender(address sender);
+    error FlightTicket__NotCorrectAmount();
+    error FlightTicket__NotCorrectReceiver(
+        address receiver,
+        address contractReceiver
+    );
 
     bytes21 public constant FLRUSD =
         bytes21(0x01464c522f55534400000000000000000000000000); // FLR/USD
@@ -41,11 +51,14 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
     address public constant NATIVE_TOKEN =
         address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
+    address public USDC_CONTRACT =
+        address(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238); // USDC contract address on sepolia
     string public hostName;
 
     mapping(address => bytes21) public tokenToFeedId;
     mapping(uint256 => Ticket) public tickets;
     mapping(uint256 => Flight) public flights;
+    mapping(bytes32 => bool) processedTransactions;
 
     // Struct to store flight details
     struct Flight {
@@ -233,6 +246,15 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         );
     }
 
+    function isEVMTransactionProofValid(
+        IEVMTransaction.Proof calldata transaction
+    ) public view returns (bool) {
+        // Use the library to get the verifier contract and verify that this transaction was proved by state connector
+        IFdcVerification fdc = ContractRegistry.getFdcVerification();
+        // return true;
+        return fdc.verifyEVMTransaction(transaction);
+    }
+
     /**
      * Fetch the latest secure random number and generate a flight ID.
      * The random number is used to ensure the uniqueness of the flight ID.
@@ -243,6 +265,122 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             revert FlightTicket__RandomNumberNotSecure();
         }
         return randomNumber;
+    }
+
+    function payUSDCSepoliaForFlight(
+        uint256 flightId,
+        IEVMTransaction.Proof calldata _transaction
+    ) public nonReentrant {
+        if (
+            processedTransactions[_transaction.data.requestBody.transactionHash]
+        ) {
+            revert FlightTicket__TransactionAlreadyProcessed();
+        }
+
+        if (!isEVMTransactionProofValid(_transaction)) {
+            revert FlightTicket__InvalidEVMProof();
+        }
+
+        processedTransactions[
+            _transaction.data.requestBody.transactionHash
+        ] = true;
+
+        for (
+            uint256 i = 0;
+            i < _transaction.data.responseBody.events.length;
+            i++
+        ) {
+            // Get current event
+            IEVMTransaction.Event memory _event = _transaction
+                .data
+                .responseBody
+                .events[i];
+
+            // Disregard events that are not from the USDC contract
+            if (_event.emitterAddress != USDC_CONTRACT) {
+                continue;
+            }
+
+            // Disregard non Transfer events
+            if (
+                // The topic0 doesn't match the Transfer event
+                _event.topics.length == 0 || // No topics
+                _event.topics[0] !=
+                keccak256(abi.encodePacked("Transfer(address,address,uint256)"))
+            ) {
+                continue;
+            }
+
+            // We now know that this is a Transfer event from the USDC contract - and therefore know how to decode topics and data
+            // Topic 1 is the sender
+            address sender = address(uint160(uint256(_event.topics[1])));
+            // Topic 2 is the receiver
+            address receiver = address(uint160(uint256(_event.topics[2])));
+            // Topic 3 is the amount
+            uint256 amount = uint256(_event.topics[2]);
+            // Data is the amount
+            uint256 value = abi.decode(_event.data, (uint256));
+
+            Flight memory flight = flights[flightId];
+            if (flight.id == 0) {
+                revert FlightTicket__FlightNotFound();
+            }
+
+            if (flight.date < block.timestamp) {
+                revert FlightTicket__FlightExpired();
+            }
+
+            if (sender != _msgSender()) {
+                revert FlightTicket__NotSender(_msgSender());
+            }
+
+            if (receiver != address(this)) {
+                revert FlightTicket__NotCorrectReceiver(
+                    receiver,
+                    address(this)
+                );
+            }
+
+            if (amount < flight.amountInUsd) {
+                revert FlightTicket__NotCorrectAmount();
+            }
+
+            if (value > 0) {
+                revert FlightTicket__AlreadyPayingWithToken(USDC_CONTRACT);
+            }
+
+            // create a flight ticket
+            uint256 ticketId = generateUniqueId();
+            Ticket memory newTicket = Ticket({
+                ticketId: ticketId,
+                flightId: flightId,
+                route: flights[flightId].route,
+                date: flights[flightId].date,
+                weatherCondition: "",
+                refundStatus: "",
+                amountInUsd: flight.amountInUsd,
+                amountSent: value,
+                token: USDC_CONTRACT,
+                payer: msg.sender,
+                isWithdrawn: false
+            });
+
+            // Store the ticket in the mapping
+            tickets[ticketId] = newTicket;
+
+            // Emit the FlightTicketPurchased event (you need to define this event)
+            emit FlightTicketPurchased(
+                ticketId,
+                flightId,
+                flights[flightId].route,
+                flights[flightId].date,
+                "",
+                "",
+                flight.amountInUsd,
+                msg.sender
+            );
+            break;
+        }
     }
 
     function payForFlight(

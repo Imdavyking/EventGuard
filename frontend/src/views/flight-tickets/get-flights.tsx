@@ -5,7 +5,7 @@ import { useMemo, useState } from "react";
 import {
   payForFlight,
   rethrowFailedResponse,
-} from "../../utils/blockchain.services";
+} from "../../services/blockchain.services";
 import { toast } from "react-toastify";
 
 // GraphQL Query

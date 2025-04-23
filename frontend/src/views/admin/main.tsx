@@ -2,7 +2,7 @@ import { useState, ChangeEvent, FormEvent } from "react";
 import {
   createFlight,
   rethrowFailedResponse,
-} from "../../utils/blockchain.services";
+} from "../../services/blockchain.services";
 import { toast } from "react-toastify";
 import { FaSpinner } from "react-icons/fa";
 

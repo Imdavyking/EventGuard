@@ -3,11 +3,11 @@ import { BACKEND_URL } from "../../utils/constants";
 import { useEffect, useState } from "react";
 import { ellipsify } from "../../utils/ellipsify";
 import { FaSpinner } from "react-icons/fa";
-import { FDCService } from "../../utils/fdc.blockchain.services";
+import { FDCServiceJson } from "../../services/fdc.json.services";
 import {
   refundTicket,
   rethrowFailedResponse,
-} from "../../utils/blockchain.services";
+} from "../../services/blockchain.services";
 
 const Ticket = ({ ticket }: any) => {
   const [isCheckingStatus, setIsCheckingStatus] = useState(false);
@@ -44,7 +44,7 @@ const Ticket = ({ ticket }: any) => {
       const data = await response.json();
       console.log("Flight proof data:", data);
 
-      const fdcService = new FDCService();
+      const fdcService = new FDCServiceJson();
       const proof = await fdcService.getDataAndStoreProof(data.data);
 
       const refundResponse = await refundTicket({
