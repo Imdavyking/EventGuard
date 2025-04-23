@@ -34,6 +34,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     error FlightTicket__FlightWentSuccessfully();
     error FlightTicket__TicketNotSameAsData();
     error FlightTicket__UrlNotSupported();
+    error FlightTicket__FlightExpired();
 
     uint256 public constant FIAT_priceDecimals = 10 ** 2;
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
@@ -230,6 +231,10 @@ contract FlightTicket is Ownable, ReentrancyGuard {
         Flight memory flight = flights[flightId];
         if (flight.id == 0) {
             revert FlightTicket__FlightNotFound();
+        }
+
+        if (flight.date < block.timestamp) {
+            revert FlightTicket__FlightExpired();
         }
         uint256 amountSent = getUsdToTokenPrice(token, flight.amountInUsd);
         uint256 minTokenAmount = (amountSent *
