@@ -267,7 +267,7 @@ const useSepoliaUSCPay = async (flightId: string) => {
       usdPrice
     );
     const receipt = await transferTx.wait(1);
-    saveTXUSDCSepolia(receipt!.hash);
+    saveTXUSDCSepolia(receipt!.hash, flightId);
     return `Created USDC Sepolia payment with: ${receipt!.hash}`;
   } catch (error: any) {
     const parsedError = parseContractError(error, flightAbiInterFace);
