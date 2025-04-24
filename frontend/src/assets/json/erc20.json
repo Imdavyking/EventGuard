@@ -178,7 +178,7 @@
         "type": "uint256"
       }
     ],
-    "name": "EcoNovaToken__ERC2612ExpiredSignature",
+    "name": "EventGuardToken__ERC2612ExpiredSignature",
     "type": "error"
   },
   {
@@ -194,22 +194,22 @@
         "type": "address"
       }
     ],
-    "name": "EcoNovaToken__ERC2612InvalidSigner",
+    "name": "EventGuardToken__ERC2612InvalidSigner",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "EcoNovaToken__MaxSupplyExceeded",
+    "name": "EventGuardToken__MaxSupplyExceeded",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "EcoNovaToken__NotDeployerOrOwner",
+    "name": "EventGuardToken__NotDeployerOrOwner",
     "type": "error"
   },
   {
     "inputs": [],
-    "name": "EcoNovaToken__NotOnLocalNet",
+    "name": "EventGuardToken__NotOnLocalNet",
     "type": "error"
   },
   {

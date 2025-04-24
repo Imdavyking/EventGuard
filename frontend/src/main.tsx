@@ -16,7 +16,7 @@ import { ApolloProvider } from "@apollo/client";
 import client from "./services/apollo.services.ts";
 
 const config = getDefaultConfig({
-  appName: "EcoNova",
+  appName: "EventGuard",
   projectId: WALLET_CONNECT_PROJECT_ID,
   chains: [flareTestnet, sepolia],
 });

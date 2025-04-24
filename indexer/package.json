@@ -1,7 +1,7 @@
 {
   "name": "subql-starter",
   "version": "0.0.1",
-  "description": "EcoNovais a decentralized platform",
+  "description": "EventGuard is a decentralized platform",
   "main": "dist/index.js",
   "scripts": {
     "build": "subql codegen && subql build",
@@ -19,7 +19,7 @@
     "schema.graphql",
     "project.yaml"
   ],
-  "author": "EcoNova",
+  "author": "EventGuard",
   "license": "MIT",
   "dependencies": {
     "@subql/types-ethereum": "latest",
