@@ -1,6 +1,5 @@
 /** @format */
 
-import { flareTestnet } from "wagmi/chains";
 import { callLLMApi } from "../services/agent.services";
 import {
   sendNativeToken,
@@ -12,7 +11,6 @@ import { useConfirmationStore } from "./prompt";
 
 export class AIAgent {
   tools: { [key: string]: Function };
-  toolsInfo: { [key: string]: string };
 
   constructor() {
     this.tools = {
@@ -21,14 +19,6 @@ export class AIAgent {
       QRY_TOKEN_BALANCE: tokenBalance,
       QRY_WALLET_BALANCE: tokenBalance,
       QRY_WALLET_ADDRESS: walletAddress,
-    };
-    this.toolsInfo = {
-      sendNativeToken:
-        "Example: Send 10 FLR to 0x1CE05Bf474802D49a77b3829c566a9AABbfb8C6d",
-      sendERC20Token:
-        "Example: Send 10 USDC to 0x1CE05Bf474802D49a77b3829c566a9AABbfb8C6d",
-      tokenBalance: `Example: Get balance of ${flareTestnet.nativeCurrency.name}`,
-      walletAddress: "Example: Get wallet address",
     };
   }
 
