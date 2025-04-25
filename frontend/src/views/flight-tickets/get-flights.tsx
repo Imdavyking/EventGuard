@@ -1,11 +1,15 @@
 import { gql, useQuery } from "@apollo/client";
 import { useSearchParams } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { flareTestnet, sepolia } from "wagmi/chains";
 import USDC_LOGO from "../../assets/images/usdc.webp";
 import FLARE_LOGO from "../../assets/images/flare.webp";
 import PaymentCurrency from "./payments-currency";
+import {
+  getUSDCFlareAddress,
+  getUSDCSepoliaAddress,
+} from "../../services/blockchain.services";
 
 // GraphQL Query
 const GET_FLIGHTS = gql`
@@ -44,6 +48,7 @@ const GetFlights = () => {
   };
 
   const [selectedFlight, setSelectedFlight] = useState<string | null>(null);
+  const [currencies, setCurrencies] = useState<any[]>([]);
 
   const formatDate = (unixTimestamp: string) => {
     const date = new Date(parseInt(unixTimestamp) * 1000);
@@ -59,29 +64,41 @@ const GetFlights = () => {
     return flightDate > Date.now();
   };
 
-  const currencies = [
-    {
-      name: "USDC",
-      token: "0x55d398326f99059ff775485246999027b3197955",
-      chainId: flareTestnet.id,
-      blockchain: "FLR",
-      logo: USDC_LOGO,
-    },
-    {
-      name: "FLR",
-      token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
-      chainId: flareTestnet.id,
-      blockchain: "",
-      logo: FLARE_LOGO,
-    },
-    {
-      name: "USDC",
-      token: "0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238",
-      chainId: sepolia.id,
-      blockchain: "ETH",
-      logo: USDC_LOGO,
-    },
-  ];
+  const getUSDC = async () => {
+    const sepoliaUSD = await getUSDCSepoliaAddress();
+    const flareUSC = await getUSDCFlareAddress();
+    return [
+      {
+        name: "USDC",
+        token: sepoliaUSD,
+        chainId: sepolia.id,
+        blockchain: "ETH",
+        logo: USDC_LOGO,
+      },
+      {
+        name: "FLR",
+        token: "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE",
+        chainId: flareTestnet.id,
+        blockchain: "",
+        logo: FLARE_LOGO,
+      },
+      {
+        name: "USDC",
+        token: flareUSC,
+        chainId: flareTestnet.id,
+        blockchain: "FLR",
+        logo: USDC_LOGO,
+      },
+    ];
+  };
+
+  useEffect(() => {
+    const fetchCurrencies = async () => {
+      const currencies = await getUSDC();
+      setCurrencies(currencies);
+    };
+    fetchCurrencies();
+  }, []);
 
   if (error) return <p>Error loading tickets: {error.message}</p>;
 

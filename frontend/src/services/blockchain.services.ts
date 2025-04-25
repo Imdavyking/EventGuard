@@ -368,6 +368,18 @@ export const payUSDCSepoliaForFlight = async ({
   }
 };
 
+export const getUSDCSepoliaAddress = async () => {
+  const flightTicket = await getFlightTicketContract();
+  const usdcSepoliaAddress = await flightTicket.USDC_SEPOLIA_CONTRACT();
+  return usdcSepoliaAddress;
+};
+
+export const getUSDCFlareAddress = async () => {
+  const flightTicket = await getFlightTicketContract();
+  const usdcFlareAddress = await flightTicket.USDC_FLARE_CONTRACT();
+  return usdcFlareAddress;
+};
+
 export const mintUSDCFlare = async () => {
   try {
     const flightTicket = await getFlightTicketContract();
