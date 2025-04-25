@@ -14,7 +14,7 @@ const userTools = {
     }),
   }),
   tokenBalance: tool(() => undefined, {
-    name: "QRY_TOKEN_BAL",
+    name: "QRY_TOKEN_BALANCE",
     description: "Get the balance of a token in a wallet.",
     schema: z.object({
       tokenAddress: z.string().describe("The token to check"),
@@ -26,7 +26,7 @@ const userTools = {
     schema: z.object({}),
   }),
   sendERC20Token: tool(() => undefined, {
-    name: "CMD_SEND_ERC20",
+    name: "CMD_SEND_ERC20_TOKEN",
     description: "Send ERC20 tokens to a specific address.",
     schema: z.object({
       tokenAddress: z.string().describe("The token to send"),
@@ -35,7 +35,7 @@ const userTools = {
     }),
   }),
   sendNativeToken: tool(() => undefined, {
-    name: "CMD_SEND_NATIVE",
+    name: "CMD_SEND_NATIVE_TOKEN",
     description: "Send Native tokens to a specific address.",
     schema: z.object({
       recipientAddress: z.string().describe("The address to send tokens to"),

@@ -4,9 +4,6 @@ import dotenv from "dotenv";
 import { environment } from "../utils/config";
 import { MemorySaver } from "@langchain/langgraph";
 import { tools } from "../utils/agent.tools";
-import { BufferMemory } from "langchain/memory";
-import { ConversationChain } from "langchain/chains";
-// ConversationBufferMemory learn about this
 dotenv.config();
 const openAIApiKey = environment.OPENAI_API_KEY!;
 const checkpointSaver = new MemorySaver();
@@ -14,8 +11,6 @@ const llm = new ChatOpenAI({
   model: "gpt-4o-mini",
   apiKey: openAIApiKey,
 });
-
-const memory = new BufferMemory();
 
 export async function runAIAgent({
   userPrompt,
@@ -40,20 +35,9 @@ export async function runAIAgent({
     systemPrompt,
     new HumanMessage(userPrompt),
   ]);
-  const chain = new ConversationChain({
-    llm: llmWithTools,
-    memory,
-  });
-  const res = await chain.invoke(
-    { input: userPrompt },
-    {
-      configurable: { thread_id: userAddress },
-    }
-  );
 
   return {
     content: result.content,
     tool_calls: result.tool_calls,
-    res,
   };
 }

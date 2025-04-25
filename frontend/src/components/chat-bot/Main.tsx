@@ -4,17 +4,37 @@ import { toast } from "react-toastify";
 import { FaSpinner, FaQuestionCircle, FaComment } from "react-icons/fa";
 import Markdown from "react-markdown";
 import remarkGfm from "remark-gfm";
+import { useConfirmationStore } from "../../agent/prompt";
 
 const ChatWithAdminBot = () => {
   const [isChatboxOpen, setIsChatboxOpen] = useState(false);
+  const { prompt, confirm, cancel } = useConfirmationStore();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [isConfirming, setIsConfirming] = useState(false);
 
-  const [messages, setMessages] = useState<{ text: string; sender: string }[]>(
-    []
-  );
+  type Message = {
+    sender: "user" | "bot" | "prompt";
+    text: string;
+    args?: any;
+  };
+
+  const [messages, setMessages] = useState<Message[]>([]);
+
   const [userInput, setUserInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
+  useEffect(() => {
+    if (prompt) {
+      setMessages((prev) => [
+        ...prev,
+        {
+          sender: "prompt",
+          text: prompt.message,
+          args: prompt.args,
+        },
+      ]);
+    }
+  }, [prompt]);
   const helpRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
 
@@ -167,17 +187,63 @@ const ChatWithAdminBot = () => {
                     message.sender === "user" ? "text-right" : ""
                   }`}
                 >
-                  <div
-                    className={`${
-                      message.sender === "user"
-                        ? "bg-blue-500 text-white"
-                        : "bg-gray-200 text-gray-700"
-                    } rounded-lg py-2 px-4 inline-block max-w-full break-words overflow-hidden`}
-                  >
-                    <Markdown remarkPlugins={[remarkGfm]}>
-                      {message.text}
-                    </Markdown>
-                  </div>
+                  {message.sender === "prompt" ? (
+                    <div className="bg-gray-100 text-gray-800 p-4 rounded-lg inline-block max-w-full">
+                      <h2 className="text-md font-semibold mb-2">
+                        Approve Command
+                      </h2>
+                      <p className="mb-2">
+                        Do you want to run{" "}
+                        <code className="font-mono">{message.text}</code>?
+                      </p>
+                      <div className="mb-2 text-sm">
+                        <strong>Arguments:</strong>
+                        <pre className="bg-white p-2 mt-1 rounded text-xs overflow-auto max-h-48">
+                          {JSON.stringify(message.args, null, 2)}
+                        </pre>
+                      </div>
+                      <div className="flex justify-end gap-2 mt-2">
+                        <button
+                          onClick={cancel}
+                          className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-1 rounded"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={() => {
+                            try {
+                              setIsConfirming(true);
+                              confirm();
+                            } catch (error) {
+                            } finally {
+                              setIsConfirming(false);
+                            }
+                          }}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                        >
+                          {isConfirming ? (
+                            <div className="flex justify-center mt-8">
+                              <FaSpinner className="w-6 h-6 text-blue-500 animate-spin" />
+                            </div>
+                          ) : (
+                            "Confirm"
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div
+                      className={`${
+                        message.sender === "user"
+                          ? "bg-blue-500 text-white"
+                          : "bg-gray-200 text-gray-700"
+                      } rounded-lg py-2 px-4 inline-block max-w-full break-words overflow-hidden`}
+                    >
+                      <Markdown remarkPlugins={[remarkGfm]}>
+                        {message.text}
+                      </Markdown>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

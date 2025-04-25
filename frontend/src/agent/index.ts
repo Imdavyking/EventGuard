@@ -8,6 +8,7 @@ import {
   tokenBalance,
   walletAddress,
 } from "../services/blockchain.services";
+import { useConfirmationStore } from "./prompt";
 
 export class AIAgent {
   tools: { [key: string]: Function };
@@ -15,9 +16,9 @@ export class AIAgent {
 
   constructor() {
     this.tools = {
-      CMD_SEND_NATIVE: sendNativeToken,
-      CMD_SEND_ERC20: sendERC20Token,
-      QRY_TOKEN_BAL: tokenBalance,
+      CMD_SEND_NATIVE_TOKEN: sendNativeToken,
+      CMD_SEND_ERC20_TOKEN: sendERC20Token,
+      QRY_TOKEN_BALANCE: tokenBalance,
       QRY_WALLET_BALANCE: tokenBalance,
       QRY_WALLET_ADDRESS: walletAddress,
     };
@@ -39,6 +40,12 @@ export class AIAgent {
     return tool.bind(this)(action.args ? action.args : {});
   }
 
+  async showConfirmationPrompt(toolCall: any): Promise<boolean> {
+    return useConfirmationStore
+      .getState()
+      .showPrompt(toolCall.name, toolCall.args);
+  }
+
   public async solveTask(userPrompt: string): Promise<any> {
     const userAddress = await walletAddress();
     const action = await callLLMApi({
@@ -52,6 +59,10 @@ export class AIAgent {
       results.push(action.content);
     }
     for (const toolCall of action.tool_calls) {
+      if (toolCall.name.startsWith("CMD_")) {
+        const approved = await this.showConfirmationPrompt(toolCall);
+        if (!approved) throw new Error("User cancelled the action");
+      }
       const result = await this.executeAction(toolCall);
       results.push(result);
     }

@@ -152,9 +152,9 @@ export const sendNativeToken = async ({
     });
     await tx.wait(1);
 
-    return `sent ${amount} SONIC to ${recipientAddress}`;
+    return `sent ${amount} ${flareTestnet.nativeCurrency.name} to ${recipientAddress}`;
   } catch (error) {
-    return `${FAILED_KEY} to send ${amount} SONIC to ${recipientAddress}`;
+    return `${FAILED_KEY} to send ${amount} ${flareTestnet.nativeCurrency.name} to ${recipientAddress}`;
   }
 };
 
