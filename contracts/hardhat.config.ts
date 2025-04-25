@@ -5,11 +5,14 @@ import { extendEnvironment } from "hardhat/config";
 import { createProvider } from "hardhat/internal/core/providers/construction";
 import "@nomicfoundation/hardhat-toolbox";
 import "@nomicfoundation/hardhat-verify";
+import { HardhatEthersProvider } from "@nomicfoundation/hardhat-ethers/internal/hardhat-ethers-provider";
 
 export const wallet = initKeystore(null);
 
 const RPC_URL = process.env.RPC_URL;
+const SEPOLIA_RPC_URL = process.env.SEPOLIA_RPC_URL;
 const CHAIN_ID = process.env.CHAIN_ID;
+const SEPOLIA_CHAIN_ID = process.env.SEPOLIA_CHAIN_ID;
 const API_URL = process.env.API_URL;
 const BROWSER_URL = process.env.BROWSER_URL;
 const API_SCAN_VERIFIER_KEY = process.env.API_SCAN_VERIFIER_KEY;
@@ -19,8 +22,16 @@ if (!RPC_URL) {
   throw new Error("RPC_URL is not set");
 }
 
+if (!SEPOLIA_RPC_URL) {
+  throw new Error("SEPOLIA_RPC_URL is not set");
+}
+
 if (!CHAIN_ID) {
   throw new Error("CHAIN_ID is not set");
+}
+
+if (!SEPOLIA_CHAIN_ID) {
+  throw new Error("SEPOLIA_CHAIN_ID is not set");
 }
 
 if (!API_URL) {
@@ -41,6 +52,40 @@ if (!BACKEND_URL) {
   throw new Error("BACKEND_URL is not set, used to verify url for flare FDC");
 }
 
+declare module "hardhat/types/runtime" {
+  export interface HardhatRuntimeEnvironment {
+    changeNetwork: Function;
+  }
+}
+extendEnvironment(async (hre) => {
+  hre.changeNetwork = async function changeNetwork(newNetwork: string) {
+    if (!this.config.networks[newNetwork]) {
+      throw new Error(`changeNetwork: Couldn't find network '${newNetwork}'`);
+    }
+    const providers: any = {};
+    if (!providers[this.network.name]) {
+      providers[this.network.name] = this.network.provider;
+    }
+    this.network.name = newNetwork;
+    this.network.config = this.config.networks[newNetwork];
+
+    if (!providers[newNetwork]) {
+      providers[newNetwork] = await createProvider(
+        this.config,
+        newNetwork,
+        this.artifacts
+      );
+    }
+    this.network.provider = providers[newNetwork];
+    if (this.ethers) {
+      this.ethers.provider = new HardhatEthersProvider(
+        this.network.provider,
+        newNetwork
+      );
+    }
+  };
+});
+
 const config: HardhatUserConfig = {
   defaultNetwork: "hardhat",
   networks: {
@@ -54,6 +99,14 @@ const config: HardhatUserConfig = {
       url: process.env.RPC_URL,
       accounts: [wallet.privateKey],
       chainId: +CHAIN_ID!,
+      ignition: {
+        explorerUrl: process.env.CHAIN_BLOCKEXPLORER_URL,
+      },
+    },
+    sepolia: {
+      url: process.env.SEPOLIA_RPC_URL,
+      accounts: [wallet.privateKey],
+      chainId: +SEPOLIA_CHAIN_ID!,
       ignition: {
         explorerUrl: process.env.CHAIN_BLOCKEXPLORER_URL,
       },

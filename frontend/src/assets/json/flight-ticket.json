@@ -412,7 +412,33 @@
   },
   {
     "inputs": [],
-    "name": "USDC_CONTRACT",
+    "name": "USDCUSD",
+    "outputs": [
+      {
+        "internalType": "bytes21",
+        "name": "",
+        "type": "bytes21"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "USDC_FLARE_CONTRACT",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "USDC_SEPOLIA_CONTRACT",
     "outputs": [
       {
         "internalType": "address",
@@ -1061,6 +1087,32 @@
       }
     ],
     "name": "setHostName",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_usdcFlareContract",
+        "type": "address"
+      }
+    ],
+    "name": "setUSDCFlareContract",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_usdcSepoliaContract",
+        "type": "address"
+      }
+    ],
+    "name": "setUSDCSepoliaContract",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"

@@ -11,6 +11,7 @@ import {ReentrancyGuard} from "@openzeppelin/contracts/security/ReentrancyGuard.
 import {Strings} from "@openzeppelin/contracts/utils/Strings.sol";
 import {IEVMTransaction} from "@flarenetwork/flare-periphery-contracts/coston2/IEVMTransaction.sol";
 import {IFdcVerification} from "@flarenetwork/flare-periphery-contracts/coston2/IFdcVerification.sol";
+import {USDC} from "./USDC.sol";
 
 contract FlightTicket is Ownable, ReentrancyGuard {
     using SafeERC20 for IERC20;
@@ -47,12 +48,14 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     bytes21 public constant FLRUSD =
         bytes21(0x01464c522f55534400000000000000000000000000); // FLR/USD
+    bytes21 public constant USDCUSD =
+        bytes21(0x01555344432f555344000000000000000000000000);
     uint256 public constant FIAT_priceDecimals = 10 ** 2;
     uint256 public constant SLIPPAGE_TOLERANCE_BPS = 200;
     address public constant NATIVE_TOKEN =
         address(0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE);
-    address public USDC_CONTRACT =
-        address(0x1c7D4B196Cb0C7B01d743Fbc6116a902379C7238); // USDC contract address on sepolia
+    address public USDC_SEPOLIA_CONTRACT;
+    address public USDC_FLARE_CONTRACT;
     string public hostName;
 
     mapping(address => bytes21) public tokenToFeedId;
@@ -131,7 +134,14 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     constructor() {
         randomV2 = ContractRegistry.getRandomNumberV2();
         ftsoV2 = ContractRegistry.getTestFtsoV2();
+        // USDC usdc = new USDC();
+        // USDC_FLARE_CONTRACT = address(usdc);
+        // tokenToFeedId[USDC_FLARE_CONTRACT] = USDCUSD;
         tokenToFeedId[NATIVE_TOKEN] = FLRUSD;
+    }
+
+    function setUSDCFlareContract(address _usdcFlareContract) public onlyOwner {
+        USDC_FLARE_CONTRACT = _usdcFlareContract;
     }
 
     function isJsonApiProofValid(
@@ -145,6 +155,12 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
     function setHostName(string memory _hostname) public onlyOwner {
         hostName = _hostname;
+    }
+
+    function setUSDCSepoliaContract(
+        address _usdcSepoliaContract
+    ) public onlyOwner {
+        USDC_SEPOLIA_CONTRACT = _usdcSepoliaContract;
     }
 
     function addToken(address token, bytes21 feedId) external onlyOwner {
@@ -297,7 +313,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
                 .events[i];
 
             // Disregard events that are not from the USDC contract
-            if (_event.emitterAddress != USDC_CONTRACT) {
+            if (_event.emitterAddress != USDC_SEPOLIA_CONTRACT) {
                 continue;
             }
 
@@ -346,7 +362,9 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             }
 
             if (value > 0) {
-                revert FlightTicket__AlreadyPayingWithToken(USDC_CONTRACT);
+                revert FlightTicket__AlreadyPayingWithToken(
+                    USDC_SEPOLIA_CONTRACT
+                );
             }
 
             // create a flight ticket
@@ -360,7 +378,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
                 refundStatus: "",
                 amountInUsd: flight.amountInUsd,
                 amountSent: value,
-                token: USDC_CONTRACT,
+                token: USDC_SEPOLIA_CONTRACT,
                 payer: msg.sender,
                 isWithdrawn: false
             });
