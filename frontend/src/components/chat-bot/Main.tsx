@@ -11,10 +11,13 @@ const ChatWithAdminBot = () => {
   const { prompt, confirm, cancel } = useConfirmationStore();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
 
+  type Confirmation = "confirmed" | "cancelled";
+
   type Message = {
     sender: "user" | "bot" | "prompt";
     text: string;
     args?: any;
+    click?: Confirmation;
   };
 
   const [messages, setMessages] = useState<Message[]>([]);
@@ -67,6 +70,35 @@ const ChatWithAdminBot = () => {
   }, [isHelpOpen]);
 
   const agent = new AIAgent();
+  const handleConfirm = () => {
+    confirm();
+    updateLastPromptAsClicked("confirmed");
+  };
+
+  const handleCancel = () => {
+    cancel();
+    updateLastPromptAsClicked("cancelled");
+  };
+
+  const updateLastPromptAsClicked = (click: Confirmation) => {
+    setMessages((prevMessages) => {
+      const reversed = [...prevMessages].reverse();
+
+      const index = reversed.findIndex(
+        (msg) => msg.sender === "prompt" && !msg.click
+      );
+
+      if (index === -1) return prevMessages;
+
+      const realIndex = prevMessages.length - 1 - index;
+      const updatedMessages = [...prevMessages];
+      updatedMessages[realIndex] = {
+        ...updatedMessages[realIndex],
+        click,
+      };
+      return updatedMessages;
+    });
+  };
 
   const handleSend = async () => {
     if (userInput.trim() !== "") {
@@ -201,21 +233,35 @@ const ChatWithAdminBot = () => {
                           {JSON.stringify(message.args, null, 2)}
                         </pre>
                       </div>
-                      <div className="flex justify-end gap-2 mt-2">
-                        <button
-                          onClick={cancel}
-                          className="bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 px-3 py-1 rounded"
+                      {message?.click ? (
+                        <div
+                          className={`text-sm mt-2 font-medium ${
+                            message.click === "confirmed"
+                              ? "text-green-600"
+                              : "text-red-600"
+                          }`}
                         >
-                          Cancel
-                        </button>
+                          {message.click === "confirmed"
+                            ? "✅ Confirmed"
+                            : "❌ Cancelled"}
+                        </div>
+                      ) : (
+                        <div className="flex justify-end gap-2 mt-2">
+                          <button
+                            onClick={handleCancel}
+                            className="bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 px-3 py-1 rounded"
+                          >
+                            Cancel
+                          </button>
 
-                        <button
-                          onClick={confirm}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer"
-                        >
-                          Confirm
-                        </button>
-                      </div>
+                          <button
+                            onClick={handleConfirm}
+                            className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer"
+                          >
+                            Confirm
+                          </button>
+                        </div>
+                      )}
                     </div>
                   ) : (
                     <div
