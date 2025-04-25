@@ -2,7 +2,6 @@ import { ChatOpenAI } from "@langchain/openai";
 import { HumanMessage, SystemMessage } from "@langchain/core/messages";
 import dotenv from "dotenv";
 import { environment } from "../utils/config";
-import { MemorySaver } from "@langchain/langgraph";
 import { tools } from "../utils/agent.tools";
 dotenv.config();
 const openAIApiKey = environment.OPENAI_API_KEY!;
