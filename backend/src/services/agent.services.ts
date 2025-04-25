@@ -6,7 +6,6 @@ import { MemorySaver } from "@langchain/langgraph";
 import { tools } from "../utils/agent.tools";
 dotenv.config();
 const openAIApiKey = environment.OPENAI_API_KEY!;
-const checkpointSaver = new MemorySaver();
 const llm = new ChatOpenAI({
   model: "gpt-4o-mini",
   apiKey: openAIApiKey,
@@ -19,12 +18,6 @@ export async function runAIAgent({
   userPrompt: string;
   userAddress: string;
 }) {
-  const points = await checkpointSaver.get({
-    configurable: { thread_id: userAddress ?? "0x0001" },
-  });
-
-  console.log("Checkpoint:", points);
-
   const systemPrompt = new SystemMessage(
     `You are an assistant that converts user prompts into structured formats`
   );
