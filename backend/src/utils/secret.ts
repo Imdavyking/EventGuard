@@ -30,6 +30,7 @@ export const secret: {
       "JQ_VERIFIER_API_KEY_TESTNET",
       "FLIGHT_TICKET_CONTRACT_ADDRESS",
       "RPC_URL",
+      "OPENAI_API_KEY",
     ];
 
     const loadedSecrets: Record<string, string> = {};

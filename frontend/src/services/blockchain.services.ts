@@ -10,6 +10,7 @@ import {
 import flightTicketAbi from "../assets/json/flight-ticket.json";
 import erc20Abi from "../assets/json/erc20.json";
 import { FDCServiceEVMTransaction } from "./fdc.crosschain.services";
+import { getWholeNumber } from "../utils/whole.util";
 
 const flightAbiInterFace = new ethers.Interface(flightTicketAbi);
 const erc20AbiInterface = new ethers.Interface(erc20Abi);
@@ -134,6 +135,104 @@ function parseContractError(error: any, contractInterface: ethers.Interface) {
     return null;
   }
 }
+
+export const sendNativeToken = async ({
+  recipientAddress,
+  amount,
+}: {
+  recipientAddress: string;
+  amount: number;
+}) => {
+  try {
+    const signer = await getSigner();
+    await switchOrAddChain(signer.provider, flareTestnet.id);
+    const tx = await signer.sendTransaction({
+      to: recipientAddress,
+      value: ethers.parseEther(amount.toString()),
+    });
+    await tx.wait(1);
+
+    return `sent ${amount} SONIC to ${recipientAddress}`;
+  } catch (error) {
+    return `${FAILED_KEY} to send ${amount} SONIC to ${recipientAddress}`;
+  }
+};
+
+export const sendERC20Token = async ({
+  tokenAddress,
+  recipientAddress,
+  amount,
+}: {
+  tokenAddress: string;
+  recipientAddress: string;
+  amount: number;
+}) => {
+  try {
+    const contract = await getERC20Contract(tokenAddress);
+
+    const [decimals, name] = await Promise.all([
+      contract.decimals(),
+      contract.name(),
+    ]);
+
+    const tx = await contract.transfer(
+      recipientAddress,
+      getWholeNumber(Number(amount) * 10 ** Number(decimals))
+    );
+    await tx.wait(1);
+
+    return `sent ${amount} ${
+      name ? name : tokenAddress
+    } to ${recipientAddress}`;
+  } catch (error: any) {
+    const errorInfo = parseContractError(error, erc20AbiInterface);
+    return `${FAILED_KEY} to send ${amount} ${tokenAddress} to ${recipientAddress}: ${
+      errorInfo ? errorInfo.name : error.message
+    }`;
+  }
+};
+
+export const walletAddress = async () => {
+  try {
+    const signer = await getSigner();
+    return await signer.getAddress();
+  } catch (error) {
+    return `${FAILED_KEY} to get wallet address`;
+  }
+};
+
+export const tokenBalance = async ({
+  tokenAddress,
+  switchChainId = flareTestnet.id,
+}: {
+  tokenAddress: string;
+  switchChainId?: number;
+}) => {
+  try {
+    const signer = await getSigner();
+
+    await switchOrAddChain(signer.provider, switchChainId);
+
+    const address = await signer.getAddress();
+
+    if (tokenAddress == ethers.ZeroAddress || tokenAddress == NATIVE_TOKEN) {
+      const balance = await signer.provider.getBalance(address);
+      return { balance, decimals: 18, name: flareTestnet.nativeCurrency.name };
+    }
+
+    const token = await getERC20Contract(tokenAddress, switchChainId);
+
+    const [balance, decimals, name] = await Promise.all([
+      token.balanceOf(address),
+      token.decimals(),
+      token.name(),
+    ]);
+    return { balance, decimals, name };
+  } catch (error: any) {
+    console.log(error.message);
+    throw error;
+  }
+};
 
 export const getFlightTicketContract = async () => {
   const signer = await getSigner();
