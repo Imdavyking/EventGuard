@@ -8,7 +8,11 @@ import { MemorySaver } from "@langchain/langgraph";
 import { createReactAgent } from "@langchain/langgraph/prebuilt";
 dotenv.config();
 const openAIApiKey = environment.OPENAI_API_KEY!;
-
+const checkpointSaver = new MemorySaver();
+const llm = new ChatOpenAI({
+  model: "gpt-4o-mini",
+  apiKey: openAIApiKey,
+});
 export async function runAIAgent({
   userPrompt,
   userAddress,
@@ -48,12 +52,6 @@ export async function runAIAgent({
     }),
   };
 
-  const llm = new ChatOpenAI({
-    model: "gpt-4o-mini",
-    apiKey: openAIApiKey,
-  });
-
-  const checkpointSaver = new MemorySaver();
   const points = checkpointSaver.get({
     configurable: { thread_id: userAddress ?? "0x0001" },
   });
