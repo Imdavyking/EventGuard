@@ -208,6 +208,25 @@ export const tokenBalance = async ({
   tokenAddress: string;
   switchChainId?: number;
 }) => {
+  let tokenName;
+  try {
+    const { balance, decimals, name } = await _tokenBalance({
+      tokenAddress,
+      switchChainId,
+    });
+    tokenName = name;
+    return `${Number(balance) / 10 ** Number(decimals)} ${name}`;
+  } catch (error) {
+    return `${FAILED_KEY} to get ${tokenName} balance`;
+  }
+};
+export const _tokenBalance = async ({
+  tokenAddress,
+  switchChainId = flareTestnet.id,
+}: {
+  tokenAddress: string;
+  switchChainId?: number;
+}) => {
   try {
     const signer = await getSigner();
 
