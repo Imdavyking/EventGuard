@@ -14,7 +14,6 @@ const ChatWithAdminBot = () => {
   );
   const [userInput, setUserInput] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
-  const [lastUserInput, setLastUserInput] = useState("");
 
   const helpRef = useRef<HTMLDivElement>(null);
   const toggleRef = useRef<HTMLDivElement>(null);
@@ -52,11 +51,6 @@ const ChatWithAdminBot = () => {
 
   const handleSend = async () => {
     if (userInput.trim() !== "") {
-      const separator = " | --- | "; // Unique divider
-      const currentMessage = lastUserInput
-        ? `${lastUserInput}${separator}${userInput}`
-        : userInput;
-
       setMessages((prevMessages) => [
         ...prevMessages,
         { text: userInput, sender: "user" },
@@ -65,15 +59,8 @@ const ChatWithAdminBot = () => {
 
       try {
         setIsProcessing(true);
-        const { results, needsMoreData } = await agent.solveTask(
-          currentMessage
-        );
+        const { results } = await agent.solveTask(userInput);
 
-        if (needsMoreData) {
-          setLastUserInput(currentMessage);
-        } else {
-          setLastUserInput("");
-        }
         respondToUser(results);
       } catch (error: any) {
         toast.error(`Failed to perform action: ${error.message}`);

@@ -74,10 +74,11 @@ export async function runAIAgent({
       messages: [new HumanMessage(userPrompt), systemPrompt],
     },
     {
-      configurable: { thread_id: "0x0001" },
+      configurable: { thread_id: userAddress },
     }
   );
 
+  console.log("Reply:", reply);
   const agentReply = reply.messages[reply.messages.length - 1];
   console.log("Result:", agentReply);
   return agentReply;

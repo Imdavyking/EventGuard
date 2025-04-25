@@ -40,10 +40,12 @@ export class AIAgent {
 
   public async solveTask(userPrompt: string): Promise<any> {
     const userAddress = await walletAddress();
-    const action = await callLLMApi({
+    const llmResponse = await callLLMApi({
       userPrompt,
       userAddress,
     });
+
+    const action = llmResponse.kwargs;
 
     const results: string[] = [];
 
