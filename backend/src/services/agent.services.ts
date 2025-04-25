@@ -65,7 +65,7 @@ export async function runAIAgent({
   });
 
   const systemPrompt = new SystemMessage(
-    `You are an assistant that converts user prompts into structured formats, try to use tool_calls than content always.`
+    `You are an assistant that converts user prompts into structured formats`
   );
   const reply = await agent.invoke(
     {
