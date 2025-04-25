@@ -10,7 +10,6 @@ const ChatWithAdminBot = () => {
   const [isChatboxOpen, setIsChatboxOpen] = useState(false);
   const { prompt, confirm, cancel } = useConfirmationStore();
   const [isHelpOpen, setIsHelpOpen] = useState(false);
-  const [isConfirming, setIsConfirming] = useState(false);
 
   type Message = {
     sender: "user" | "bot" | "prompt";
@@ -205,29 +204,16 @@ const ChatWithAdminBot = () => {
                       <div className="flex justify-end gap-2 mt-2">
                         <button
                           onClick={cancel}
-                          className="bg-gray-300 hover:bg-gray-400 text-gray-800 px-3 py-1 rounded"
+                          className="bg-gray-300 cursor-pointer hover:bg-gray-400 text-gray-800 px-3 py-1 rounded"
                         >
                           Cancel
                         </button>
+
                         <button
-                          onClick={() => {
-                            try {
-                              setIsConfirming(true);
-                              confirm();
-                            } catch (error) {
-                            } finally {
-                              setIsConfirming(false);
-                            }
-                          }}
-                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded"
+                          onClick={confirm}
+                          className="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded cursor-pointer"
                         >
-                          {isConfirming ? (
-                            <div className="flex justify-center mt-8">
-                              <FaSpinner className="w-6 h-6 text-blue-500 animate-spin" />
-                            </div>
-                          ) : (
-                            "Confirm"
-                          )}
+                          Confirm
                         </button>
                       </div>
                     </div>
