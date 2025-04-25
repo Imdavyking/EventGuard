@@ -5,7 +5,6 @@ import {
   FAILED_KEY,
   FLIGHT_TICKET_CONTRACT_ADDRESS,
   NATIVE_TOKEN,
-  USDC_SEPOLIA,
 } from "../utils/constants";
 import flightTicketAbi from "../assets/json/flight-ticket.json";
 import erc20Abi from "../assets/json/erc20.json";
@@ -481,12 +480,15 @@ const useSepoliaUSCPay = async (flightId: string): Promise<string> => {
       );
       return `Transaction already exists for flightId ${flightId}: ${savedUSDCTransaction.hash}`;
     }
-    const usdPrice = await getFlightPriceUSD(flightId);
+    const usdPrice = Number(await getFlightPriceUSD(flightId));
+    const USDC_SEPOLIA = await getUSDCSepoliaAddress();
     const tokenContract = await getERC20Contract(USDC_SEPOLIA, sepolia.id);
+    const decimals = Number(await tokenContract.decimals());
 
+    const amount = (usdPrice * 10 ** decimals) / 100;
     const transferTx = await tokenContract.transfer(
       FLIGHT_TICKET_CONTRACT_ADDRESS,
-      usdPrice
+      amount.toString()
     );
 
     const receipt = await transferTx.wait(1);
