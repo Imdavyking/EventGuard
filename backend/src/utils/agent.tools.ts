@@ -1,7 +1,18 @@
 import { tool } from "@langchain/core/tools";
 import { z } from "zod";
+import { NATIVE_TOKEN } from "./constants";
 
 const userTools = {
+  walletBalance: tool(() => undefined, {
+    name: "QRY_WALLET_BALANCE",
+    description: "Get the wallet balance.",
+    schema: z.object({
+      tokenAddress: z
+        .string()
+        .describe("The native token address")
+        .default(NATIVE_TOKEN),
+    }),
+  }),
   tokenBalance: tool(() => undefined, {
     name: "QRY_TOKEN_BAL",
     description: "Get the balance of a token in a wallet.",

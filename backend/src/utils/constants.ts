@@ -8,3 +8,5 @@ export const allowedOrigins = [
   new URL("http://localhost:3000").origin,
   new URL(FRONTEND_URL!).origin,
 ];
+
+export const NATIVE_TOKEN = "0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE";

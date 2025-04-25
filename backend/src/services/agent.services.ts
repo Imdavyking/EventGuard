@@ -44,8 +44,16 @@ export async function runAIAgent({
     llm: llmWithTools,
     memory,
   });
-  const res = await chain.call({ input: userPrompt });
-  console.log(res.response);
+  const res = await chain.invoke(
+    { input: userPrompt },
+    {
+      configurable: { thread_id: userAddress },
+    }
+  );
 
-  return { content: result.content, tool_calls: result.tool_calls };
+  return {
+    content: result.content,
+    tool_calls: result.tool_calls,
+    res,
+  };
 }

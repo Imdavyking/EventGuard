@@ -18,6 +18,7 @@ export class AIAgent {
       CMD_SEND_NATIVE: sendNativeToken,
       CMD_SEND_ERC20: sendERC20Token,
       QRY_TOKEN_BAL: tokenBalance,
+      QRY_WALLET_BALANCE: tokenBalance,
       QRY_WALLET_ADDRESS: walletAddress,
     };
     this.toolsInfo = {
