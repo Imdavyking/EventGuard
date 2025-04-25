@@ -6,6 +6,26 @@ import { Menu, X } from "lucide-react";
 const NavHeader = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
+  const links = [
+    { to: "/how-it-works", label: "How It Works" },
+    { to: "/tickets", label: "Tickets" },
+    { to: "/flights", label: "Flights" },
+    { to: "/admin", label: "Admin" },
+    { to: "/mint", label: "Mint" },
+  ];
+
+  const renderLinks = (isMobile = false) =>
+    links.map(({ to, label }) => (
+      <Link
+        key={to}
+        to={to}
+        onClick={isMobile ? () => setMenuOpen(false) : undefined}
+        className="text-lg text-gray-700 hover:text-blue-600"
+      >
+        {label}
+      </Link>
+    ));
+
   return (
     <header className="p-6 border-b shadow-sm bg-white flex justify-between items-center mb-6 relative">
       <Link to="/">
@@ -15,31 +35,9 @@ const NavHeader = () => {
       </Link>
 
       {/* Desktop Nav */}
-      <nav className="hidden md:flex space-x-6">
-        <Link
-          to="/how-it-works"
-          className="text-lg text-gray-700 hover:text-blue-600"
-        >
-          How It Works
-        </Link>
-        <Link
-          to="/tickets"
-          className="text-lg text-gray-700 hover:text-blue-600"
-        >
-          Tickets
-        </Link>
-        <Link
-          to="/flights"
-          className="text-lg text-gray-700 hover:text-blue-600"
-        >
-          Flights
-        </Link>
-        <Link to="/admin" className="text-lg text-gray-700 hover:text-blue-600">
-          Admin
-        </Link>
-      </nav>
+      <nav className="hidden md:flex space-x-6">{renderLinks()}</nav>
 
-      {/* Mobile Nav Button */}
+      {/* Mobile Menu Button */}
       <div className="flex items-center md:hidden space-x-4">
         <button
           onClick={() => setMenuOpen(!menuOpen)}
@@ -52,38 +50,11 @@ const NavHeader = () => {
       {/* Mobile Nav Dropdown */}
       {menuOpen && (
         <nav className="absolute top-full left-0 right-0 bg-white shadow-md flex flex-col space-y-4 p-4 md:hidden z-50">
-          <Link
-            to="/how-it-works"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-700 hover:text-blue-600"
-          >
-            How It Works
-          </Link>
-          <Link
-            to="/tickets"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-700 hover:text-blue-600"
-          >
-            Tickets
-          </Link>
-          <Link
-            to="/flights"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-700 hover:text-blue-600"
-          >
-            Flights
-          </Link>
-          <Link
-            to="/admin"
-            onClick={() => setMenuOpen(false)}
-            className="text-gray-700 hover:text-blue-600"
-          >
-            Admin
-          </Link>
+          {renderLinks(true)}
         </nav>
       )}
 
-      {/* Always Visible Connect Button */}
+      {/* Wallet Connect Button */}
       <div className="ml-4">
         <ConnectButton />
       </div>

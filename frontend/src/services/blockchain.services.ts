@@ -373,8 +373,11 @@ export const mintUSDCFlare = async () => {
     const flightTicket = await getFlightTicketContract();
     const usdcFlareAddress = await flightTicket.USDC_FLARE_CONTRACT();
     const usdcFlare = await getERC20Contract(usdcFlareAddress, flareTestnet.id);
-    const decimals = await usdcFlare.decimals();
-    const transaction = await usdcFlare.mint(10 * 10 ** decimals);
+    const decimals = Number(await usdcFlare.decimals());
+    const signer = await getSigner();
+    const owner = await signer.getAddress();
+    const amount = (10 * 10 ** decimals).toString();
+    const transaction = await usdcFlare.mint(owner, amount);
 
     const receipt = await transaction.wait(1);
     return `Minted token with: ${receipt!.hash}`;
@@ -390,8 +393,11 @@ export const mintUSDCSepolia = async () => {
     const flightTicket = await getFlightTicketContract();
     const usdcFlareAddress = await flightTicket.USDC_SEPOLIA_CONTRACT();
     const usdcFlare = await getERC20Contract(usdcFlareAddress, sepolia.id);
-    const decimals = await usdcFlare.decimals();
-    const transaction = await usdcFlare.mint(10 * 10 ** decimals);
+    const decimals = Number(await usdcFlare.decimals());
+    const signer = await getSigner();
+    const owner = await signer.getAddress();
+    const amount = (10 * 10 ** decimals).toString();
+    const transaction = await usdcFlare.mint(owner, amount);
     const receipt = await transaction.wait(1);
     return `Minted token with: ${receipt!.hash}`;
   } catch (error: any) {

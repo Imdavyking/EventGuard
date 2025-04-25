@@ -5,6 +5,7 @@ import NotFound from "../views/not-found/main";
 import FlightTickets from "../views/flight-tickets/tickets";
 import AdminDashboard from "../views/admin/main";
 import GetFlights from "../views/flight-tickets/get-flights";
+import Mint from "../views/mint/main";
 function Router() {
   const routes = [
     {
@@ -23,10 +24,13 @@ function Router() {
       path: "/flights",
       element: <GetFlights />,
     },
-
     {
       path: "/admin",
       element: <AdminDashboard />,
+    },
+    {
+      path: "/mint",
+      element: <Mint />,
     },
     {
       path: "*",
