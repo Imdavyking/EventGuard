@@ -368,6 +368,39 @@ export const payUSDCSepoliaForFlight = async ({
   }
 };
 
+export const mintUSDCFlare = async () => {
+  try {
+    const flightTicket = await getFlightTicketContract();
+    const usdcFlareAddress = await flightTicket.USDC_FLARE_CONTRACT();
+    const usdcFlare = await getERC20Contract(usdcFlareAddress, flareTestnet.id);
+    const decimals = await usdcFlare.decimals();
+    const transaction = await usdcFlare.mint(10 * 10 ** decimals);
+
+    const receipt = await transaction.wait(1);
+    return `Minted token with: ${receipt!.hash}`;
+  } catch (error: any) {
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
+  }
+};
+
+export const mintUSDCSepolia = async () => {
+  try {
+    const flightTicket = await getFlightTicketContract();
+    const usdcFlareAddress = await flightTicket.USDC_SEPOLIA_CONTRACT();
+    const usdcFlare = await getERC20Contract(usdcFlareAddress, sepolia.id);
+    const decimals = await usdcFlare.decimals();
+    const transaction = await usdcFlare.mint(10 * 10 ** decimals);
+    const receipt = await transaction.wait(1);
+    return `Minted token with: ${receipt!.hash}`;
+  } catch (error: any) {
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
+  }
+};
+
 export const refundTicket = async ({
   flightId,
   proof,
