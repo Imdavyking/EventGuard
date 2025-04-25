@@ -309,7 +309,6 @@ export const payForFlight = async ({
 }) => {
   try {
     const flightTicket = await getFlightTicketContract();
-
     const flightDetails = await flightTicket.flights(flightId);
     const usdPrice = flightDetails[3];
     const tokenPrice = await flightTicket.getUsdToTokenPrice(token, usdPrice);
