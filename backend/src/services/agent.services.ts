@@ -5,7 +5,6 @@ import { z } from "zod";
 import dotenv from "dotenv";
 import { environment } from "../utils/config";
 import { MemorySaver } from "@langchain/langgraph";
-import { createReactAgent } from "@langchain/langgraph/prebuilt";
 dotenv.config();
 const openAIApiKey = environment.OPENAI_API_KEY!;
 const checkpointSaver = new MemorySaver();
@@ -52,32 +51,20 @@ export async function runAIAgent({
     }),
   };
 
-  const points = checkpointSaver.get({
+  const points = await checkpointSaver.get({
     configurable: { thread_id: userAddress ?? "0x0001" },
   });
 
   console.log("Checkpoint:", points);
 
-  const agent = createReactAgent({
-    llm,
-    tools: Object.values(tools),
-    checkpointSaver,
-  });
-
   const systemPrompt = new SystemMessage(
     `You are an assistant that converts user prompts into structured formats`
   );
-  const reply = await agent.invoke(
-    {
-      messages: [new HumanMessage(userPrompt), systemPrompt],
-    },
-    {
-      configurable: { thread_id: userAddress },
-    }
-  );
+  const result = await llm
+    .bind({
+      tools: Object.values(tools),
+    })
+    .invoke([systemPrompt, new HumanMessage(userPrompt)]);
 
-  console.log("Reply:", reply);
-  const agentReply = reply.messages[reply.messages.length - 1];
-  console.log("Result:", agentReply);
-  return agentReply;
+  return { content: result.content, tool_calls: result.tool_calls };
 }

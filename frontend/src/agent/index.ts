@@ -15,10 +15,10 @@ export class AIAgent {
 
   constructor() {
     this.tools = {
-      sendNativeToken,
-      sendERC20Token,
-      tokenBalance,
-      walletAddress,
+      CMD_SEND_NATIVE: sendNativeToken,
+      CMD_SEND_ERC20: sendERC20Token,
+      QRY_TOKEN_BAL: tokenBalance,
+      QRY_WALLET_ADDRESS: walletAddress,
     };
     this.toolsInfo = {
       sendNativeToken:
@@ -40,12 +40,10 @@ export class AIAgent {
 
   public async solveTask(userPrompt: string): Promise<any> {
     const userAddress = await walletAddress();
-    const llmResponse = await callLLMApi({
+    const action = await callLLMApi({
       userPrompt,
       userAddress,
     });
-
-    const action = llmResponse.kwargs;
 
     const results: string[] = [];
 
