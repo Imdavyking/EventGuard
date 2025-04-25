@@ -134,14 +134,12 @@ contract FlightTicket is Ownable, ReentrancyGuard {
     constructor() {
         randomV2 = ContractRegistry.getRandomNumberV2();
         ftsoV2 = ContractRegistry.getTestFtsoV2();
-        // USDC usdc = new USDC();
-        // USDC_FLARE_CONTRACT = address(usdc);
-        // tokenToFeedId[USDC_FLARE_CONTRACT] = USDCUSD;
         tokenToFeedId[NATIVE_TOKEN] = FLRUSD;
     }
 
     function setUSDCFlareContract(address _usdcFlareContract) public onlyOwner {
         USDC_FLARE_CONTRACT = _usdcFlareContract;
+        tokenToFeedId[USDC_FLARE_CONTRACT] = USDCUSD;
     }
 
     function isJsonApiProofValid(
