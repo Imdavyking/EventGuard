@@ -131,8 +131,10 @@ export async function getEVMTransactionAttestation(transactionHash: string) {
   return data;
 }
 
-export async function getJsonAttestation(flightId: string) {
-  const apiUrl = `https://eventguard.onrender.com/api/flight/status/${flightId}`;
+export async function getJsonAttestation(flightId: string, baseUrl: string) {
+  const apiUrl = `${baseUrl}/api/flight/status/${flightId}`;
+
+  console.log("API URL:", apiUrl, "\n");
 
   const postprocessJq = `{
   flightId: .data.flight_id,

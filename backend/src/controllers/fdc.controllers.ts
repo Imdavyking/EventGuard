@@ -9,7 +9,8 @@ dotenv.config();
 export const getJsonProof = async (req: Request, res: Response) => {
   try {
     const { flightId } = req.params;
-    const data = await getJsonAttestation(flightId);
+    const baseUrl = `${req.protocol}://${req.get("host")}`;
+    const data = await getJsonAttestation(flightId, baseUrl);
     res.json({ data });
     return;
   } catch (error) {
