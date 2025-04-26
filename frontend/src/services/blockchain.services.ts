@@ -427,7 +427,10 @@ export const refundTicket = async ({
 }) => {
   try {
     const flightTicket = await getFlightTicketContract();
-    const transaction = await flightTicket.refundTicket(flightId, proof);
+    const transaction = await flightTicket.refundTicketByPass(flightId, proof);
+    // const transaction = await flightTicket.refundTicket(flightId, proof);
+
+    // refundTicketByPass
 
     const receipt = await transaction.wait(1);
     return `Created Flight with: ${receipt!.hash}`;

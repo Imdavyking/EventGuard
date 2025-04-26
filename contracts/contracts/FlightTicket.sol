@@ -237,12 +237,12 @@ contract FlightTicket is Ownable, ReentrancyGuard {
 
         // Refund the ticket amount
         if (ticket.token == NATIVE_TOKEN) {
-            (bool success, ) = msg.sender.call{value: ticket.amountSent}("");
+            (bool success, ) = ticket.payer.call{value: ticket.amountSent}("");
             if (!success) {
                 revert FlightTicket__SendingFailed();
             }
         } else {
-            IERC20(ticket.token).safeTransfer(msg.sender, ticket.amountSent);
+            IERC20(ticket.token).safeTransfer(ticket.payer, ticket.amountSent);
         }
 
         // Emit an event for the refund (you need to define this event)
@@ -256,7 +256,70 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             "Refunded",
             ticket.amountSent,
             ticket.token,
-            msg.sender
+            ticket.payer
+        );
+    }
+
+    function refundTicketByPass(
+        uint256 ticketId,
+        IJsonApi.Proof calldata _proof
+    ) external nonReentrant onlyOwner {
+        if (!isJsonApiProofValid(_proof)) {
+            revert FlightTicket__InvalidJsonProof();
+        }
+
+        Ticket memory ticket = tickets[ticketId];
+
+        DataTransportObject memory dto = abi.decode(
+            _proof.data.responseBody.abi_encoded_data,
+            (DataTransportObject)
+        );
+
+        if (
+            keccak256(bytes(getUrlFromFlightId(ticket.flightId))) ==
+            keccak256(bytes(_proof.data.requestBody.url))
+        ) {
+            revert FlightTicket__UrlNotSupported();
+        }
+
+        if (dto.flightId != ticket.flightId) {
+            revert FlightTicket__TicketNotSameAsData();
+        }
+
+        if (keccak256(bytes(dto.status)) == keccak256(bytes("On Time"))) {
+            revert FlightTicket__FlightWentSuccessfully();
+        }
+
+        // Check if the ticket has already been refunded
+        if (ticket.isWithdrawn) {
+            revert FlightTicket__TicketAlreadyRefunded();
+        }
+
+        // Mark the ticket as refunded
+        tickets[ticketId].isWithdrawn = true;
+
+        // Refund the ticket amount
+        if (ticket.token == NATIVE_TOKEN) {
+            (bool success, ) = ticket.payer.call{value: ticket.amountSent}("");
+            if (!success) {
+                revert FlightTicket__SendingFailed();
+            }
+        } else {
+            IERC20(ticket.token).safeTransfer(ticket.payer, ticket.amountSent);
+        }
+
+        // Emit an event for the refund (you need to define this event)
+        emit FlightTicketWithdrawn(
+            ticketId,
+            ticket.flightId,
+            ticket.route,
+            ticket.date,
+            block.timestamp,
+            dto.description,
+            "Refunded",
+            ticket.amountSent,
+            ticket.token,
+            ticket.payer
         );
     }
 
