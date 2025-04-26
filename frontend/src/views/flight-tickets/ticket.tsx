@@ -110,7 +110,8 @@ const Ticket = ({ ticket }: any) => {
             Status: {status?.reason_for_delay?.description || "Processed"}
           </p>
           <button
-            disabled={isCheckingStatus || status.status === "On Time"}
+            disabled={isCheckingStatus}
+            // disabled={isCheckingStatus || status.status === "On Time"}
             onClick={async () => {
               await getFlightProof(ticket.flightId);
             }}
@@ -125,7 +126,7 @@ const Ticket = ({ ticket }: any) => {
                 <FaSpinner className="w-6 h-6 text-blue-500 animate-spin self-center" />
               </div>
             ) : status.status === "On Time" ? (
-              "Flight On Time"
+              "Flight On Time (Refund)"
             ) : (
               "Flight Canceled (Refund)"
             )}
