@@ -1,151 +1,164 @@
-# ✈️ EventGuard – Autonomous Flight Delay Refunds Powered by Flight Status Data
+# ✈️ EventGuard — Autonomous Flight Delay Refunds, Powered by Real-Time Data
 
-> _"Travel protection that just works — automated, trustless, and on-chain."_
+> _"Travel protection that just works — automated, trustless, and fully on-chain."_
 
 ---
 
 ## 🧩 What is EventGuard?
 
-**EventGuard** is a decentralized application (dApp) built on the **Flare Network** that enables **on-chain refunds** for **flight delays or cancellations** — no paperwork, no waiting, and no airline customer support needed.
+**EventGuard** is a decentralized application (**dApp**) built on the **Flare Network** that enables **instant, on-chain refunds** for **flight delays and cancellations** — no paperwork, no call centers, no waiting.
 
-By leveraging real-time **Flight API data**, EventGuard allows users to **initiate smart contract-based claims** when a flight is officially reported as **delayed** or **cancelled**.
+By integrating **real-time flight data** via trusted APIs and **cross-chain payment capabilities**, EventGuard allows travelers to **buy protection**, **monitor flight status**, and **claim refunds automatically** — all governed by **tamper-proof smart contracts**.
 
 ---
 
 ## 🌍 The Problem We Solve
 
-Flight disruptions are a major pain point for travelers. Traditional compensation processes are:
+Flight disruptions cost travelers time, money, and peace of mind. Traditional compensation processes are:
 
-- 🐌 **Slow** — Manual claims, long response times
-- 🎲 **Inconsistent** — Varies between airlines and jurisdictions
-- ❌ **Opaque** — Poor communication and limited transparency
+- 🐌 **Slow** — Lengthy, manual claims and long waiting periods
+- 🎲 **Inconsistent** — Varies between airlines, routes, and legal systems
+- ❌ **Opaque** — Little transparency, confusing terms, endless support calls
 
 ---
 
 ## ✅ Our Solution
 
-**EventGuard** offers a **frictionless, automated verification layer for flight protection**:
+**EventGuard** delivers **frictionless, fully-automated flight protection**:
 
-- ✈️ Flight status fetched in real-time via trusted APIs
-- 🤖 Smart contracts verify disruption conditions on-chain
-- 🔐 Trustless and tamper-proof logic
-- 💸 Cryptocurrency refunds, processed on-demand
+- ✈️ Real-time flight monitoring via trusted APIs
+- 🔗 Blockchain-based logic with smart contracts
+- 💸 Instant payouts in stablecoins — no intermediaries
+- 🌉 Cross-chain support — **pay and claim across different blockchains**
 
 ---
 
 ## 🔧 How It Works
 
-1. **🎫 Buy Coverage**  
-   Purchase a Flight Protection Ticket that is stored on-chain and linked to your wallet.
+1. **🎫 Purchase Protection**  
+   Buy a **Flight Protection Pass** using stablecoins like USDC (on Sepolia or Flare) — stored securely on-chain, linked to your wallet.
 
-2. **📡 Monitor Status**  
-   Our backend checks real-time flight data using a reliable **Flight Status API**.
+2. **📡 Real-Time Flight Monitoring**  
+   EventGuard’s backend tracks your flight through a **Flight Status API** via the **Flare Data Connector (FDC)**.
 
-3. **⚠️ Detect Trigger**  
-   If your flight is marked `'Cancelled'` or `'Delayed'`, the system allows you to **initiate a claim**.
+3. **⚠️ Automated Disruption Detection**  
+   If your flight is reported as **'Delayed'** or **'Cancelled'**, a claim becomes available immediately.
 
-4. **💰 On-Demand Payout**  
-   You trigger the refund via the smart contract UI, which checks the flight status again and sends stablecoin compensation (e.g., USDT) to your wallet if eligible.
+4. **💰 On-Demand, Verified Payouts**  
+   With a simple click, EventGuard revalidates the flight status on-chain and triggers a **smart contract payout** directly to your wallet — in stablecoins like USDT, instantly.
+
+---
+
+## 🌐 Cross-Chain Magic
+
+EventGuard isn't limited to one blockchain:
+
+- **Multi-Chain Payments**: Buy protection using **USDC on Sepolia** (Ethereum testnet) or **FLR on Flare**.
+- **Cross-Chain Claims**: Smart contracts check proofs from multiple chains using the **Flare Data Connector (FDC)**.
+- **Oracles & Bridges**: Use decentralized oracles (**FTSO**) for price feeds and secure cross-chain data validation.
+
+> _No matter where your tokens are — your protection works seamlessly._
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer           | Tools & Technologies                             |
-| --------------- | ------------------------------------------------ |
-| **Blockchain**  | Flare Network (EVM-compatible)                   |
-| **Data Feeds**  | Flight Status API via Flare Data Connector (FDC) |
-| **Smart Logic** | Solidity smart contracts                         |
-| **Frontend**    | React, Web3, WalletConnect                       |
-| **Pricing**     | Flare Time Series Oracle (FTSO)                  |
-| **Randomness**  | RandomNumberV2Interface (random flight IDs)      |
+| Layer               | Tools & Technologies                                        |
+| ------------------- | ----------------------------------------------------------- |
+| **Blockchain**      | Flare Network (EVM-compatible), Sepolia (ETH)               |
+| **Cross-Chain**     | Flare Data Connector (FDC), Flare Time Series Oracle (FTSO) |
+| **Data Feeds**      | Flight Status APIs (Real-Time Monitoring)                   |
+| **Smart Contracts** | Solidity                                                    |
+| **Frontend**        | React, Web3.js, WalletConnect                               |
+| **Randomness**      | RandomNumberV2Interface (Random Flight IDs)                 |
 
 ---
 
-## 🌟 Features
+## 🌟 Key Features
 
 - **✈️ Verified Flight-Based Refunds**  
-  Smart contracts check real-time flight status for eligibility.
+  Real-time disruption detection triggers instant payouts.
 
-- **🎟️ Protection Passes**  
-  Travelers mint a unique coverage NFT linked to their flight.
+- **🎟️ Protection Pass NFTs**  
+  Unique, on-chain passes linked to individual flights.
 
-- **🔐 On-Chain Logic**  
-  Transparent and secure — no trust needed in airlines or insurers.
+- **🔐 Trustless Smart Contract Logic**  
+  Full transparency — no middlemen, no disputes.
 
-- **💵 Stablecoin Refunds**  
-  On-demand compensation using live pricing from FTSO.
+- **💵 Stablecoin Payouts**  
+  Refunded in USDT or other supported tokens, pegged to real-world value.
 
-- **🌐 Multi-Crypto Support**  
-  Pay for protection using various tokens, thanks to FTSO oracles.
+- **🌉 Seamless Cross-Chain Integration**  
+  Pay and claim across Flare and Sepolia using secure FDC bridges.
 
-- **🎲 Random Flight IDs**  
-  Uses `RandomNumberV2Interface` to generate unique flight IDs.
+- **🎲 Randomized Flight ID Assignment**  
+  Fair randomness to avoid ticket manipulation.
 
-- **📡 Real-Time Validation**  
-  FDC (Flare Data Connector) ensures refund claims are based on official flight status.
+- **📡 Real-Time Status Validation**  
+  Claims only trigger if validated by official flight data.
 
 - **🎁 Gamified Airdrops**  
-  Surprise rewards via Flare RNG for participating users.
+  Random bonus rewards for users, fueled by Flare RNG.
 
 ---
 
-## 🚀 **Start the Application**
+## 🚀 Quickstart: Launch the App
 
-### 1️⃣ **Start with Docker**
+### 1️⃣ Local Development (with Docker)
 
 - **Ensure Docker is installed and running.**
-- **Set up secrets from `.env`**
+- **Generate environment secrets:**
 
-  ```sh
+  ```bash
   sh create-secrets.sh
   ```
 
-📌 _Ensure the `.env` file exists and is configured in both the backend and frontend directories before running this script!_
+📌 _Be sure your `.env` files are properly configured for backend and frontend._
 
-- **To start the backend and related services (MongoDB), run:**
+- **Start backend, frontend, and MongoDB services:**
 
   ```bash
   docker compose up
   ```
 
-- The application will be accessible at **`localhost:5173`**.
+- Access the dApp at **`localhost:5173`**!
 
 ---
 
 ## 🧪 Demo Walkthrough
 
-1. 🔗 Connect wallet
-2. 🛫 Enter flight details & mint a Protection NFT
-3. 🛰️ System monitors flight via FDC
-4. ⚠️ If status = delayed or cancelled → UI prompts "claim refund"
-5. 👆 User clicks "Claim" → Smart contract validates & sends refund
+1. 🔗 Connect your crypto wallet
+2. 🛫 Enter your flight information and purchase a Protection Pass
+3. 🛰️ Backend monitors your flight in real-time
+4. ⚠️ Upon disruption, UI alerts you to **Claim Refund**
+5. 👆 One-click claim → smart contract verifies → **Stablecoin payout lands in your wallet**
 
 ---
 
 ## 🔭 Roadmap & Future Scope
 
-- 🌍 Expand support to international and connecting flights
-- 🚄 Add protection for other travel types: trains, ferries, buses
-- 🤝 Partner with travel booking platforms and aggregators
-- 🧾 Offer user-friendly dashboards with travel claim history
+- 🌍 Expand to global flights, including multi-leg and connecting trips
+- 🚄 Add protection for trains, ferries, buses, and more
+- 🤝 Partner with travel aggregators and airlines for direct integration
+- 📊 Build dashboards for travelers to track claims and rewards
+- 🛫 Integrate decentralized travel insurance pools
 
 ---
 
 ## 📜 License
 
-MIT License — open-source and community-friendly.
+Released under the **MIT License** — open-source and built for the community.
 
 ---
 
 ## 💬 Feedback
 
-> _“Real-time data and smart contracts enabled us to create a seamless, self-service protection tool — no call centers or paperwork, just peace of mind.”_
+> _"Real-time data, cross-chain support, and smart contracts — finally, a travel protection solution built for the future."_
 
 ---
 
-## 👨‍💻 Built By
+## 👨‍💻 Built With Passion
 
-With 💙 and obsession for frictionless UX.
+- **DavyKing** — Blockchain Developer & Smart Contract Engineer 💙
 
-- **DavyKing** — Blockchain Developer & Smart Contract Engineer
+---

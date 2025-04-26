@@ -85,7 +85,7 @@ const Ticket = ({ ticket }: any) => {
       className="border p-6 rounded-2xl shadow hover:shadow-lg transition bg-white"
     >
       <h3 className="text-2xl font-semibold">
-        Flight {ticket.flightId.slice(0, 6)}...
+        Ticket {ticket.ticketId.slice(0, 6)}...
       </h3>
       <p className="text-sm text-gray-500">
         {formatDate(ticket.date)} • {ticket.route}

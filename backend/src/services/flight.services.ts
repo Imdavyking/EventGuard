@@ -14,21 +14,13 @@ export async function getFlightStatus(flightId: string) {
 
     if (currentTime! < flightTime) {
       return {
-        status: "Canceled",
+        status: "On Time",
         reason_for_delay: {
-          type: "Technical",
-          description: "Aircraft maintenance required before departure.",
+          type: "",
+          description: "",
         },
         flight_id: flightId,
       };
-      // return {
-      //   status: "On Time",
-      //   reason_for_delay: {
-      //     type: "",
-      //     description: "",
-      //   },
-      //   flight_id: flightId,
-      // };
     }
 
     const flightStatusModel = await FlightStatusModel.findOne({
