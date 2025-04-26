@@ -322,9 +322,10 @@ export const payForFlight = async ({
         FLIGHT_TICKET_CONTRACT_ADDRESS
       );
       if (allowance < tokenPrice) {
+        const price = Number(tokenPrice) + 0.01 * Number(tokenPrice);
         const approveTx = await tokenContract.approve(
           FLIGHT_TICKET_CONTRACT_ADDRESS,
-          tokenPrice
+          price.toString()
         );
         await approveTx.wait(1);
       }
