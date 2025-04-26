@@ -427,8 +427,8 @@ export const refundTicket = async ({
 }) => {
   try {
     const flightTicket = await getFlightTicketContract();
-    const transaction = await flightTicket.refundTicketByPass(flightId, proof);
-    // const transaction = await flightTicket.refundTicket(flightId, proof);
+    // const transaction = await flightTicket.refundTicketByPass(flightId, proof);
+    const transaction = await flightTicket.refundTicket(flightId, proof);
 
     // refundTicketByPass
 
