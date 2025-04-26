@@ -440,6 +440,20 @@ export const refundTicket = async ({
     return `${FAILED_KEY}${parsedError ?? error.message}`;
   }
 };
+export const setHostName = async () => {
+  try {
+    console.log("Setting host name to:", BACKEND_URL);
+    const flightTicket = await getFlightTicketContract();
+    const transaction = await flightTicket.setHostName(BACKEND_URL);
+
+    const receipt = await transaction.wait(1);
+    return `Created Flight with: ${receipt!.hash}`;
+  } catch (error: any) {
+    const parsedError = parseContractError(error, flightAbiInterFace);
+    console.error(`${FAILED_KEY}${parsedError ?? error.message}`);
+    return `${FAILED_KEY}${parsedError ?? error.message}`;
+  }
+};
 
 const getFlightPriceUSD = async (flightId: string) => {
   const flightTicket = await getFlightTicketContract();
