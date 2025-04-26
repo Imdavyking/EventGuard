@@ -330,10 +330,12 @@ contract FlightTicket is Ownable, ReentrancyGuard {
             address sender = address(uint160(uint256(_event.topics[1])));
             // Topic 2 is the receiver
             address receiver = address(uint160(uint256(_event.topics[2])));
-            // Topic 3 is the amount
-            uint256 amount = uint256(_event.topics[2]);
             // Data is the amount
             uint256 value = abi.decode(_event.data, (uint256));
+
+            if (amountInUsd * 10000 != value) {
+                revert FlightTicket__NotCorrectAmount();
+            }
 
             Flight memory flight = flights[flightId];
             if (flight.id == 0) {
@@ -355,17 +357,10 @@ contract FlightTicket is Ownable, ReentrancyGuard {
                 );
             }
 
-            if (amount < flight.amountInUsd) {
+            if (value < amountInUsd * 10000) {
                 revert FlightTicket__NotCorrectAmount();
             }
 
-            if (value > 0) {
-                revert FlightTicket__AlreadyPayingWithToken(
-                    USDC_SEPOLIA_CONTRACT
-                );
-            }
-
-            // create a flight ticket
             uint256 ticketId = generateUniqueId();
             Ticket memory newTicket = Ticket({
                 ticketId: ticketId,
