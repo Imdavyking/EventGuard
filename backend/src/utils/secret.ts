@@ -32,6 +32,7 @@ export const secret: {
       "RPC_URL",
       "OPENAI_API_KEY",
       "FDC_VERIFIER_URL_TESTNET",
+      "FDC_VERIFIER_API_KEY_TESTNET",
     ];
 
     const loadedSecrets: Record<string, string> = {};

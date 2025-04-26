@@ -4,6 +4,7 @@ const {
   JQ_VERIFIER_URL_TESTNET,
   JQ_VERIFIER_API_KEY_TESTNET,
   FDC_VERIFIER_URL_TESTNET,
+  FDC_VERIFIER_API_KEY_TESTNET,
 } = environment;
 
 class Base {
@@ -85,7 +86,7 @@ async function prepareAttestationRequestEVMTransaction(
   const verifierUrlBase = FDC_VERIFIER_URL_TESTNET;
 
   const url = `${verifierUrlBase}verifier/${urlTypeBase}/EVMTransaction/prepareRequest`;
-  const apiKey = JQ_VERIFIER_API_KEY_TESTNET!;
+  const apiKey = FDC_VERIFIER_API_KEY_TESTNET!;
 
   return await base.prepareAttestationRequestBase(
     url,
