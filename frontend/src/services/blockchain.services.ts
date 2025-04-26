@@ -531,6 +531,8 @@ const submitSepoliaProofForFlight = async (flightId: string): Promise<any> => {
 
     const { data } = await res.json();
     console.log("Fetched proof data:", data);
+    const signer = await getSigner();
+    await switchOrAddChain(signer.provider, flareTestnet.id);
 
     const fdcService = new FDCServiceEVMTransaction();
     const proof = await fdcService.getDataAndStoreProof(data);
