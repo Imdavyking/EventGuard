@@ -353,7 +353,7 @@ contract FlightTicket is Ownable, ReentrancyGuard {
                 );
             }
 
-            if (value < amountInUsd * 10000) {
+            if (value < flight.amountInUsd * 10000) {
                 revert FlightTicket__NotCorrectAmount();
             }
 
