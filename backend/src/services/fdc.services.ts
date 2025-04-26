@@ -1,7 +1,11 @@
 import { environment } from "../utils/config";
 
-const { JQ_VERIFIER_URL_TESTNET, JQ_VERIFIER_API_KEY_TESTNET } = environment;
-const verifierUrlBase = JQ_VERIFIER_URL_TESTNET;
+const {
+  JQ_VERIFIER_URL_TESTNET,
+  JQ_VERIFIER_API_KEY_TESTNET,
+  FDC_VERIFIER_URL_TESTNET,
+} = environment;
+
 class Base {
   toHex(data: string) {
     var result = "";
@@ -78,6 +82,8 @@ async function prepareAttestationRequestEVMTransaction(
     logIndices: logIndices,
   };
 
+  const verifierUrlBase = FDC_VERIFIER_URL_TESTNET;
+
   const url = `${verifierUrlBase}verifier/${urlTypeBase}/EVMTransaction/prepareRequest`;
   const apiKey = JQ_VERIFIER_API_KEY_TESTNET!;
 
@@ -105,7 +111,7 @@ async function prepareAttestationRequestJson(
     postprocessJq: postprocessJq,
     abi_signature: abiSignature,
   };
-
+  const verifierUrlBase = JQ_VERIFIER_URL_TESTNET;
   const url = `${verifierUrlBase}JsonApi/prepareRequest`;
   const apiKey = JQ_VERIFIER_API_KEY_TESTNET!;
 

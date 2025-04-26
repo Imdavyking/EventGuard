@@ -31,6 +31,7 @@ export const secret: {
       "FLIGHT_TICKET_CONTRACT_ADDRESS",
       "RPC_URL",
       "OPENAI_API_KEY",
+      "FDC_VERIFIER_URL_TESTNET",
     ];
 
     const loadedSecrets: Record<string, string> = {};

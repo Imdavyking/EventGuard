@@ -20,6 +20,7 @@ services:
       - FLIGHT_TICKET_CONTRACT_ADDRESS
       - MONGO_URI
       - OPENAI_API_KEY
+      - FDC_VERIFIER_URL_TESTNET
     environment:
       - FRONTEND_URL=http://localhost:5173
       - MONGO_URI=${MONGO_URI:-mongodb://mongodb:27017/flight}
@@ -93,6 +94,8 @@ secrets:
     file: ./backend/secrets/FLIGHT_TICKET_CONTRACT_ADDRESS
   OPENAI_API_KEY:
     file: ./backend/secrets/OPENAI_API_KEY
+  FDC_VERIFIER_URL_TESTNET:
+    file: ./backend/secrets/FDC_VERIFIER_URL_TESTNET
 
 volumes:
   mongodb-data:
