@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: eventguard
+    env: node
+    plan: free
+    buildCommand: yarn && tsc
+    startCommand: node build/app.js
+    branch: main
+    rootDir: ./backend
