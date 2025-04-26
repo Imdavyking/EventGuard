@@ -11,7 +11,7 @@ const GET_TICKETS = gql`
       orderBy: DATE_DESC
       first: $first
       offset: $offset
-      filter: { payer: { equalTo: $equalTo } }
+      filter: { payer: { equalTo: $equalTo }, refundStatus: { equalTo: "" } }
     ) {
       nodes {
         flightId
